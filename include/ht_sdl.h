@@ -12,22 +12,14 @@
 **
 **/
 
-#include <ht_game.h>
+#pragma once
 
-namespace Hatchit {
+#include <ht_platform.h>
 
-  namespace Game {
-
-        Game::Game()
-        {
-
-        }
-
-        int Game::Run()
-        {
-            return 0;
-
-        }
-  }
-
-}
+#ifdef HT_SYS_WINDOWS
+#include <SDL.h>
+#include <SDL_syswm.h>
+#undef main
+#else
+#include <SDL2/SDL.h>
+#endif

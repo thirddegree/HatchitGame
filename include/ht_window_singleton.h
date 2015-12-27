@@ -15,20 +15,31 @@
 #pragma once
 
 #include <ht_platform.h>
+#include <ht_window.h>
+#include <ht_singleton.h>
 
 namespace Hatchit {
 
     namespace Game {
 
-        class HT_API Game
+        class HT_API Window : public Core::Singleton<Window>
         {
         public:
-            Game();
+            static bool Initialize(const WindowParams& params);
 
-            int Run();
-            
+            static void DeInitialize();
+
+            static void PollEvents();
+
+            static void Close();
+
+            static bool IsRunning();
+
+            static void SwapBuffers();
+
+        private:
+            IWindow* m_window;
         };
-
 
     }
 

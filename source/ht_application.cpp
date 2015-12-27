@@ -15,6 +15,7 @@
 #include <ht_application.h>
 #include <ht_debug.h>
 #include <ht_window_singleton.h>
+#include <ht_time_singleton.h>
 
 namespace Hatchit {
 
@@ -42,11 +43,16 @@ namespace Hatchit {
                 return -1;
             }
 
+            Time::Start();
             while (Window::IsRunning())
             {
+                Time::Tick();
+
                 Window::PollEvents();
 
                 Window::SwapBuffers();
+
+                Time::CalculateFPS();
             }
 
             return 0;

@@ -31,41 +31,11 @@ namespace Hatchit {
 
         int Application::Run()
         {
-            /*Initialize Window with values from settings file*/
-            WindowParams wparams;
-            wparams.title = m_settings->GetValue("WINDOW", "sTitle", std::string("Hatchit Engine"));
-            wparams.x = m_settings->GetValue("WINDOW", "iX", -1);
-            wparams.y = m_settings->GetValue("WINDOW", "iY", -1);
-            wparams.width = m_settings->GetValue("WINDOW", "iWidth", 800);
-            wparams.height = m_settings->GetValue("WINDOW", "iHeight", 600);
-            if (!Window::Initialize(wparams))
+            if (!Initialize())
             {
-#ifdef _DEBUG
-                Core::DebugPrintF("Game Error: Failed to initialize Window. Exiting.\n");
-#endif
+                DeInitialize();
                 return -1;
             }
-
-            /*Initialize Renderer with values from settings file*/
-            RendererParams rparams;
-#ifdef HT_SYS_LINUX
-            rparams.renderer = RendererType::OPENGL;
-#else
-            std::string rendererStr = m_settings->GetValue("RENDERER", "sRenderer", std::string("DIRECTX"));
-            rparams.renderer = (rendererStr == "DIRECTX") ? RendererType::DIRECTX : RendererType::OPENGL;
-#endif
-            rparams.window = Window::NativeHandle();
-            if (!Renderer::Initialize(rparams))
-            {
-#ifdef _DEBUG
-                Core::DebugPrintF("Game Error: Failed to initialize Renderer. Exiting.\n");
-#endif
-                Window::DeInitialize();
-                Renderer::DeInitialize();
-                return -1;
-            }
-
-            Renderer::SetClearColor(Colors::CornflowerBlue);
 
             Time::Start();
             while (Window::IsRunning())
@@ -83,10 +53,44 @@ namespace Hatchit {
                 Time::CalculateFPS();
             }
 
-            Renderer::DeInitialize();
-            Window::DeInitialize();
+            DeInitialize();
 
             return 0;
+        }
+
+        bool Application::Initialize()
+        {
+            /*Initialize Window with values from settings file*/
+            WindowParams wparams;
+            wparams.title = m_settings->GetValue("WINDOW", "sTitle", std::string("Hatchit Engine"));
+            wparams.x = m_settings->GetValue("WINDOW", "iX", -1);
+            wparams.y = m_settings->GetValue("WINDOW", "iY", -1);
+            wparams.width = m_settings->GetValue("WINDOW", "iWidth", 800);
+            wparams.height = m_settings->GetValue("WINDOW", "iHeight", 600);
+
+            /*Initialize Renderer with values from settings file*/
+            RendererParams rparams;
+            std::string renderer = m_settings->GetValue("RENDERER", "sRenderer", std::string("DIRECTX"));
+            rparams.renderer = (renderer == "DIRECTX") ? RendererType::DIRECTX : RendererType::OPENGL;
+            wparams.renderer = rparams.renderer;
+
+            if (!Window::Initialize(wparams))
+                return false;
+
+
+            rparams.window = Window::NativeHandle();
+            rparams.clearColor = Color( m_settings->GetValue("RENDERER", "fClearR", 0.0f),
+                                        m_settings->GetValue("RENDERER", "fClearG", 0.0f),
+                                        m_settings->GetValue("RENDERER", "fClearB", 0.0f),
+                                        m_settings->GetValue("RENDERER", "fClearA", 0.0f));
+            if (!Renderer::Initialize(rparams))
+                return false;
+        }
+
+        void Application::DeInitialize()
+        {
+            Renderer::DeInitialize();
+            Window::DeInitialize();
         }
   }
 

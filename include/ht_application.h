@@ -29,6 +29,10 @@ namespace Hatchit {
             int Run();
             
         private:
+            bool Initialize();
+
+            void DeInitialize();
+        private:
             Core::INIReader* m_settings;
         };
 

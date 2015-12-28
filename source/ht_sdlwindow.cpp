@@ -61,18 +61,19 @@ namespace Hatchit {
             if (SDL_GetWindowWMInfo(m_handle, &info))
                 m_nativeHandle = info.info.win.window;
 #endif
-
-#ifdef HT_SYS_LINUX
-            m_glcontext = SDL_GL_CreateContext(m_handle);
-            if (!m_glcontext)
+            if (m_params.renderer == Graphics::RendererType::OPENGL)
             {
+                m_glcontext = SDL_GL_CreateContext(m_handle);
+                if (!m_glcontext)
+                {
 #ifdef _DEBUG
-                Core::DebugPrintF("Failed to create SDL_GL_Context handle. Exiting.\n");
+                    Core::DebugPrintF("Failed to create SDL_GL_Context handle. Exiting.\n");
 #endif
-                SDL_Quit();
-                return false;
+                    SDL_Quit();
+                    return false;
+                }
             }
-#endif
+           
 
             m_running = true;
 
@@ -115,7 +116,8 @@ namespace Hatchit {
 
         void SDLWindow::VSwapBuffers()
         {
-            SDL_GL_SwapWindow(m_handle);
+            if (m_params.renderer == Graphics::RendererType::OPENGL)
+                SDL_GL_SwapWindow(m_handle);
         }
     }
 

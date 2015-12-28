@@ -55,6 +55,13 @@ namespace Hatchit {
                 return false;
             }
 
+#ifdef HT_SYS_WINDOWS
+            SDL_SysWMinfo info;
+            SDL_VERSION(&info.version);
+            if (SDL_GetWindowWMInfo(m_handle, &info))
+                m_nativeHandle = info.info.win.window;
+#endif
+
 #ifdef HT_SYS_LINUX
             m_glcontext = SDL_GL_CreateContext(m_handle);
             if (!m_glcontext)

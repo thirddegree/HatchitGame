@@ -15,32 +15,29 @@
 #pragma once
 
 #include <ht_platform.h>
-#include <ht_window.h>
 #include <ht_singleton.h>
+#include <ht_renderer.h>
 
 namespace Hatchit {
 
     namespace Game {
 
-        class HT_API Window : public Core::Singleton<Window>
+        class HT_API Renderer : public Core::Singleton<Renderer>
         {
         public:
-            static bool  Initialize(const WindowParams& params);
 
-            static void  DeInitialize();
+            static bool Initialize(const Graphics::RendererParams& params);
 
-            static void  PollEvents();
+            static void DeInitialize();
 
-            static void  Close();
+            static void SetClearColor(const Graphics::Color& color);
 
-            static bool  IsRunning();
+            static void ClearBuffer(Graphics::ClearArgs args);
 
-            static void  SwapBuffers();
-            
-            static void* NativeHandle();
+            static void Present();
 
         private:
-            IWindow* m_window;
+            Graphics::IRenderer* m_renderer;
         };
 
     }

@@ -15,11 +15,14 @@
 #include <ht_application.h>
 #include <ht_debug.h>
 #include <ht_window_singleton.h>
+#include <ht_renderer_singleton.h>
 #include <ht_time_singleton.h>
 
 namespace Hatchit {
 
   namespace Game {
+
+        using namespace Graphics;
 
         Application::Application(Core::INIReader* settings)
         {
@@ -29,19 +32,40 @@ namespace Hatchit {
         int Application::Run()
         {
             /*Initialize Window with values from settings file*/
-            WindowParams params;
-            params.title = m_settings->GetValue("WINDOW", "sTitle", std::string("Hatchit Engine"));
-            params.x = m_settings->GetValue("WINDOW", "iX", -1);
-            params.y = m_settings->GetValue("WINDOW", "iY", -1);
-            params.width = m_settings->GetValue("WINDOW", "iWidth", 800);
-            params.height = m_settings->GetValue("WINDOW", "iHeight", 600);
-            if (!Window::Initialize(params))
+            WindowParams wparams;
+            wparams.title = m_settings->GetValue("WINDOW", "sTitle", std::string("Hatchit Engine"));
+            wparams.x = m_settings->GetValue("WINDOW", "iX", -1);
+            wparams.y = m_settings->GetValue("WINDOW", "iY", -1);
+            wparams.width = m_settings->GetValue("WINDOW", "iWidth", 800);
+            wparams.height = m_settings->GetValue("WINDOW", "iHeight", 600);
+            if (!Window::Initialize(wparams))
             {
 #ifdef _DEBUG
                 Core::DebugPrintF("Game Error: Failed to initialize Window. Exiting.\n");
 #endif
                 return -1;
             }
+
+            /*Initialize Renderer with values from settings file*/
+            RendererParams rparams;
+#ifdef HT_SYS_LINUX
+            rparams.renderer = RendererType::OPENGL;
+#else
+            std::string rendererStr = m_settings->GetValue("RENDERER", "sRenderer", std::string("DIRECTX"));
+            rparams.renderer = (rendererStr == "DIRECTX") ? RendererType::DIRECTX : RendererType::OPENGL;
+#endif
+            rparams.window = Window::NativeHandle();
+            if (!Renderer::Initialize(rparams))
+            {
+#ifdef _DEBUG
+                Core::DebugPrintF("Game Error: Failed to initialize Renderer. Exiting.\n");
+#endif
+                Window::DeInitialize();
+                Renderer::DeInitialize();
+                return -1;
+            }
+
+            Renderer::SetClearColor(Colors::CornflowerBlue);
 
             Time::Start();
             while (Window::IsRunning())
@@ -50,10 +74,17 @@ namespace Hatchit {
 
                 Window::PollEvents();
 
+                Renderer::ClearBuffer(ClearArgs::ColorDepthStencil);
+
+                Renderer::Present();
+
                 Window::SwapBuffers();
 
                 Time::CalculateFPS();
             }
+
+            Renderer::DeInitialize();
+            Window::DeInitialize();
 
             return 0;
         }

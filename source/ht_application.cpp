@@ -70,8 +70,12 @@ namespace Hatchit {
 
             /*Initialize Renderer with values from settings file*/
             RendererParams rparams;
+#ifdef HT_SYS_LINUX
+            rparams.renderer = RendererType::OPENGL;
+#else
             std::string renderer = m_settings->GetValue("RENDERER", "sRenderer", std::string("DIRECTX"));
             rparams.renderer = (renderer == "DIRECTX") ? RendererType::DIRECTX : RendererType::OPENGL;
+#endif
             wparams.renderer = rparams.renderer;
 
             if (!Window::Initialize(wparams))
@@ -85,6 +89,8 @@ namespace Hatchit {
                                         m_settings->GetValue("RENDERER", "fClearA", 0.0f));
             if (!Renderer::Initialize(rparams))
                 return false;
+
+            return true;
         }
 
         void Application::DeInitialize()

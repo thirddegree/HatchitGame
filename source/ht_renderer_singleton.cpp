@@ -73,6 +73,12 @@ namespace Hatchit {
             _instance.m_renderer->VClearBuffer(args);
         }
 
+        void Renderer::ResizeBuffers(uint32_t width, uint32_t height)
+        {
+            Renderer& _instance = Renderer::instance();
+
+            _instance.m_renderer->VResizeBuffers(width, height);
+        }
     }
 
 }

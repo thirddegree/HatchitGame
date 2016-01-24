@@ -31,6 +31,7 @@ namespace Hatchit {
             int width;
             int height;
             Graphics::RendererType renderer;
+            bool displayFPS;
         };
 
         class HT_API IWindow : Core::INonCopy

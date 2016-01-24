@@ -14,6 +14,7 @@
 
 #include <ht_sdlwindow.h>
 #include <ht_debug.h>
+#include <ht_time_singleton.h>
 
 namespace Hatchit {
 
@@ -95,6 +96,9 @@ namespace Hatchit {
                     break;
                 }
             }
+
+            if (m_params.displayFPS)
+                SDL_SetWindowTitle(m_handle, (m_params.title + " FPS: " + std::to_string((int)Time::FramesPerSecond())).c_str());
         }
 
         void* SDLWindow::VNativeHandle()

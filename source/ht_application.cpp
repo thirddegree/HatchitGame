@@ -67,6 +67,7 @@ namespace Hatchit {
             wparams.y = m_settings->GetValue("WINDOW", "iY", -1);
             wparams.width = m_settings->GetValue("WINDOW", "iWidth", 800);
             wparams.height = m_settings->GetValue("WINDOW", "iHeight", 600);
+            wparams.displayFPS = m_settings->GetValue("WINDOW", "bFPS", false);
 
             /*Initialize Renderer with values from settings file*/
             RendererParams rparams;

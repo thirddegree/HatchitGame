@@ -21,12 +21,15 @@ namespace Hatchit {
         Time::Time()
         {
             m_timer = new Core::Timer;
+            m_fps = 0.0f;
+            m_mspf = 0.0f;
         }
 
         void Time::Start()
         {
             Time& _instance = Time::instance();
 
+            _instance.m_timer->Reset();
             _instance.m_timer->Start();
         }
 
@@ -47,7 +50,7 @@ namespace Hatchit {
             frameCnt++;
 
             // Compute averages over one second period.
-            if ((_instance.m_timer->TotalTime() - timeElapsed) >= 1.0f)
+            if ((_instance.TotalTime() - timeElapsed) >= 1.0f)
             {
                 _instance.m_fps = static_cast<float>(frameCnt);
                 _instance.m_mspf = 1000.0f / _instance.m_fps;

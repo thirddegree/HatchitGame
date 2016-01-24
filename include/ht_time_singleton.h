@@ -37,10 +37,16 @@ namespace Hatchit {
 
             static float FramesPerSecond();
 
+            static float FrameTime();
+
             static float TotalTime();
 
+            static float PausedTime();
+
         private:
-            ITimer* m_timer;
+            Core::Timer* m_timer;
+            float        m_fps;
+            float        m_mspf;
         };
 
     }

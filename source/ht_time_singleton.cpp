@@ -14,57 +14,76 @@
 
 #include <ht_time_singleton.h>
 
-#include <ht_sdltimer.h>
-
 namespace Hatchit {
 
     namespace Game {
 
         Time::Time()
         {
-            m_timer = new SDLTimer;
+            m_timer = new Core::Timer;
         }
 
         void Time::Start()
         {
             Time& _instance = Time::instance();
 
-            _instance.m_timer->VStart();
+            _instance.m_timer->Start();
         }
 
         void Time::Tick()
         {
             Time& _instance = Time::instance();
 
-            _instance.m_timer->VTick();
+            _instance.m_timer->Tick();
         }
 
         void Time::CalculateFPS()
         {
             Time& _instance = Time::instance();
 
-            _instance.m_timer->VCalculateFPS();
+            static int frameCnt = 0;
+            static float timeElapsed = 0.0f;
+
+            frameCnt++;
+
+            // Compute averages over one second period.
+            if ((_instance.m_timer->TotalTime() - timeElapsed) >= 1.0f)
+            {
+                _instance.m_fps = static_cast<float>(frameCnt);
+                _instance.m_mspf = 1000.0f / _instance.m_fps;
+
+                // Reset for next average.
+                frameCnt = 0;
+                timeElapsed += 1.0f;
+            }
         }
 
         float Time::DeltaTime()
         {
             Time& _instance = Time::instance();
 
-            return _instance.m_timer->VDeltaTime();
+            return _instance.m_timer->DeltaTime();
         }
 
         float Time::FramesPerSecond()
         {
             Time& _instance = Time::instance();
 
-            return _instance.m_timer->VFramesPerSecond();
+            return _instance.m_fps;
+        }
+
+        float Time::FrameTime()
+        {
+            Time& _instance = Time::instance();
+
+            return _instance.m_mspf;
         }
 
         float Time::TotalTime()
         {
             Time& _instance = Time::instance();
 
-            return _instance.m_timer->VTotalTime();
+            return _instance.m_timer->TotalTime();
         }
     }
 

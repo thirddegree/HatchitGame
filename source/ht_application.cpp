@@ -15,10 +15,14 @@
 #include <ht_application.h>
 #include <ht_debug.h>
 #include <ht_window_singleton.h>
+#include <ht_renderer_singleton.h>
+#include <ht_time_singleton.h>
 
 namespace Hatchit {
 
   namespace Game {
+
+        using namespace Graphics;
 
         Application::Application(Core::INIReader* settings)
         {
@@ -27,29 +31,74 @@ namespace Hatchit {
 
         int Application::Run()
         {
-            /*Initialize Window with values from settings file*/
-            WindowParams params;
-            params.title = m_settings->GetValue("WINDOW", "sTitle", std::string("Hatchit Engine"));
-            params.x = m_settings->GetValue("WINDOW", "iX", -1);
-            params.y = m_settings->GetValue("WINDOW", "iY", -1);
-            params.width = m_settings->GetValue("WINDOW", "iWidth", 800);
-            params.height = m_settings->GetValue("WINDOW", "iHeight", 600);
-            if (!Window::Initialize(params))
+            if (!Initialize())
             {
-#ifdef _DEBUG
-                Core::DebugPrintF("Game Error: Failed to initialize Window. Exiting.\n");
-#endif
+                DeInitialize();
                 return -1;
             }
 
+            Time::Start();
             while (Window::IsRunning())
             {
+                Time::Tick();
+
                 Window::PollEvents();
 
+                Renderer::ClearBuffer(ClearArgs::ColorDepthStencil);
+
+                Renderer::Present();
+
                 Window::SwapBuffers();
+
+                Time::CalculateFPS();
             }
 
+            DeInitialize();
+
             return 0;
+        }
+
+        bool Application::Initialize()
+        {
+            /*Initialize Window with values from settings file*/
+            WindowParams wparams;
+            wparams.title = m_settings->GetValue("WINDOW", "sTitle", std::string("Hatchit Engine"));
+            wparams.x = m_settings->GetValue("WINDOW", "iX", -1);
+            wparams.y = m_settings->GetValue("WINDOW", "iY", -1);
+            wparams.width = m_settings->GetValue("WINDOW", "iWidth", 800);
+            wparams.height = m_settings->GetValue("WINDOW", "iHeight", 600);
+            wparams.displayFPS = m_settings->GetValue("WINDOW", "bFPS", false);
+            wparams.debugWindowEvents = m_settings->GetValue("WINDOW", "bDebugWindowEvents", false);
+
+            /*Initialize Renderer with values from settings file*/
+            RendererParams rparams;
+#ifdef HT_SYS_LINUX
+            rparams.renderer = RendererType::OPENGL;
+#else
+            std::string renderer = m_settings->GetValue("RENDERER", "sRenderer", std::string("DIRECTX"));
+            rparams.renderer = (renderer == "DIRECTX") ? RendererType::DIRECTX : RendererType::OPENGL;
+#endif
+            wparams.renderer = rparams.renderer;
+
+            if (!Window::Initialize(wparams))
+                return false;
+
+
+            rparams.window = Window::NativeHandle();
+            rparams.clearColor = Color( m_settings->GetValue("RENDERER", "fClearR", 0.0f),
+                                        m_settings->GetValue("RENDERER", "fClearG", 0.0f),
+                                        m_settings->GetValue("RENDERER", "fClearB", 0.0f),
+                                        m_settings->GetValue("RENDERER", "fClearA", 0.0f));
+            if (!Renderer::Initialize(rparams))
+                return false;
+
+            return true;
+        }
+
+        void Application::DeInitialize()
+        {
+            Renderer::DeInitialize();
+            Window::DeInitialize();
         }
   }
 

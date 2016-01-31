@@ -25,17 +25,19 @@ namespace Hatchit {
         class HT_API Window : public Core::Singleton<Window>
         {
         public:
-            static bool Initialize(const WindowParams& params);
+            static bool  Initialize(const WindowParams& params);
 
-            static void DeInitialize();
+            static void  DeInitialize();
 
-            static void PollEvents();
+            static void  PollEvents();
 
-            static void Close();
+            static void  Close();
 
-            static bool IsRunning();
+            static bool  IsRunning();
 
-            static void SwapBuffers();
+            static void  SwapBuffers();
+            
+            static void* NativeHandle();
 
         private:
             IWindow* m_window;

@@ -15,27 +15,24 @@
 #pragma once
 
 #include <ht_platform.h>
-#include <ht_inireader.h>
 
 namespace Hatchit {
 
     namespace Game {
 
-        class HT_API Application
+        class HT_API ITimer
         {
         public:
-            Application(Core::INIReader* settings);
+            virtual ~ITimer() { };
 
-            int Run();
-            
-        private:
-            bool Initialize();
+            virtual void    VStart() = 0;
+            virtual void    VTick() = 0;
+            virtual void    VCalculateFPS() = 0;
+            virtual float   VDeltaTime() = 0;
+            virtual float   VFramesPerSecond() = 0;
+            virtual float   VTotalTime() = 0;
 
-            void DeInitialize();
-        private:
-            Core::INIReader* m_settings;
         };
-
 
     }
 

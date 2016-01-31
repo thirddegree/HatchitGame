@@ -14,6 +14,7 @@
 
 #include <ht_sdlwindow.h>
 #include <ht_debug.h>
+#include <ht_time_singleton.h>
 
 namespace Hatchit {
 
@@ -55,17 +56,25 @@ namespace Hatchit {
                 return false;
             }
 
-#ifdef HT_SYS_LINUX
-            m_glcontext = SDL_GL_CreateContext(m_handle);
-            if (!m_glcontext)
+#ifdef HT_SYS_WINDOWS
+            SDL_SysWMinfo info;
+            SDL_VERSION(&info.version);
+            if (SDL_GetWindowWMInfo(m_handle, &info))
+                m_nativeHandle = info.info.win.window;
+#endif
+            if (m_params.renderer == Graphics::RendererType::OPENGL)
             {
+                m_glcontext = SDL_GL_CreateContext(m_handle);
+                if (!m_glcontext)
+                {
 #ifdef _DEBUG
-                Core::DebugPrintF("Failed to create SDL_GL_Context handle. Exiting.\n");
+                    Core::DebugPrintF("Failed to create SDL_GL_Context handle. Exiting.\n");
 #endif
-                SDL_Quit();
-                return false;
+                    SDL_Quit();
+                    return false;
+                }
             }
-#endif
+           
 
             m_running = true;
 
@@ -83,10 +92,79 @@ namespace Hatchit {
                     VClose();
                     break;
 
+                case SDL_WINDOWEVENT:
+                {
+#ifdef _DEBUG
+                    if (m_params.debugWindowEvents)
+                    {
+                        switch (event.window.event)
+                        {
+                        case SDL_WINDOWEVENT_SHOWN:
+                            SDL_Log("Window %d shown", event.window.windowID);
+                            break;
+                        case SDL_WINDOWEVENT_HIDDEN:
+                            SDL_Log("Window %d hidden", event.window.windowID);
+                            break;
+                        case SDL_WINDOWEVENT_EXPOSED:
+                            SDL_Log("Window %d exposed", event.window.windowID);
+                            break;
+                        case SDL_WINDOWEVENT_MOVED:
+                            SDL_Log("Window %d moved to %d,%d",
+                                event.window.windowID, event.window.data1,
+                                event.window.data2);
+                            break;
+                        case SDL_WINDOWEVENT_RESIZED:
+                            SDL_Log("Window %d resized to %dx%d",
+                                event.window.windowID, event.window.data1,
+                                event.window.data2);
+                            break;
+                        case SDL_WINDOWEVENT_SIZE_CHANGED:
+                            SDL_Log("Window %d size changed to %dx%d",
+                                event.window.windowID, event.window.data1,
+                                event.window.data2);
+                            break;
+                        case SDL_WINDOWEVENT_MINIMIZED:
+                            SDL_Log("Window %d minimized", event.window.windowID);
+                            break;
+                        case SDL_WINDOWEVENT_MAXIMIZED:
+                            SDL_Log("Window %d maximized", event.window.windowID);
+                            break;
+                        case SDL_WINDOWEVENT_RESTORED:
+                            SDL_Log("Window %d restored", event.window.windowID);
+                            break;
+                        case SDL_WINDOWEVENT_ENTER:
+                            SDL_Log("Mouse entered window %d",
+                                event.window.windowID);
+                            break;
+                        case SDL_WINDOWEVENT_LEAVE:
+                            SDL_Log("Mouse left window %d", event.window.windowID);
+                            break;
+                        case SDL_WINDOWEVENT_FOCUS_GAINED:
+                            SDL_Log("Window %d gained keyboard focus",
+                                event.window.windowID);
+                            break;
+                        case SDL_WINDOWEVENT_FOCUS_LOST:
+                            SDL_Log("Window %d lost keyboard focus",
+                                event.window.windowID);
+                            break;
+                        case SDL_WINDOWEVENT_CLOSE:
+                            SDL_Log("Window %d closed", event.window.windowID);
+                            break;
+                        default:
+                            SDL_Log("Window %d got unknown event %d",
+                                event.window.windowID, event.window.event);
+                        }
+                    }
+#endif
+                } break;
+
                 default:
                     break;
                 }
             }
+
+            if (m_params.displayFPS)
+                SDL_SetWindowTitle(m_handle, (m_params.title + " FPS: " + std::to_string((int)Time::FramesPerSecond())).c_str());
         }
 
         void* SDLWindow::VNativeHandle()
@@ -108,7 +186,8 @@ namespace Hatchit {
 
         void SDLWindow::VSwapBuffers()
         {
-            SDL_GL_SwapWindow(m_handle);
+            if (m_params.renderer == Graphics::RendererType::OPENGL)
+                SDL_GL_SwapWindow(m_handle);
         }
     }
 

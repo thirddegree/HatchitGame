@@ -70,6 +70,13 @@ namespace Hatchit {
 
             _instance.m_window->VSwapBuffers();
         }
+
+        void* Window::NativeHandle()
+        {
+            Window& _instance = Window::instance();
+
+            return _instance.m_window->VNativeHandle();
+        }
     }
 
 }

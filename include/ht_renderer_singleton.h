@@ -15,27 +15,32 @@
 #pragma once
 
 #include <ht_platform.h>
-#include <ht_inireader.h>
+#include <ht_singleton.h>
+#include <ht_renderer.h>
 
 namespace Hatchit {
 
     namespace Game {
 
-        class HT_API Application
+        class HT_API Renderer : public Core::Singleton<Renderer>
         {
         public:
-            Application(Core::INIReader* settings);
 
-            int Run();
-            
-        private:
-            bool Initialize();
+            static bool Initialize(const Graphics::RendererParams& params);
 
-            void DeInitialize();
+            static void DeInitialize();
+
+            static void SetClearColor(const Graphics::Color& color);
+
+            static void ClearBuffer(Graphics::ClearArgs args);
+
+            static void Present();
+
+            static void ResizeBuffers(uint32_t width, uint32_t height);
+
         private:
-            Core::INIReader* m_settings;
+            Graphics::IRenderer* m_renderer;
         };
-
 
     }
 

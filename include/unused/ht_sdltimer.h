@@ -15,27 +15,35 @@
 #pragma once
 
 #include <ht_platform.h>
-#include <ht_inireader.h>
+#include <ht_timer.h>
+#include <ht_types.h>
 
 namespace Hatchit {
 
     namespace Game {
 
-        class HT_API Application
+        class HT_API SDLTimer : public ITimer
         {
         public:
-            Application(Core::INIReader* settings);
+            SDLTimer();
 
-            int Run();
+            ~SDLTimer();
+
+            void    VStart()           override;
+            void    VTick()            override;
+            void    VCalculateFPS()    override;
             
-        private:
-            bool Initialize();
+            float   VDeltaTime()       override;
+            float   VFramesPerSecond() override;
+            float   VTotalTime()       override;
 
-            void DeInitialize();
         private:
-            Core::INIReader* m_settings;
+            uint32_t m_startTime;
+            uint32_t m_currentTime;
+            uint32_t m_previousTime;
+            float    m_fps;
+            float    m_deltaTime;
         };
-
 
     }
 

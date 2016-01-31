@@ -15,27 +15,39 @@
 #pragma once
 
 #include <ht_platform.h>
-#include <ht_inireader.h>
+#include <ht_singleton.h>
+#include <ht_timer.h>
 
 namespace Hatchit {
 
     namespace Game {
 
-        class HT_API Application
+        class HT_API Time : public Core::Singleton<Time>
         {
         public:
-            Application(Core::INIReader* settings);
+            Time();
 
-            int Run();
-            
-        private:
-            bool Initialize();
+            static void Start();
 
-            void DeInitialize();
+            static void Tick();
+
+            static void CalculateFPS();
+
+            static float DeltaTime();
+
+            static float FramesPerSecond();
+
+            static float FrameTime();
+
+            static float TotalTime();
+
+            static float PausedTime();
+
         private:
-            Core::INIReader* m_settings;
+            Core::Timer* m_timer;
+            float        m_fps;
+            float        m_mspf;
         };
-
 
     }
 

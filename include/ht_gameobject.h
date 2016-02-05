@@ -1,4 +1,19 @@
+/**
+**    Hatchit Engine
+**    Copyright(c) 2015 Third-Degree
+**
+**    GNU Lesser General Public License
+**    This file may be used under the terms of the GNU Lesser
+**    General Public License version 3 as published by the Free
+**    Software Foundation and appearing in the file LICENSE.LGPLv3 included
+**    in the packaging of this file. Please review the following information
+**    to ensure the GNU Lesser General Public License requirements
+**    will be met: https://www.gnu.org/licenses/lgpl.html
+**
+**/
+
 #pragma once
+
 #include <ht_component.h>
 #include <vector>
 
@@ -6,23 +21,25 @@ namespace Hatchit {
 
 	namespace Game {
 
-		class GameObject
+		class HT_API GameObject
 		{
 		public:
-
-			/** Creates an Empty GameObject at 0,0,0
+			/**
+             * Creates an Empty GameObject at 0,0,0
 			 */
 			GameObject();
-			~GameObject();
+			
+            ~GameObject();
 
 
-			/** Called when the gameobject is created to initialize all values
-			*/
+			/**
+             * Called when the gameobject is created to initialize all values
+			 */
 			void OnInit();
 
 
 			/** Called when the gameobject is enabled
-			* This happens when a scene has finished loading, or immediately after creation if the scene is already loaded.
+			*   This happens when a scene has finished loading, or immediately after creation if the scene is already loaded.
 			*/
 			void OnEnabled();
 
@@ -31,10 +48,6 @@ namespace Hatchit {
 			* Updates all components first, then all child gameobjects
 			*/
 			void Update();
-
-			/** Called once per frame while the gameobject is enabled
-			*
-			*/
 
 			/** Called when the gameobject is disabled
 			* Objects are always disabled before destroyed.

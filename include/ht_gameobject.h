@@ -65,7 +65,7 @@ namespace Hatchit {
 
 
 		private:
-			std::vector<Component> components;
+			std::vector<Component*> m_components;
 		};
 	}
 }

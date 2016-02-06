@@ -30,41 +30,41 @@ namespace Hatchit {
 
 		void GameObject::OnInit()
 		{
-			for (int i = 0; i < components.size(); i++)
+			for (size_t i = 0; i < m_components.size(); i++)
 			{
-				components[i].OnInit();
+				m_components[i]->VOnInit();
 			}
 		}
 
 		void GameObject::OnEnabled()
 		{
-			for (int i = 0; i < components.size(); i++)
+			for (size_t i = 0; i < m_components.size(); i++)
 			{
-				components[i].OnEnabled();
+				m_components[i]->VOnEnabled();
 			}
 		}
 
 		void GameObject::Update()
 		{
-			for (int i = 0; i < components.size(); i++)
+			for (size_t i = 0; i < m_components.size(); i++)
 			{
-				components[i].Update();
+				m_components[i]->VOnUpdate();
 			}
 		}
 
 		void GameObject::OnDisabled()
 		{
-			for (int i = 0; i < components.size(); i++)
+			for (size_t i = 0; i < m_components.size(); i++)
 			{
-				components[i].OnDisabled();
+				m_components[i]->OnDisabled();
 			}
 		}
 
 		void GameObject::OnDestroy()
 		{
-			for (int i = 0; i < components.size(); i++)
+			for (size_t i = 0; i < m_components.size(); i++)
 			{
-				components[i].OnDestroy();
+				m_components[i]->VOnDestroy();
 			}
 		}
 	}

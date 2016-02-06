@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <ht_platform.h>
 #include <ht_component.h>
 #include <vector>
 

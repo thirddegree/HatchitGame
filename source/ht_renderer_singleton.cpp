@@ -15,7 +15,7 @@
 #include <ht_renderer_singleton.h>
 
 #ifdef HT_SYS_WINDOWS
-#include <ht_dxrenderer.h>
+#include <ht_d3d11renderer.h>
 #endif
 
 #include <ht_glrenderer.h>
@@ -30,17 +30,30 @@ namespace Hatchit {
         bool Renderer::Initialize(const RendererParams& params)
         {
             Renderer& _instance = Renderer::instance();
+           
 
 #ifdef HT_SYS_LINUX
-            _instance.m_renderer = new GLRenderer;
+            if (params.renderer == RendererType::OPENGL)
+                _instance.m_renderer = new GLRenderer;
+            else if (params.renderer == RendererType::VULKAN)
+                _instance.m_renderer = new VKRenderer;
+            else
+                _instance.m_renderer = nullptr;
 #else
-            if (params.renderer == RendererType::DIRECTX)
-                _instance.m_renderer = new DXRenderer;
+            if (params.renderer == RendererType::DIRECTX11)
+                _instance.m_renderer = new DirectX::D3D11Renderer;
+            else if (params.renderer == RendererType::DIRECTX12)
+                _instance.m_renderer = nullptr;
 			else if (params.renderer == RendererType::OPENGL)
-				_instance.m_renderer = new GLRenderer;
-			else if (params.renderer == RendererType::VULKAN)
-				_instance.m_renderer = new VKRenderer;
+				_instance.m_renderer = new OpenGL::GLRenderer;
+            else if (params.renderer == RendererType::VULKAN)
+                _instance.m_renderer = new Vulkan::VKRenderer;
+            else
+                _instance.m_renderer = nullptr;
 #endif
+            if (!_instance.m_renderer)
+                return false;
+
             if (!_instance.m_renderer->VInitialize(params))
                 return false;
 

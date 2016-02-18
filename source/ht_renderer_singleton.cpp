@@ -17,7 +17,9 @@
 #ifdef HT_SYS_WINDOWS
 #include <ht_dxrenderer.h>
 #endif
+
 #include <ht_glrenderer.h>
+#include <ht_vkrenderer.h>
 
 namespace Hatchit {
 
@@ -34,8 +36,10 @@ namespace Hatchit {
 #else
             if (params.renderer == RendererType::DIRECTX)
                 _instance.m_renderer = new DXRenderer;
-            else
-                _instance.m_renderer = new GLRenderer;
+			else if (params.renderer == RendererType::OPENGL)
+				_instance.m_renderer = new GLRenderer;
+			else if (params.renderer == RendererType::VULKAN)
+				_instance.m_renderer = new VKRenderer;
 #endif
             if (!_instance.m_renderer->VInitialize(params))
                 return false;

@@ -16,6 +16,7 @@
 
 #ifdef HT_SYS_WINDOWS
 #include <ht_d3d11renderer.h>
+#include <ht_d3d12renderer.h>
 #endif
 
 #include <ht_glrenderer.h>
@@ -43,7 +44,7 @@ namespace Hatchit {
             if (params.renderer == RendererType::DIRECTX11)
                 _instance.m_renderer = new DirectX::D3D11Renderer;
             else if (params.renderer == RendererType::DIRECTX12)
-                _instance.m_renderer = nullptr;
+                _instance.m_renderer = new DirectX::D3D12Renderer;
 			else if (params.renderer == RendererType::OPENGL)
 				_instance.m_renderer = new OpenGL::GLRenderer;
             else if (params.renderer == RendererType::VULKAN)

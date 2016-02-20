@@ -13,14 +13,23 @@
 **/
 
 #include <ht_renderer_singleton.h>
-
+#include <ht_debug.h>
 #ifdef HT_SYS_WINDOWS
+#ifdef DX11_SUPPORT
 #include <ht_d3d11renderer.h>
+#endif
+#ifdef DX12_SUPPORT
 #include <ht_d3d12renderer.h>
 #endif
+#endif
 
+#ifdef GL_SUPPORT
 #include <ht_glrenderer.h>
+#endif
+
+#ifdef VK_SUPPORT
 #include <ht_vkrenderer.h>
+#endif
 
 namespace Hatchit {
 
@@ -41,14 +50,43 @@ namespace Hatchit {
             else
                 _instance.m_renderer = nullptr;
 #else
-            if (params.renderer == RendererType::DIRECTX11)
-                _instance.m_renderer = new DirectX::D3D11Renderer;
-            else if (params.renderer == RendererType::DIRECTX12)
-                _instance.m_renderer = new DirectX::D3D12Renderer;
+			if (params.renderer == RendererType::DIRECTX11)
+			{
+#ifdef DX11_SUPPORT
+				_instance.m_renderer = new DirectX::D3D11Renderer;
+#else
+				Core::DebugPrintF("DirectX11 Renderer requested when engine not compiled with DirectX11 support!\n");
+				return false;
+#endif
+			}
+			else if (params.renderer == RendererType::DIRECTX12)
+			{
+
+#ifdef DX12_SUPPORT
+				_instance.m_renderer = new DirectX::D3D12Renderer;
+#else
+				Core::DebugPrintF("DirectX12 Renderer requested when engine not compiled with DirectX12 support!\n");
+				return false;
+#endif
+			}
 			else if (params.renderer == RendererType::OPENGL)
+			{
+#ifdef GL_SUPPORT
 				_instance.m_renderer = new OpenGL::GLRenderer;
-            else if (params.renderer == RendererType::VULKAN)
-                _instance.m_renderer = new Vulkan::VKRenderer;
+#else
+				Core::DebugPrintF("OpenGL Renderer requested when engine not compiled with OpenGL support!\n");
+				return false;
+#endif
+			}
+			else if (params.renderer == RendererType::VULKAN)
+			{
+#ifdef VK_SUPPORT
+				_instance.m_renderer = new Vulkan::VKRenderer;
+#else
+				Core::DebugPrintF("Vulkan Renderer requested when engine not compiled with Vulkan support!\n");
+				return false;
+#endif
+			}
             else
                 _instance.m_renderer = nullptr;
 #endif

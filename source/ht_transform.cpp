@@ -1,3 +1,16 @@
+/**
+**    Hatchit Engine
+**    Copyright(c) 2015 Third-Degree
+**
+**    GNU Lesser General Public License
+**    This file may be used under the terms of the GNU Lesser
+**    General Public License version 3 as published by the Free
+**    Software Foundation and appearing in the file LICENSE.LGPLv3 included
+**    in the packaging of this file. Please review the following information
+**    to ensure the GNU Lesser General Public License requirements
+**    will be met: https://www.gnu.org/licenses/lgpl.html
+**
+**/
 
 #include <ht_transform.h>
 
@@ -268,7 +281,7 @@ namespace Hatchit {
                 m_worldPosition = m_world * Math::Vector3(0, 0, 0);
 
                 //recalculate basis vectors (right, forward, up)
-                m_forward = m_world Math::Vector3(0, 0, 1);
+                m_forward = m_world * Math::Vector3(0, 0, 1);
                 m_forward = Math::MMVector3Normalize(m_forward);
 
                 m_up = m_world * Math::Vector3(0, 1, 0);
@@ -285,8 +298,8 @@ namespace Hatchit {
         Math::Matrix4* Transform::GetLocalMatrix()
         {
             if (m_localDirty) {
-                m_local =
-                    /*Math::MMMatrixRotation(m_rotation) **/
+                m_local = Math::MMMatrixScale(m_scale) *
+                    Math::MMMatrixRotationXYZ(m_rotation) *
                     Math::MMMatrixTranslation(m_position);
                 m_localDirty = false;
             }

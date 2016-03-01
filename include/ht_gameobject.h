@@ -16,6 +16,7 @@
 
 #include <ht_platform.h>
 #include <ht_component.h>
+#include <ht_transform.h>
 #include <vector>
 
 namespace Hatchit {
@@ -66,6 +67,7 @@ namespace Hatchit {
 
 		private:
 			std::vector<Component*> m_components;
+            Transform* transform;
 		};
 	}
 }

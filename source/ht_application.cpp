@@ -46,6 +46,8 @@ namespace Hatchit {
 
                 Renderer::ClearBuffer(ClearArgs::ColorDepthStencil);
 
+                Renderer::Render();
+
                 Renderer::Present();
 
                 Window::SwapBuffers();

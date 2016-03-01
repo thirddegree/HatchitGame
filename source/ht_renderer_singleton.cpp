@@ -115,6 +115,13 @@ namespace Hatchit {
             _instance.m_renderer->VSetClearColor(color);
         }
 
+        void Renderer::Render() 
+        {
+            Renderer& _instance = Renderer::instance();
+
+            _instance.m_renderer->VRender();
+        }
+
         void Renderer::Present()
         {
             Renderer& _instance = Renderer::instance();

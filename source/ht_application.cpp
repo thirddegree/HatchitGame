@@ -82,10 +82,10 @@ namespace Hatchit {
                 rparams.renderer = RendererType::DIRECTX11;
             else if (renderer == "DIRECTX12")
                 rparams.renderer = RendererType::DIRECTX12;
-			else if (renderer == "VULKAN")
-				rparams.renderer = RendererType::VULKAN;
-			else if (renderer == "OPENGL")
-				rparams.renderer = RendererType::OPENGL;
+            else if (renderer == "VULKAN")
+                rparams.renderer = RendererType::VULKAN;
+            else if (renderer == "OPENGL")
+                rparams.renderer = RendererType::OPENGL;
 #endif
             wparams.renderer = rparams.renderer;
 

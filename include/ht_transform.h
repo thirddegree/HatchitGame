@@ -70,8 +70,9 @@ namespace Hatchit {
 
             void DebugPrint();
 
-            void AddChildTransform(Transform* transform);
-            void RemoveChildTransform(Transform* transform);
+            void AddChild(Transform* transform);
+            
+            void RemoveChild(Transform* transform);
 
             bool IsDirty();
 

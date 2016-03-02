@@ -64,10 +64,11 @@ namespace Hatchit {
 			*/
 			void OnDestroy();
 
+            Transform* GetTransform();
 
 		private:
 			std::vector<Component*> m_components;
-            Transform* transform;
+            Transform* m_transform;
 		};
 	}
 }

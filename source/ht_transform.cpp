@@ -81,19 +81,20 @@ namespace Hatchit {
                 m_localDirty = true;
         }
 
-        void Transform::AddChildTransform(Transform* transform)
+        void Transform::AddChild(Transform* transform)
         {
             m_childTransforms.push_back(transform);
             transform->m_parent = this;
             transform->SetDirty();
         }
 
-        void Transform::RemoveChildTransform(Transform * transform)
+        void Transform::RemoveChild(Transform * transform)
         {
             for (uint32_t i = 0; i < m_childTransforms.size(); i++)
             {
                 if (m_childTransforms.at(i) == transform)
                 {
+                    m_childTransforms.at(i)->m_parent = nullptr;
                     m_childTransforms.erase(m_childTransforms.begin() + i);
                     return;
                 }

@@ -32,12 +32,16 @@ namespace Hatchit {
 
 		void SceneManager::Update()
 		{
-			Core::DebugPrintF("Scene Manager Update (not implemented)\n");
+			SceneManager& _instance = SceneManager::instance();
+			_instance.currentScene->Update();
+			//Core::DebugPrintF("Scene Manager Update (not implemented)\n");
 		}
 
 		void SceneManager::Render()
 		{
-			Core::DebugPrintF("Scene Manager Render (not implemented)\n");
+			SceneManager& _instance = SceneManager::instance();
+			_instance.currentScene->Render();
+			//Core::DebugPrintF("Scene Manager Render (not implemented)\n");
 		}
 	}
 }

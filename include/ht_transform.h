@@ -35,6 +35,8 @@ namespace Hatchit {
             Math::Matrix4* GetWorldMatrix();
             Math::Matrix4* GetLocalMatrix();
 
+			void UpdateWorldMatrix();
+
             void SetDirty();
 
             void RotateX(float val);

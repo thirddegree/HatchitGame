@@ -17,6 +17,7 @@
 #include <ht_window_singleton.h>
 #include <ht_renderer_singleton.h>
 #include <ht_time_singleton.h>
+#include <ht_scenemanager.h>;
 
 namespace Hatchit {
 
@@ -43,6 +44,10 @@ namespace Hatchit {
                 Time::Tick();
 
                 Window::PollEvents();
+
+				SceneManager::Update();
+
+				SceneManager::Render();
 
                 Renderer::ClearBuffer(ClearArgs::ColorDepthStencil);
 

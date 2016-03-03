@@ -43,7 +43,7 @@ namespace Hatchit {
 		{
 			for (size_t i = 0; i < gameObjects.size(); i++)
 			{
-				gameObjects[i].Update();
+				gameObjects[i].GetTransform()->UpdateWorldMatrix();
 			}
 		}
 

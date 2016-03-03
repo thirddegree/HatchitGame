@@ -28,14 +28,13 @@ namespace Hatchit {
 			Scene();
 			~Scene();
 
-			void Update();
-			void Render();
+			static void Update();
+			static void Render();
 
 			GameObject* CreateGameObject();
 
 		private:
 			std::vector<GameObject> gameObjects;
-			Transform* m_root;
 		};
 	}
 }

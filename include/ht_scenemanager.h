@@ -33,6 +33,7 @@ namespace Hatchit {
 
 		private:
 			static std::vector<Scene> scenes;
+			Scene* currentScene;
 		};
 	}
 }

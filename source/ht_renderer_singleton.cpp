@@ -50,43 +50,43 @@ namespace Hatchit {
             else
                 _instance.m_renderer = nullptr;
 #else
-			if (params.renderer == RendererType::DIRECTX11)
-			{
+            if (params.renderer == RendererType::DIRECTX11)
+            {
 #ifdef DX11_SUPPORT
-				_instance.m_renderer = new DirectX::D3D11Renderer;
+                _instance.m_renderer = new DirectX::D3D11Renderer;
 #else
-				Core::DebugPrintF("DirectX11 Renderer requested when engine not compiled with DirectX11 support!\n");
-				return false;
+                Core::DebugPrintF("DirectX11 Renderer requested when engine not compiled with DirectX11 support!\n");
+                return false;
 #endif
-			}
-			else if (params.renderer == RendererType::DIRECTX12)
-			{
+            }
+            else if (params.renderer == RendererType::DIRECTX12)
+            {
 
 #ifdef DX12_SUPPORT
-				_instance.m_renderer = new DirectX::D3D12Renderer;
+                _instance.m_renderer = new DirectX::D3D12Renderer;
 #else
-				Core::DebugPrintF("DirectX12 Renderer requested when engine not compiled with DirectX12 support!\n");
-				return false;
+                Core::DebugPrintF("DirectX12 Renderer requested when engine not compiled with DirectX12 support!\n");
+                return false;
 #endif
-			}
-			else if (params.renderer == RendererType::OPENGL)
-			{
+            }
+            else if (params.renderer == RendererType::OPENGL)
+            {
 #ifdef GL_SUPPORT
-				_instance.m_renderer = new OpenGL::GLRenderer;
+                _instance.m_renderer = new OpenGL::GLRenderer;
 #else
-				Core::DebugPrintF("OpenGL Renderer requested when engine not compiled with OpenGL support!\n");
-				return false;
+                Core::DebugPrintF("OpenGL Renderer requested when engine not compiled with OpenGL support!\n");
+                return false;
 #endif
-			}
-			else if (params.renderer == RendererType::VULKAN)
-			{
+            }
+            else if (params.renderer == RendererType::VULKAN)
+            {
 #ifdef VK_SUPPORT
-				_instance.m_renderer = new Vulkan::VKRenderer;
+                _instance.m_renderer = new Vulkan::VKRenderer;
 #else
-				Core::DebugPrintF("Vulkan Renderer requested when engine not compiled with Vulkan support!\n");
-				return false;
+                Core::DebugPrintF("Vulkan Renderer requested when engine not compiled with Vulkan support!\n");
+                return false;
 #endif
-			}
+            }
             else
                 _instance.m_renderer = nullptr;
 #endif

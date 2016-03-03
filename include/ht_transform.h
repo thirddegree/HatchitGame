@@ -14,13 +14,15 @@
 
 #pragma once
 
+#include <ht_platform.h>
 #include <ht_math.h>
 #include <vector>
 
 namespace Hatchit {
 
     namespace Game {
-        class Transform
+
+        class HT_API Transform
         {
         public:
             Transform();

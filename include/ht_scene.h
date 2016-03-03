@@ -31,8 +31,11 @@ namespace Hatchit {
 			void Update();
 			void Render();
 
+			GameObject* CreateGameObject();
+
 		private:
 			std::vector<GameObject> gameObjects;
+			Transform* m_root;
 		};
 	}
 }

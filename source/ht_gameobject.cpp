@@ -30,7 +30,6 @@ namespace Hatchit {
 
 		void GameObject::OnInit()
 		{
-            m_transform = new Transform();
 			for (size_t i = 0; i < m_components.size(); i++)
 			{
 				m_components[i]->VOnInit();
@@ -71,7 +70,7 @@ namespace Hatchit {
 
         Transform* GameObject::GetTransform()
         {
-            return m_transform;
+            return (Transform*) &m_transform;
         }
 	}
 }

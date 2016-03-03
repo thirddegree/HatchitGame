@@ -16,6 +16,7 @@
 
 #include <ht_platform.h>
 #include <ht_component.h>
+#include <ht_transform.h>
 #include <vector>
 
 namespace Hatchit {
@@ -25,6 +26,7 @@ namespace Hatchit {
 		class HT_API GameObject
 		{
 		public:
+
 			/**
              * Creates an Empty GameObject at 0,0,0
 			 */
@@ -63,9 +65,11 @@ namespace Hatchit {
 			*/
 			void OnDestroy();
 
+            Transform* GetTransform();
 
 		private:
 			std::vector<Component*> m_components;
+            Transform m_transform;
 		};
 	}
 }

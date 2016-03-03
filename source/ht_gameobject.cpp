@@ -67,5 +67,10 @@ namespace Hatchit {
 				m_components[i]->VOnDestroy();
 			}
 		}
+
+        Transform* GameObject::GetTransform()
+        {
+            return (Transform*) &m_transform;
+        }
 	}
 }

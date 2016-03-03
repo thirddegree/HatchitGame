@@ -14,9 +14,13 @@
 
 #pragma once
 
+#include <vector>
+#include <bitset>
+#include <tuple>
+#include <utility>
+
 #include <ht_platform.h>
 #include <ht_component.h>
-#include <vector>
 
 namespace Hatchit {
 
@@ -25,47 +29,273 @@ namespace Hatchit {
 		class HT_API GameObject
 		{
 		public:
-			/**
-             * Creates an Empty GameObject at 0,0,0
-			 */
-			GameObject();
-			
-            ~GameObject();
+            static constexpr std::uint32_t MAX_COMPONENTS{50};
 
+            GameObject(void);
+            ~GameObject(void);
+            GameObject(const GameObject& rhs) = default;
+            GameObject(GameObject&& rhs) = default;
+            GameObject& operator=(const GameObject& rhs) = default;
+            GameObject& operator=(GameObject&& rhs) = default;
 
-			/**
-             * Called when the gameobject is created to initialize all values
-			 */
-			void OnInit();
+            bool GetEnabled(void) const;
+            void SetEnabled(bool value);
 
+            inline void Enable(void)
+            {
+                SetEnabled(true);
+            }
 
-			/** Called when the gameobject is enabled
-			*   This happens when a scene has finished loading, or immediately after creation if the scene is already loaded.
-			*/
-			void OnEnabled();
+            inline void Disable(void)
+            {
+                SetEnabled(false);
+            }
 
+            GameObject* GetParent(void);
+            void SetParent(GameObject *parent);
+
+            void Init(void);
 
 			/** Called once per frame while the gameobject is enabled
 			* Updates all components first, then all child gameobjects
 			*/
-			void Update();
+			void Update(void);
 
-			/** Called when the gameobject is disabled
-			* Objects are always disabled before destroyed.
-			* When a scene is destroyed, all gameobjects are disabled before any are destroyed.
-			*/
-			void OnDisabled();
+            void Destroy(void);
 
+            template <typename T>
+            bool AddComponent(T *component);
 
-			/** Called when the gameobject is destroyed/deleted.
-			* Objects are always disabled before destroyed.
-			* When a scene is destroyed, all gameobjects are disabled before any are destroyed.
-			*/
-			void OnDestroy();
+            template <typename T, typename... Args>
+            bool AddComponent(Args&&... args);
 
+            template <typename T>
+            bool RemoveComponent(void);
+
+            template <typename T>
+            bool HasComponent(void) const;
+
+            template <typename T1, typename T2, typename... Args>
+            bool HasComponent(void) const;
+
+            template <typename T>
+            T* GetComponent(void);
+
+            template <typename... Args>
+            std::tuple<Args*...> GetComponents(void);
+
+            template <typename T>
+            bool EnableComponent(void);
+
+            template <typename... Args>
+            auto EnableComponents(void) -> decltype(std::make_tuple(EnableComponent<Args>()...))
+            {
+                return std::make_tuple(EnableComponent<Args>()...);
+            }
+
+            template <typename T>
+            bool DisableComponent(void);
+
+            template <typename... Args>
+            auto DisableComponents(void) -> decltype(std::make_tuple(DisableComponent<Args>()...))
+            {
+                return std::make_tuple(DisableComponent<Args>()...);
+            }
+
+            void AddChild(GameObject *child);
+
+            GameObject* GetChildAtIndex(std::size_t index);
+
+            void RemoveChildAtIndex(std::size_t index);
 
 		private:
-			std::vector<Component*> m_components;
+            /**
+            * Called when the gameobject is created to initialize all values
+            */
+            void OnInit(void);
+
+            /** Called when the gameobject is enabled
+            *   This happens when a scene has finished loading, or immediately after creation if the scene is already loaded.
+            */
+            void OnEnabled(void);
+
+            /** Called when the gameobject is disabled
+            * Objects are always disabled before destroyed.
+            * When a scene is destroyed, all gameobjects are disabled before any are destroyed.
+            */
+            void OnDisabled(void);
+
+            /** Called when the gameobject is destroyed/deleted.
+            * Objects are always disabled before destroyed.
+            * When a scene is destroyed, all gameobjects are disabled before any are destroyed.
+            */
+            void OnDestroy(void);
+
+            bool m_enabled;
+            GameObject *m_parent;
+            std::vector<GameObject*> m_children;
+            std::bitset<MAX_COMPONENTS> m_componentMask;
+            std::vector<Component*> m_components;
 		};
+
+        template <typename T>
+        bool GameObject::AddComponent(T *component)
+        {
+            static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
+
+            std::uint32_t component_id = Component::GetComponentId<T>();
+            if (component_id >= MAX_COMPONENTS)
+                return false;
+
+            if (m_componentMask.test(component_id))
+                return false;
+
+            m_componentMask.set(component_id);
+
+            m_components[component_id] = component;
+
+            component->Init();
+
+            if (m_enabled)
+                component->Enable();
+
+            return true;
+        }
+
+        template <typename T, typename... Args>
+        bool GameObject::AddComponent(Args&&... args)
+        {
+            static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
+
+            std::uint32_t component_id = Component::GetComponentId<T>();
+            if (component_id >= MAX_COMPONENTS)
+                return false;
+
+            if (m_componentMask.test(component_id))
+                return false;
+
+            m_componentMask.set(component_id);
+
+            T *component = new T(std::forward<Args>(args)...);
+
+            m_components[component_id] = component;
+
+            component->Init();
+
+            if (m_enabled)
+                component->Enable();
+
+            return true;
+        }
+
+        template <typename T>
+        bool GameObject::RemoveComponent(void)
+        {
+            static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
+
+            std::uint32_t component_id = Component::GetComponentId<T>();
+            if (component_id >= GameObject::MAX_COMPONENTS)
+                return false;
+
+            if (!m_componentMask.test(component_id))
+                return false;
+
+            Component *component = m_components[component_id];
+            component->Disable();
+            component->Destroy();
+
+            m_componentMask.reset(component_id);
+            m_components[component_id] = nullptr;
+            delete component;
+
+            return true;
+        }
+
+        template <typename T>
+        bool GameObject::HasComponent(void) const
+        {
+            static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
+
+            std::uint32_t component_id = Component::GetComponentId<T>();
+            if (component_id >= GameObject::MAX_COMPONENTS)
+                return false;
+
+            return m_componentMask.test(component_id);
+        }
+
+        template <typename T1, typename T2, typename... Args>
+        bool GameObject::HasComponent(void) const
+        {
+            static_assert(std::is_base_of<Component, T1>::value, "Must be a sub-class of Hatchit::Game::Component!");
+
+            std::uint32_t component_id = Component::GetComponentId<T1>();
+            if (component_id >= GameObject::MAX_COMPONENTS)
+                return false;
+
+            return HasComponent<T1>() && HasComponent<T2, Args...>();
+        }
+
+        template <typename T>
+        T* GameObject::GetComponent(void)
+        {
+            static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
+
+            std::uint32_t component_id = Component::GetComponentId<T>();
+            if (component_id >= GameObject::MAX_COMPONENTS)
+                return nullptr;
+
+            if (!m_componentMask.test(component_id))
+                return nullptr;
+
+            return dynamic_cast<T*>(m_components[component_id]);
+        }
+
+        template <typename... Args>
+        std::tuple<Args*...> GameObject::GetComponents(void)
+        {
+            return std::make_tuple(GetComponent<Args>()...);
+        }
+
+        template <typename T>
+        bool GameObject::EnableComponent(void)
+        {
+            static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
+
+            if (!HasComponent<T>())
+                return false;
+
+            std::uint32_t component_id = Component::GetComponentId<T>();
+            if (component_id >= MAX_COMPONENTS)
+                return false;
+
+            Component *component = m_components[component_id];
+            if (component->GetEnabled())
+                return false;
+
+            component->Enable();
+
+            return true;
+        }
+
+        template <typename T>
+        bool GameObject::DisableComponent(void)
+        {
+            static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
+
+            if (!HasComponent<T>())
+                return false;
+
+            std::uint32_t component_id = Component::GetComponentId<T>();
+            if (component_id >= MAX_COMPONENTS)
+                return false;
+
+            Component *component = m_components[component_id];
+            if (!component->GetEnabled())
+                return false;
+
+            component->Disable();
+
+            return true;
+        }
 	}
 }

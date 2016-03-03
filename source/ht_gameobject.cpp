@@ -12,60 +12,121 @@
 **
 **/
 
-#include "ht_gameobject.h"
+#include <ht_gameobject.h>
+#include <ht_debug.h>
 
 namespace Hatchit {
 
 	namespace Game {
+        GameObject::GameObject(void)
+        {
+            m_components = std::vector<Component*>(GameObject::MAX_COMPONENTS, nullptr);
+        }
 
-		GameObject::GameObject()
-		{
+        GameObject::~GameObject(void)
+        {
+            for (std::size_t i = 0; i < GameObject::MAX_COMPONENTS; ++i)
+            {
+                if(m_componentMask.test(i))
+                {
+                    delete m_components[i];
+                }
+            }
+        }
 
-		}
+        bool GameObject::GetEnabled(void) const
+        {
+            return m_enabled;
+        }
 
-		GameObject::~GameObject()
-		{
+        void GameObject::SetEnabled(bool value)
+        {
+#ifdef _DEBUG
+            Core::DebugPrintF("GameObject SetEnabled. (not implemented)\n");
+#endif
+        }
 
-		}
+        GameObject* GameObject::GetParent(void)
+        {
+            return m_parent;
+        }
+
+        void GameObject::SetParent(GameObject *parent)
+        {
+#ifdef _DEBUG
+            Core::DebugPrintF("GameObject SetParent. (not implemented)\n");
+#endif
+        }
+
+        void GameObject::Init(void)
+        {
+#ifdef _DEBUG
+            Core::DebugPrintF("GameObject initialized. (not implemented)\n");
+#endif
+        }
+
+        void GameObject::Update()
+        {
+#ifdef _DEBUG
+            Core::DebugPrintF("GameObject updated. (not implemented)\n");
+#endif
+        }
+
+        void GameObject::Destroy()
+        {
+#ifdef _DEBUG
+            Core::DebugPrintF("GameObject destroyed. (not implemented)\n");
+#endif
+        }
 
 		void GameObject::OnInit()
 		{
-			for (size_t i = 0; i < m_components.size(); i++)
-			{
-				m_components[i]->VOnInit();
-			}
+#ifdef _DEBUG
+            Core::DebugPrintF("GameObject OnInit. (not implemented)\n");
+#endif
 		}
 
 		void GameObject::OnEnabled()
 		{
-			for (size_t i = 0; i < m_components.size(); i++)
-			{
-				m_components[i]->VOnEnabled();
-			}
-		}
-
-		void GameObject::Update()
-		{
-			for (size_t i = 0; i < m_components.size(); i++)
-			{
-				m_components[i]->VOnUpdate();
-			}
+#ifdef _DEBUG
+            Core::DebugPrintF("GameObject OnEnabled. (not implemented)\n");
+#endif
 		}
 
 		void GameObject::OnDisabled()
 		{
-			for (size_t i = 0; i < m_components.size(); i++)
-			{
-				m_components[i]->OnDisabled();
-			}
+#ifdef _DEBUG
+            Core::DebugPrintF("GameObject OnDisabled. (not implemented)\n");
+#endif
 		}
 
 		void GameObject::OnDestroy()
 		{
-			for (size_t i = 0; i < m_components.size(); i++)
-			{
-				m_components[i]->VOnDestroy();
-			}
+#ifdef _DEBUG
+            Core::DebugPrintF("GameObject OnDestroy. (not implemented)\n");
+#endif
 		}
+
+        void GameObject::AddChild(GameObject *child)
+        {
+#ifdef _DEBUG
+            Core::DebugPrintF("GameObject AddChild. (not implemented)\n");
+#endif
+        }
+
+        GameObject* GameObject::GetChildAtIndex(std::size_t index)
+        {
+#ifdef _DEBUG
+            Core::DebugPrintF("GameObject GetChildAtIndex. (not implemented)\n");
+#endif
+            return nullptr;
+        }
+
+        void GameObject::RemoveChildAtIndex(std::size_t index)
+        {
+#ifdef _DEBUG
+            Core::DebugPrintF("GameObject RemoveChildAtIndex. (not implemented)\n");
+#endif
+        }
 	}
 }

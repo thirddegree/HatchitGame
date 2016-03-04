@@ -23,8 +23,6 @@ namespace Hatchit {
 
     namespace Game {
 
-        
-
         class HT_API SDLWindow : public IWindow
         {
         public:
@@ -49,11 +47,6 @@ namespace Hatchit {
         private:
             SDL_Window*         m_handle;
             SDL_GLContext       m_glcontext;
-            WindowParams        m_params;
-            void*               m_nativeWindowHandle;
-	        void* 		        m_nativeDisplayHandle;
-            bool                m_running;
-
         };
 
     }

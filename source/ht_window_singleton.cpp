@@ -14,7 +14,12 @@
 
 #include <ht_window_singleton.h>
 #include <ht_debug.h>
+
+#ifdef HT_SYS_LINUX
+#include <ht_xcbwindow.h>
+#else
 #include <ht_sdlwindow.h>
+#endif
 
 namespace Hatchit {
 
@@ -24,7 +29,11 @@ namespace Hatchit {
         {
             Window& _instance = Window::instance();
 
+#ifdef HT_SYS_LINUX
+            _instance.m_window = new XCBWindow(params);
+#else
             _instance.m_window = new SDLWindow(params);
+#endif
             if (!_instance.m_window->VInitialize())
             {
 #ifdef _DEBUG

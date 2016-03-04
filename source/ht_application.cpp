@@ -74,10 +74,15 @@ namespace Hatchit {
 
             /*Initialize Renderer with values from settings file*/
             RendererParams rparams;
+
+	    std::string renderer = m_settings->GetValue("RENDERER", "sRenderer", std::string("DIRECTX"));
+
 #ifdef HT_SYS_LINUX
-            rparams.renderer = RendererType::OPENGL;
+	    if(renderer == "OPENGL")
+            	rparams.renderer = RendererType::OPENGL;
+	    else if(renderer == "VULKAN")
+		rparams.renderer = RendererType::VULKAN;
 #else
-            std::string renderer = m_settings->GetValue("RENDERER", "sRenderer", std::string("DIRECTX"));
             if (renderer == "DIRECTX11")
                 rparams.renderer = RendererType::DIRECTX11;
             else if (renderer == "DIRECTX12")

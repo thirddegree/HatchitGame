@@ -54,7 +54,7 @@ namespace Hatchit {
 		private:
             static void UnloadScene();
 
-			static std::vector<Scene> scenes;
+			std::vector<Scene> scenes;
 			Scene* currentScene;
 		};
 	}

@@ -24,23 +24,23 @@ namespace Hatchit {
 
 		bool SceneManager::Initialize()
 		{
-			//Load list of scenes
-			std::vector<std::string> scenePaths = { "" };
-			
-			
-			
-			//Load text file for each scene
-			for (auto const path : scenePaths)
-			{
-				json data = json::parse("{}");
-				scenes.emplace_back(data);
-			}
+			////Load list of scenes
+			//std::vector<std::string> scenePaths = { "" };
+			//
+			//
+			//
+			////Load text file for each scene
+			//for (auto const path : scenePaths)
+			//{
+			//	json data = json::parse("{}");
+			//	scenes.emplace_back(data);
+			//}
 
-			//Load first scene
-			if (scenes.size == 0)
-				return false;
+			////Load first scene
+			//if (scenes.size() == 0)
+			//	return false;
 
-			scenes[0].Load();
+			//scenes[0].Load();
 
 			return true;
 		}
@@ -64,11 +64,13 @@ namespace Hatchit {
 		
 		void SceneManager::LoadScene(std::string sceneName)
 		{
+            SceneManager& _manager = SceneManager::instance();
+
 			UnloadScene();
 
 			SceneManager& _instance = SceneManager::instance();
 
-			for (auto const scene : scenes)
+			for (auto const scene : _manager.scenes)
 			{
 				if (_instance.currentScene->name == sceneName)
 				{

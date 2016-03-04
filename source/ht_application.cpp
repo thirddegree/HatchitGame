@@ -45,9 +45,9 @@ namespace Hatchit {
 
                 Window::PollEvents();
 
-				SceneManager::Update();
+				//SceneManager::Update();
 
-				SceneManager::Render();
+				//SceneManager::Render();
 
                 Renderer::ClearBuffer(ClearArgs::ColorDepthStencil);
 

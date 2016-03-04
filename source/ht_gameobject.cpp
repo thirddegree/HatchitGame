@@ -45,9 +45,7 @@ namespace Hatchit {
 
         void GameObject::SetEnabled(bool value)
         {
-#ifdef _DEBUG
-            Core::DebugPrintF("GameObject SetEnabled. (not implemented)\n");
-#endif
+            m_enabled = value;
         }
 
         GameObject* GameObject::GetParent(void)
@@ -84,9 +82,25 @@ namespace Hatchit {
 
 		void GameObject::OnDestroy(void)
 		{
-#ifdef _DEBUG
-            Core::DebugPrintF("GameObject OnDestroy. (not implemented)\n");
-#endif
+            Disable();
+
+            for (std::size_t i = 0; i < GameObject::MAX_COMPONENTS; ++i)
+            {
+                if (m_componentMask.test(i))
+                {
+                    Component *component = m_components[i];
+                    if (component->GetEnabled())
+                        component->SetEnabled(false);
+                    component->Destroy();
+                }
+            }
+
+            for (std::size_t i = 0; i < m_children.size(); ++i)
+            {
+                GameObject *child = m_children[i];
+                if (child)
+                    child->OnDestroy();
+            }
 		}
 
         GameObject* GameObject::GetChildAtIndex(std::size_t index)

@@ -187,7 +187,8 @@ namespace Hatchit {
                 return false;
 
             Component *component = m_components[component_id];
-            component->Disable();
+            if(component->GetEnabled())
+                component->Disable();
             component->Destroy();
 
             m_componentMask.reset(component_id);

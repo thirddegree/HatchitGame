@@ -37,7 +37,9 @@ namespace Hatchit {
 
             static void  SwapBuffers();
             
-            static void* NativeHandle();
+            static void* NativeWindowHandle();
+
+            static void* NativeDisplayHandle();
 
         private:
             IWindow* m_window;

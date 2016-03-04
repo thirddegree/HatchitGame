@@ -78,10 +78,10 @@ namespace Hatchit {
 	    std::string renderer = m_settings->GetValue("RENDERER", "sRenderer", std::string("DIRECTX"));
 
 #ifdef HT_SYS_LINUX
-	    if(renderer == "OPENGL")
+	        if(renderer == "OPENGL")
             	rparams.renderer = RendererType::OPENGL;
-	    else if(renderer == "VULKAN")
-		rparams.renderer = RendererType::VULKAN;
+	        else if(renderer == "VULKAN")
+		        rparams.renderer = RendererType::VULKAN;
 #else
             if (renderer == "DIRECTX11")
                 rparams.renderer = RendererType::DIRECTX11;
@@ -98,7 +98,8 @@ namespace Hatchit {
                 return false;
 
 
-            rparams.window = Window::NativeHandle();
+            rparams.window = Window::NativeWindowHandle();
+            rparams.display = Window::NativeDisplayHandle();
             rparams.clearColor = Color( m_settings->GetValue("RENDERER", "fClearR", 0.0f),
                                         m_settings->GetValue("RENDERER", "fClearG", 0.0f),
                                         m_settings->GetValue("RENDERER", "fClearB", 0.0f),

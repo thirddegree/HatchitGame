@@ -31,12 +31,13 @@ namespace Hatchit {
 		public:
             static constexpr std::uint32_t MAX_COMPONENTS{50};
 
-            GameObject(void);
-            ~GameObject(void);
             GameObject(const GameObject& rhs) = default;
             GameObject(GameObject&& rhs) = default;
             GameObject& operator=(const GameObject& rhs) = default;
             GameObject& operator=(GameObject&& rhs) = default;
+
+            GameObject(void);
+            ~GameObject(void);
 
             bool GetEnabled(void) const;
             void SetEnabled(bool value);
@@ -54,14 +55,27 @@ namespace Hatchit {
             GameObject* GetParent(void);
             void SetParent(GameObject *parent);
 
-            void Init(void);
+            GameObject* GetChildAtIndex(std::size_t index);
+
+            void AddChild(GameObject *child);
+
+            void RemoveChildAtIndex(std::size_t index);
+
+            /**
+            * Called when the gameobject is created to initialize all values
+            */
+            void OnInit(void);
 
 			/** Called once per frame while the gameobject is enabled
 			* Updates all components first, then all child gameobjects
 			*/
 			void Update(void);
 
-            void Destroy(void);
+            /** Called when the gameobject is destroyed/deleted.
+            * Objects are always disabled before destroyed.
+            * When a scene is destroyed, all gameobjects are disabled before any are destroyed.
+            */
+            void OnDestroy(void);
 
             template <typename T>
             bool AddComponent(T *component);
@@ -102,35 +116,7 @@ namespace Hatchit {
                 return std::make_tuple(DisableComponent<Args>()...);
             }
 
-            void AddChild(GameObject *child);
-
-            GameObject* GetChildAtIndex(std::size_t index);
-
-            void RemoveChildAtIndex(std::size_t index);
-
 		private:
-            /**
-            * Called when the gameobject is created to initialize all values
-            */
-            void OnInit(void);
-
-            /** Called when the gameobject is enabled
-            *   This happens when a scene has finished loading, or immediately after creation if the scene is already loaded.
-            */
-            void OnEnabled(void);
-
-            /** Called when the gameobject is disabled
-            * Objects are always disabled before destroyed.
-            * When a scene is destroyed, all gameobjects are disabled before any are destroyed.
-            */
-            void OnDisabled(void);
-
-            /** Called when the gameobject is destroyed/deleted.
-            * Objects are always disabled before destroyed.
-            * When a scene is destroyed, all gameobjects are disabled before any are destroyed.
-            */
-            void OnDestroy(void);
-
             bool m_enabled;
             GameObject *m_parent;
             std::vector<GameObject*> m_children;

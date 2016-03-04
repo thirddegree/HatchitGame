@@ -31,8 +31,21 @@ namespace Hatchit {
 			void Update();
 			void Render();
 
+			/**
+			 * Loads in assets and constructs GameObjects.
+			 */
+			void Load();
+
+			/**
+			 * Creates GameObject and adds it to internal list.
+			 */
+			GameObject* CreateGameObject();
+
+			std::string name;
+
 		private:
 			std::vector<GameObject> gameObjects;
+
 		};
 	}
 }

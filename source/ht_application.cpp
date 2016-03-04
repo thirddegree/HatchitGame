@@ -17,6 +17,7 @@
 #include <ht_window_singleton.h>
 #include <ht_renderer_singleton.h>
 #include <ht_time_singleton.h>
+#include <ht_scenemanager.h>;
 
 namespace Hatchit {
 
@@ -43,6 +44,10 @@ namespace Hatchit {
                 Time::Tick();
 
                 Window::PollEvents();
+
+				SceneManager::Update();
+
+				SceneManager::Render();
 
                 Renderer::ClearBuffer(ClearArgs::ColorDepthStencil);
 
@@ -82,10 +87,10 @@ namespace Hatchit {
                 rparams.renderer = RendererType::DIRECTX11;
             else if (renderer == "DIRECTX12")
                 rparams.renderer = RendererType::DIRECTX12;
-			else if (renderer == "VULKAN")
-				rparams.renderer = RendererType::VULKAN;
-			else if (renderer == "OPENGL")
-				rparams.renderer = RendererType::OPENGL;
+            else if (renderer == "VULKAN")
+                rparams.renderer = RendererType::VULKAN;
+            else if (renderer == "OPENGL")
+                rparams.renderer = RendererType::OPENGL;
 #endif
             wparams.renderer = rparams.renderer;
 
@@ -101,11 +106,15 @@ namespace Hatchit {
             if (!Renderer::Initialize(rparams))
                 return false;
 
+			if (!SceneManager::Initialize())
+				return false;
+
             return true;
         }
 
         void Application::DeInitialize()
         {
+			SceneManager::Deinitialize();
             Renderer::DeInitialize();
             Window::DeInitialize();
         }

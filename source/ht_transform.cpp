@@ -84,6 +84,8 @@ namespace Hatchit {
         void Transform::AddChild(Transform* transform)
         {
             m_childTransforms.push_back(transform);
+			if (transform->m_parent)
+				transform->m_parent->RemoveChild(transform);
             transform->m_parent = this;
             transform->SetDirty();
         }
@@ -271,27 +273,7 @@ namespace Hatchit {
         Math::Matrix4* Transform::GetWorldMatrix()
         {
 
-            if (m_worldDirty) {
-                m_worldDirty = false;
-                if (m_parent)
-                    m_world = (*GetLocalMatrix()) * (*m_parent->GetWorldMatrix());
-                else
-                    m_world = *GetLocalMatrix();
-
-
-                m_worldPosition = m_world * Math::Vector4(0, 0, 0, 1);
-
-                //recalculate basis vectors (right, forward, up)
-                m_forward = m_world * Math::Vector4(0, 0, 1, 1);
-                m_forward = Math::MMVector3Normalize(m_forward);
-
-                m_up = m_world * Math::Vector4(0, 1, 0, 1);
-                m_up = Math::MMVector3Normalize(m_up);
-
-                m_right = Math::MMVector3Cross(m_up, m_forward);
-
-
-            }
+			UpdateWorldMatrix();
 
             return &m_world;
         }
@@ -307,6 +289,31 @@ namespace Hatchit {
 
             return &m_local;
         }
+
+		void Transform::UpdateWorldMatrix()
+		{
+			if (m_worldDirty) {
+				m_worldDirty = false;
+				if (m_parent)
+					m_world = (*GetLocalMatrix()) * (*m_parent->GetWorldMatrix());
+				else
+					m_world = *GetLocalMatrix();
+
+
+				m_worldPosition = m_world * Math::Vector4(0, 0, 0, 0);
+
+				//recalculate basis vectors (right, forward, up)
+				m_forward = m_world * Math::Vector4(0, 0, 1, 0);
+				m_forward = Math::MMVector3Normalize(m_forward);
+
+				m_up = m_world * Math::Vector4(0, 1, 0, 0);
+				m_up = Math::MMVector3Normalize(m_up);
+
+				m_right = Math::MMVector3Cross(m_up, m_forward);
+
+
+			}
+		}
 
         void Transform::DebugPrint()
         {

@@ -17,6 +17,8 @@
 #include <ht_platform.h>
 #include <ht_singleton.h>
 #include <ht_scene.h>
+#include <ht_file.h>
+#include <json.hpp>
 #include <vector>
 
 namespace Hatchit {
@@ -26,13 +28,34 @@ namespace Hatchit {
 		class HT_API SceneManager : public Core::Singleton<SceneManager>
 		{
 		public:
+
+			/**
+			 * Loads data for scenes, then loads the first scene.
+			 */
 			static bool Initialize();
+
 			static void Deinitialize();
 			static void Update();
 			static void Render();
 
+			/**
+			 * Unloads the current scene and loads in the specified scene.
+			 * If the scene does not exist in the list of scenes, an error is thrown.
+			 */
+            static void LoadScene(std::string sceneName);
+			
+			/**
+			 * Begins loading the specified scene while the current scene continues to run.
+			 * When the scene is finished loading, unloads the current scene.
+			 * If the scene does not exist in the list of scenes, an error is thrown.
+			 */
+			static void LoadSceneAsync(std::string sceneName);
+
 		private:
+            static void UnloadScene();
+
 			static std::vector<Scene> scenes;
+			Scene* currentScene;
 		};
 	}
 }

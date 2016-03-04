@@ -14,13 +14,15 @@
 
 #pragma once
 
+#include <ht_platform.h>
 #include <ht_math.h>
 #include <vector>
 
 namespace Hatchit {
 
     namespace Game {
-        class Transform
+
+        class HT_API Transform
         {
         public:
             Transform();
@@ -32,6 +34,8 @@ namespace Hatchit {
 
             Math::Matrix4* GetWorldMatrix();
             Math::Matrix4* GetLocalMatrix();
+
+			void UpdateWorldMatrix();
 
             void SetDirty();
 

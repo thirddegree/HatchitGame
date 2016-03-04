@@ -19,10 +19,30 @@ namespace Hatchit {
 
 	namespace Game {
 
+		using namespace Core;
+		using json = nlohmann::json;
+
 		bool SceneManager::Initialize()
 		{
-			Core::DebugPrintF("Scene Manager Initialized (not implemented)\n");
-			return false;
+			//Load list of scenes
+			std::vector<std::string> scenePaths = { "" };
+			
+			
+			
+			//Load text file for each scene
+			for (auto const path : scenePaths)
+			{
+				json data = json::parse("{}");
+				scenes.emplace_back(data);
+			}
+
+			//Load first scene
+			if (scenes.size == 0)
+				return false;
+
+			scenes[0].Load();
+
+			return true;
 		}
 
 		void SceneManager::Deinitialize()
@@ -32,12 +52,42 @@ namespace Hatchit {
 
 		void SceneManager::Update()
 		{
-			Core::DebugPrintF("Scene Manager Update (not implemented)\n");
+			SceneManager& _instance = SceneManager::instance();
+			_instance.currentScene->Update();
 		}
 
 		void SceneManager::Render()
 		{
-			Core::DebugPrintF("Scene Manager Render (not implemented)\n");
+			SceneManager& _instance = SceneManager::instance();
+			_instance.currentScene->Render();
+		}
+		
+		void SceneManager::LoadScene(std::string sceneName)
+		{
+			UnloadScene();
+
+			SceneManager& _instance = SceneManager::instance();
+
+			for (auto const scene : scenes)
+			{
+				if (_instance.currentScene->name == sceneName)
+				{
+					_instance.currentScene = (Scene*) &scene;
+					break;
+				}
+			}
+
+			_instance.currentScene->Load();
+		}
+
+		void SceneManager::LoadSceneAsync(std::string sceneName)
+		{
+			Core::DebugPrintF("Scene Manager LoadSceneAsync (not implemented)\n");
+		}
+		
+		void SceneManager::UnloadScene()
+		{
+			Core::DebugPrintF("Scene Manager UnloadScene (not implemented)\n");
 		}
 	}
 }

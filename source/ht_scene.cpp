@@ -21,7 +21,7 @@ namespace Hatchit {
 
 	namespace Game {
 
-	    Scene::Scene()
+		Scene::Scene()
 		{
 
 		}
@@ -43,8 +43,20 @@ namespace Hatchit {
 		{
 			for (size_t i = 0; i < gameObjects.size(); i++)
 			{
-				gameObjects[i].Update();
+				gameObjects[i].GetTransform()->UpdateWorldMatrix();
 			}
 		}
+
+		void Scene::Load()
+		{
+
+		}
+
+		GameObject* Scene::CreateGameObject()
+		{
+			gameObjects.emplace_back();
+			return (GameObject*) &gameObjects.back();
+		}
+
 	}
 }

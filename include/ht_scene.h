@@ -18,6 +18,10 @@
 #include <ht_gameobject.h>
 #include <vector>
 
+#ifdef HT_SYS_LINUX
+	#include <cstdlib>
+#endif
+
 namespace Hatchit {
 
 	namespace Game {

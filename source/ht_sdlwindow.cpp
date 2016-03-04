@@ -24,7 +24,8 @@ namespace Hatchit {
         {
             m_params = params;
             m_handle = nullptr;
-            m_nativeHandle = nullptr;
+            m_nativeWindowHandle = nullptr;
+            m_nativeDisplayHandle = nullptr;
         }
 
         SDLWindow::~SDLWindow()
@@ -60,7 +61,18 @@ namespace Hatchit {
             SDL_SysWMinfo info;
             SDL_VERSION(&info.version);
             if (SDL_GetWindowWMInfo(m_handle, &info))
-                m_nativeHandle = info.info.win.window;
+	        {
+                m_nativeWindowHandle = info.info.win.window;
+		        m_nativeDisplayHandle = nullptr;
+	        }
+#elif defined(HT_SYS_LINUX)
+	        SDL_SysWMinfo info;
+	        SDL_VERSION(&info.version);
+	        if (SDL_GetWindowWMInfo(m_handle, &info))
+	        {
+		        m_nativeWindowHandle = (void*)info.info.x11.window;
+	    	    m_nativeDisplayHandle = info.info.x11.display;
+	        }
 #endif
             if (m_params.renderer == Graphics::RendererType::OPENGL)
             {
@@ -167,10 +179,15 @@ namespace Hatchit {
                 SDL_SetWindowTitle(m_handle, (m_params.title + " FPS: " + std::to_string((int)Time::FramesPerSecond())).c_str());
         }
 
-        void* SDLWindow::VNativeHandle()
+        void* SDLWindow::VNativeWindowHandle()
         {
-            return m_nativeHandle;
+            return m_nativeWindowHandle;
         }
+	    void* SDLWindow::VNativeDisplayHandle()
+	    {
+	        return m_nativeDisplayHandle;
+	    }
+
 
         bool SDLWindow::VIsRunning()
         {

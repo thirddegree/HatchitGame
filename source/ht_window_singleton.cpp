@@ -71,11 +71,18 @@ namespace Hatchit {
             _instance.m_window->VSwapBuffers();
         }
 
-        void* Window::NativeHandle()
+        void* Window::NativeWindowHandle()
         {
             Window& _instance = Window::instance();
 
-            return _instance.m_window->VNativeHandle();
+            return _instance.m_window->VNativeWindowHandle();
+        }
+
+        void* Window::NativeDisplayHandle()
+        {
+            Window& _instance = Window::instance();
+
+            return _instance.m_window->VNativeDisplayHandle();
         }
     }
 

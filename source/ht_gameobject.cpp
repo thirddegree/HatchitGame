@@ -68,9 +68,16 @@ namespace Hatchit {
                 {
                     Component *component = m_components[i];
                     if(component->GetEnabled())
-                        component->Update();
+                        component->VOnUpdate();
                 }
             }
+
+			for (std::size_t i = 0; i < m_children.size(); ++i)
+			{
+				GameObject *child = m_children[i];
+				if (child->GetEnabled())
+					child->Update();
+			}
         }
 
 		void GameObject::OnInit(void)
@@ -91,7 +98,7 @@ namespace Hatchit {
                     Component *component = m_components[i];
                     if (component->GetEnabled())
                         component->SetEnabled(false);
-                    component->Destroy();
+                    component->VOnDestroy();
                 }
             }
 

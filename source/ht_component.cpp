@@ -43,26 +43,5 @@ namespace Hatchit {
 
             m_enabled = value;
         }
-
-        void Component::Init(void)
-        {
-#ifdef _DEBUG
-            Core::DebugPrintF("Component Initialized. (not implemented)\n");
-#endif
-        }
-
-        void Component::Update(void)
-        {
-#ifdef _DEBUG
-            Core::DebugPrintF("Component Updated. (not implemented)\n");
-#endif
-        }
-
-        void Component::Destroy(void)
-        {
-#ifdef _DEBUG
-            Core::DebugPrintF("Component Destroyed. (not implemented)\n");
-#endif
-        }
     }
 }

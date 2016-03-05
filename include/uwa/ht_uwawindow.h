@@ -24,9 +24,18 @@ namespace Hatchit
         class HT_API UWAWindow : public IWindow
         {
         public:
-            UWAWindow();
+            UWAWindow(const WindowParams& params);
 
         private:
+
+            // Inherited via IWindow
+            virtual bool VInitialize() override;
+            virtual void * VNativeWindowHandle() override;
+            virtual void * VNativeDisplayHandle() override;
+            virtual bool VIsRunning() override;
+            virtual void VPollEvents() override;
+            virtual void VClose() override;
+            virtual void VSwapBuffers() override;
         };
     }
 }

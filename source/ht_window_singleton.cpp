@@ -21,7 +21,7 @@
     #ifdef HT_WIN32_DESKTOP_APP
     #include <ht_sdlwindow.h>
     #elif defined(HT_WIN32_UNIVERSAL_APP)
-
+    #include <ht_uwawindow.h>
     #endif
 #endif
 

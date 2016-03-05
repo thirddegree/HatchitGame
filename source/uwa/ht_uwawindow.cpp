@@ -18,6 +18,34 @@ namespace Hatchit
 {
     namespace Game
     {
+        UWAWindow::UWAWindow(const WindowParams& params)
+        {
 
+        }
+        bool UWAWindow::VInitialize()
+        {
+            return false;
+        }
+        void * UWAWindow::VNativeWindowHandle()
+        {
+            return nullptr;
+        }
+        void * UWAWindow::VNativeDisplayHandle()
+        {
+            return nullptr;
+        }
+        bool UWAWindow::VIsRunning()
+        {
+            return false;
+        }
+        void UWAWindow::VPollEvents()
+        {
+        }
+        void UWAWindow::VClose()
+        {
+        }
+        void UWAWindow::VSwapBuffers()
+        {
+        }
     }
 }

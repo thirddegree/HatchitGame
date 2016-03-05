@@ -104,6 +104,8 @@ namespace Hatchit {
 
 
             rparams.window = Window::NativeWindowHandle();
+            rparams.viewportWidth = wparams.width;
+            rparams.viewportHeight = wparams.height;
             rparams.display = Window::NativeDisplayHandle();
             rparams.clearColor = Color( m_settings->GetValue("RENDERER", "fClearR", 0.0f),
                                         m_settings->GetValue("RENDERER", "fClearG", 0.0f),

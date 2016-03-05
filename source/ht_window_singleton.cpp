@@ -18,7 +18,11 @@
 #ifdef HT_SYS_LINUX
 #include <ht_xcbwindow.h>
 #else
-#include <ht_sdlwindow.h>
+    #ifdef HT_WIN32_DESKTOP_APP
+    #include <ht_sdlwindow.h>
+    #elif defined(HT_WIN32_UNIVERSAL_APP)
+
+    #endif
 #endif
 
 namespace Hatchit {
@@ -32,7 +36,11 @@ namespace Hatchit {
 #ifdef HT_SYS_LINUX
             _instance.m_window = new XCBWindow(params);
 #else
+    #ifdef HT_WIN32_DESKTOP_APP
             _instance.m_window = new SDLWindow(params);
+    #elif defined(HT_WIN32_UNIVERSAL_APP)
+            _instance.m_window = new UWAWindow(params);
+    #endif
 #endif
             if (!_instance.m_window->VInitialize())
             {

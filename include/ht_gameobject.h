@@ -32,6 +32,11 @@
 
 #include <ht_platform.h>
 #include <ht_component.h>
+#include <ht_transform.h>
+
+#ifdef HT_SYS_LINUX
+	#include <cstdlib>
+#endif
 
 namespace Hatchit {
 
@@ -60,6 +65,8 @@ namespace Hatchit {
 			* Responsible for deleting all currently attached components.
 			*/
             ~GameObject(void);
+
+			Transform* GetTransform();
 
 			/**
 			* \brief Indicates whether or not this GameObject is enabled.
@@ -259,6 +266,7 @@ namespace Hatchit {
             std::vector<GameObject*> m_children; /**< All the GameObjects which are children of this GameObject. */
             std::bitset<MAX_COMPONENTS> m_componentMask; /**< Bitmask indicating which Components are attached. */
             std::vector<Component*> m_components; /**< std::vector of all attached Components. */
+            Transform m_transform;
 		};
 
         template <typename T>

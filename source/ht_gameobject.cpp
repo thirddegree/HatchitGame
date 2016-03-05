@@ -38,6 +38,11 @@ namespace Hatchit {
             }
         }
 
+		Transform* GameObject::GetTransform()
+		{
+			return (Transform*)&m_transform;
+		}
+
         bool GameObject::GetEnabled(void) const
         {
             return m_enabled;

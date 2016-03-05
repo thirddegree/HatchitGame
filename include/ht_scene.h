@@ -18,6 +18,10 @@
 #include <ht_gameobject.h>
 #include <vector>
 
+#ifdef HT_SYS_LINUX
+	#include <cstdlib>
+#endif
+
 namespace Hatchit {
 
 	namespace Game {
@@ -31,8 +35,21 @@ namespace Hatchit {
 			void Update();
 			void Render();
 
+			/**
+			 * Loads in assets and constructs GameObjects.
+			 */
+			void Load();
+
+			/**
+			 * Creates GameObject and adds it to internal list.
+			 */
+			GameObject* CreateGameObject();
+
+			std::string name;
+
 		private:
 			std::vector<GameObject> gameObjects;
+
 		};
 	}
 }

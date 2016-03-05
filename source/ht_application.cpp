@@ -17,6 +17,7 @@
 #include <ht_window_singleton.h>
 #include <ht_renderer_singleton.h>
 #include <ht_time_singleton.h>
+#include <ht_scenemanager.h>
 
 namespace Hatchit {
 
@@ -43,6 +44,10 @@ namespace Hatchit {
                 Time::Tick();
 
                 Window::PollEvents();
+
+				//SceneManager::Update();
+
+				//SceneManager::Render();
 
                 Renderer::ClearBuffer(ClearArgs::ColorDepthStencil);
 
@@ -74,10 +79,15 @@ namespace Hatchit {
 
             /*Initialize Renderer with values from settings file*/
             RendererParams rparams;
+
+	    std::string renderer = m_settings->GetValue("RENDERER", "sRenderer", std::string("DIRECTX"));
+
 #ifdef HT_SYS_LINUX
-            rparams.renderer = RendererType::OPENGL;
+	        if(renderer == "OPENGL")
+            	rparams.renderer = RendererType::OPENGL;
+	        else if(renderer == "VULKAN")
+		        rparams.renderer = RendererType::VULKAN;
 #else
-            std::string renderer = m_settings->GetValue("RENDERER", "sRenderer", std::string("DIRECTX"));
             if (renderer == "DIRECTX11")
                 rparams.renderer = RendererType::DIRECTX11;
             else if (renderer == "DIRECTX12")
@@ -93,7 +103,8 @@ namespace Hatchit {
                 return false;
 
 
-            rparams.window = Window::NativeHandle();
+            rparams.window = Window::NativeWindowHandle();
+            rparams.display = Window::NativeDisplayHandle();
             rparams.clearColor = Color( m_settings->GetValue("RENDERER", "fClearR", 0.0f),
                                         m_settings->GetValue("RENDERER", "fClearG", 0.0f),
                                         m_settings->GetValue("RENDERER", "fClearB", 0.0f),
@@ -101,11 +112,15 @@ namespace Hatchit {
             if (!Renderer::Initialize(rparams))
                 return false;
 
+			if (!SceneManager::Initialize())
+				return false;
+
             return true;
         }
 
         void Application::DeInitialize()
         {
+			SceneManager::Deinitialize();
             Renderer::DeInitialize();
             Window::DeInitialize();
         }

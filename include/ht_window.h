@@ -41,11 +41,18 @@ namespace Hatchit {
             virtual ~IWindow() { };
         
             virtual bool    VInitialize() = 0;
-            virtual void*   VNativeHandle() = 0;
+            virtual void*   VNativeWindowHandle() = 0;
+            virtual void*   VNativeDisplayHandle() = 0;
             virtual bool    VIsRunning() = 0;
             virtual void    VPollEvents() = 0;
             virtual void    VClose() = 0;
             virtual void    VSwapBuffers() = 0;
+
+        protected:
+            void*           m_nativeWindowHandle;
+            void*           m_nativeDisplayHandle;    
+            bool            m_running;
+            WindowParams    m_params;
         };
 
 

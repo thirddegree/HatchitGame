@@ -17,7 +17,7 @@
 
 namespace Hatchit {
 
-	namespace Game {
+    namespace Game {
         GameObject::GameObject(void)
         {
             m_enabled = false;
@@ -38,10 +38,10 @@ namespace Hatchit {
             }
         }
 
-		Transform* GameObject::GetTransform()
-		{
-			return (Transform*)&m_transform;
-		}
+        Transform* GameObject::GetTransform()
+        {
+            return (Transform*)&m_transform;
+        }
 
         bool GameObject::GetEnabled(void) const
         {
@@ -77,23 +77,23 @@ namespace Hatchit {
                 }
             }
 
-			for (std::size_t i = 0; i < m_children.size(); ++i)
-			{
-				GameObject *child = m_children[i];
-				if (child->GetEnabled())
-					child->Update();
-			}
+            for (std::size_t i = 0; i < m_children.size(); ++i)
+            {
+                GameObject *child = m_children[i];
+                if (child->GetEnabled())
+                    child->Update();
+            }
         }
 
-		void GameObject::OnInit(void)
-		{
+        void GameObject::OnInit(void)
+        {
 #ifdef _DEBUG
             Core::DebugPrintF("GameObject OnInit. (not implemented)\n");
 #endif
-		}
+        }
 
-		void GameObject::OnDestroy(void)
-		{
+        void GameObject::OnDestroy(void)
+        {
             Disable();
 
             for (std::size_t i = 0; i < GameObject::MAX_COMPONENTS; ++i)
@@ -113,7 +113,7 @@ namespace Hatchit {
                 if (child)
                     child->OnDestroy();
             }
-		}
+        }
 
         GameObject* GameObject::GetChildAtIndex(std::size_t index)
         {
@@ -136,5 +136,5 @@ namespace Hatchit {
             Core::DebugPrintF("GameObject RemoveChildAtIndex. (not implemented)\n");
 #endif
         }
-	}
+    }
 }

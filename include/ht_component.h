@@ -31,85 +31,85 @@
 
 namespace Hatchit {
 
-	namespace Game {
+    namespace Game {
 
-		class HT_API Component
-		{
-		public:
-			/**
-			* \brief Returns the unique id associated with a Component of type T.
-			* \tparam T	A sub-class of Component.
-			* \return A std::uint32_t which is this Component's unique ID.
-			*/
+        class HT_API Component
+        {
+        public:
+            /**
+            * \brief Returns the unique id associated with a Component of type T.
+            * \tparam T A sub-class of Component.
+            * \return A std::uint32_t which is this Component's unique ID.
+            */
             template <typename T>
             static std::uint32_t GetComponentId(void);
 
             static std::uint32_t s_componentIdCounter; /**< A static counter that is incremented once with each instantiation of GetComponentID(). */
 
-			virtual ~Component(void) = default;
+            virtual ~Component(void) = default;
 
-			/**
-			* \brief Getter that returns that value of m_enabled.
-			* \return true if this Component is enabled.
-			*/
+            /**
+            * \brief Getter that returns that value of m_enabled.
+            * \return true if this Component is enabled.
+            */
             bool GetEnabled(void) const;
 
-			/**
-			* \brief Setter that sets the value of m_enabled.
-			* \param value	The new value of m_enabled.
-			*/
-			void SetEnabled(bool value);
+            /**
+            * \brief Setter that sets the value of m_enabled.
+            * \param value  The new value of m_enabled.
+            */
+            void SetEnabled(bool value);
 
-			/**
-			* \brief inline for SetEnabled(true);
-			*/
+            /**
+            * \brief inline for SetEnabled(true);
+            */
             inline void Enable(void)
             {
                 SetEnabled(true);
             }
 
-			/**
-			* \brief inline for SetEnabled(false);
-			*/
+            /**
+            * \brief inline for SetEnabled(false);
+            */
             inline void Disable(void)
             {
                 SetEnabled(false);
             }
 
-			/**
-			* \brief Called when the GameObject is created to initialize all values
-			*/
-			virtual void VOnInit() = 0;
+            /**
+            * \brief Called when the GameObject is created to initialize all values
+            */
+            virtual void VOnInit() = 0;
 
-			/**
-			* \brief Called once per frame while the GameObject is enabled.
-			* Updates all components first, then all child gameobjects.
-			*/
-			virtual void VOnUpdate() = 0;
+            /**
+            * \brief Called once per frame while the GameObject is enabled.
+            * Updates all components first, then all child gameobjects.
+            */
+            virtual void VOnUpdate() = 0;
 
-			/**
-			* \brief Called when the GameObject is destroyed/deleted.
-			* Objects are always disabled before destroyed.
-			* When a scene is destroyed, all gameobjects are disabled before any are destroyed.
-			*/
-			virtual void VOnDestroy() = 0;
+            /**
+            * \brief Called when the GameObject is destroyed/deleted.
+            * Objects are always disabled before destroyed.
+            * When a scene is destroyed, all gameobjects are disabled before any are destroyed.
+            */
+            virtual void VOnDestroy() = 0;
 
         protected:
             /**
-			* \brief Called when the Component is enabled.
-			* This happens when a scene has finished loading, or immediately after creation if the scene is already loaded.
-			*/
+            * \brief Called when the Component is enabled.
+            * This happens when a scene has finished loading, or immediately after creation if the scene is already loaded.
+            */
             virtual void VOnEnabled() = 0;
 
             /**
-			* \brief Called when the Component is disabled.
-			* Components are always disabled before destroyed.
-			* When a scene is destroyed, all Components are disabled before any are destroyed.
-			*/
-			virtual void VOnDisabled() = 0;
+            * \brief Called when the Component is disabled.
+            * Components are always disabled before destroyed.
+            * When a scene is destroyed, all Components are disabled before any are destroyed.
+            */
+            virtual void VOnDisabled() = 0;
 
             bool m_enabled{false}; /**< bool indicating if this Component is enabled. */
-		};
+        };
 
         template <typename T>
         static std::uint32_t Component::GetComponentId(void)

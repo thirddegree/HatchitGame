@@ -71,7 +71,7 @@ namespace Hatchit {
             {
 
 #ifdef DX12_SUPPORT
-                _instance.m_renderer = new DirectX::D3D12Renderer;
+                _instance.m_renderer = new DX::D3D12Renderer;
 #else
                 Core::DebugPrintF("DirectX12 Renderer requested when engine not compiled with DirectX12 support!\n");
                 return false;

@@ -26,6 +26,11 @@ namespace Hatchit {
 
 		}
 
+		Scene::Scene(nlohmann::json data)
+		{
+			sceneDescription = data;
+		}
+
 		Scene::~Scene()
 		{
 
@@ -49,7 +54,7 @@ namespace Hatchit {
 
 		void Scene::Load()
 		{
-
+			
 		}
 
 		GameObject* Scene::CreateGameObject()

@@ -16,6 +16,7 @@
 
 #include <ht_platform.h>
 #include <ht_gameobject.h>
+#include <json.hpp>
 #include <vector>
 
 #ifdef HT_SYS_LINUX
@@ -30,6 +31,7 @@ namespace Hatchit {
 		{
 		public:
 			Scene();
+			Scene(nlohmann::json data);
 			~Scene();
 
 			void Update();
@@ -49,6 +51,7 @@ namespace Hatchit {
 
 		private:
 			std::vector<GameObject> gameObjects;
+			nlohmann::json sceneDescription;
 
 		};
 	}

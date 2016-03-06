@@ -1,0 +1,27 @@
+{
+    "Name": "SCENE NAME",
+    "GUID": "{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}",
+    "GUIDs": [
+        "{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}",
+        "{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}"
+    ],
+    "GameObjects": [
+        {
+            "Name": "...",
+            "GUID": "{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}",
+            "Children": [
+                "{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}"
+            ],
+            "Components": [
+                {
+                    "Name": "ClassName"
+                }
+            ],
+            "Transform": {
+                "Position": [0, 0, 0],
+                "Rotation": [0, 0, 0],
+                "Scale": [1, 1, 1]
+            }
+        }
+    ]
+}

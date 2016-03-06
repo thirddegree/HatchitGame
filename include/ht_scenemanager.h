@@ -53,6 +53,7 @@ namespace Hatchit {
 
 		private:
             static void UnloadScene();
+			static nlohmann::json LoadJSON(std::string filePath);
 
 			std::vector<Scene> scenes;
 			Scene* currentScene;

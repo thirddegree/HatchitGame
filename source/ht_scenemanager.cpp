@@ -24,23 +24,26 @@ namespace Hatchit {
 
 		bool SceneManager::Initialize()
 		{
-			////Load list of scenes
-			//std::vector<std::string> scenePaths = { "" };
-			//
-			//
-			//
-			////Load text file for each scene
-			//for (auto const path : scenePaths)
-			//{
-			//	json data = json::parse("{}");
-			//	scenes.emplace_back(data);
-			//}
+			SceneManager& _instance = SceneManager::instance();
+			std::string path = "C:\\Users\\MagicUser\\Desktop\\Hatchit\\HatchitGame\\";
+			//load list of scenes
+			json scenePaths = LoadJSON(path + "scenelist.json");			
 
-			////Load first scene
-			//if (scenes.size() == 0)
-			//	return false;
+			//Load json for each scene
+			for (std::string const sceneFile : scenePaths["scenes"])
+			{
+				json data = LoadJSON(path + sceneFile);
+				_instance.scenes.emplace_back(data);
+			}
 
-			//scenes[0].Load();
+
+			//Load first scene
+			if (_instance.scenes.size() == 0)
+				return false;
+
+			_instance.scenes[0].Load();
+
+			Core::DebugPrintF("SceneManager loaded scenes successfully.");
 
 			return true;
 		}
@@ -90,6 +93,36 @@ namespace Hatchit {
 		void SceneManager::UnloadScene()
 		{
 			Core::DebugPrintF("Scene Manager UnloadScene (not implemented)\n");
+		}
+
+		json SceneManager::LoadJSON(std::string filepath)
+		{
+			Core::File file;
+			try {
+				file.Open(filepath, FileMode::ReadText);
+			}
+			catch (FileException e) {
+				Core::DebugPrintF("Scene file not found.");
+				return true;
+			}
+
+			//get size of file
+			size_t size = file.SizeBytes();
+			if (size == -1)
+			{
+				Core::DebugPrintF("Scene file is corrupted.");
+				return true;
+			}
+			BYTE* byteArray = (BYTE*)malloc(size + 1);
+			memset(byteArray, '\0', size + 1);
+			file.Read(byteArray, size);
+			file.Close();
+
+			json data = json::parse((char*)byteArray);
+
+			free(byteArray);
+
+			return data;
 		}
 	}
 }

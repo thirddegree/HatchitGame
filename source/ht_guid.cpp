@@ -10,7 +10,7 @@ namespace Hatchit {
     namespace Game {
 
         /**
-         * \brief Defines a simple GUID helper.
+         * \brief Defines a simple Guid helper.
          */
         struct GuidHelper
         {
@@ -20,7 +20,7 @@ namespace Hatchit {
             std::uniform_int_distribution<uint32_t> m_distribution;
 
             /**
-             * \brief Creates a new GUID helper.
+             * \brief Creates a new Guid helper.
              */
             GuidHelper()
                 : m_distribution(0, 255)
@@ -47,9 +47,9 @@ namespace Hatchit {
         GuidHelper GuidHelper::s_Instance;
 
         /**
-         * \brief Creates a new GUID.
+         * \brief Creates a new Guid.
          */
-        GUID::GUID()
+        Guid::Guid()
         {
             for (int index = 0; index < 16; ++index)
             {
@@ -58,29 +58,29 @@ namespace Hatchit {
         }
 
         /**
-         * \brief Copies one GUID's information into this GUID.
+         * \brief Copies one Guid's information into this Guid.
          *
-         * \param other The other GUID.
+         * \param other The other Guid.
          */
-        GUID::GUID(const GUID& other)
+        Guid::Guid(const Guid& other)
         {
             *this = other;
         }
 
         /**
-         * \brief Moves one GUID's information into this GUID.
+         * \brief Moves one Guid's information into this Guid.
          *
-         * \param other The other GUID.
+         * \param other The other Guid.
          */
-        GUID::GUID(GUID&& other)
+        Guid::Guid(Guid&& other)
         {
             *this = other;
         }
 
         /**
-         * \brief Destroys this GUID.
+         * \brief Destroys this Guid.
          */
-        GUID::~GUID()
+        Guid::~Guid()
         {
             for (int index = 0; index < 16; ++index)
             {
@@ -89,11 +89,11 @@ namespace Hatchit {
         }
 
         /**
-         * \brief Hashes this GUID.
+         * \brief Hashes this Guid.
          *
-         * Provides a 64-bit unsigned integer hash representation of this GUID.
+         * Provides a 64-bit unsigned integer hash representation of this Guid.
          */
-        uint64_t GUID::Hash() const
+        uint64_t Guid::Hash() const
         {
             // This is adapted from the 64-bit version of the FNV-1a hashing algorithm
             // Source:  http://www.isthe.com/chongo/tech/comp/fnv/
@@ -119,12 +119,12 @@ namespace Hatchit {
         }
 
         /**
-         * \brief Gets the textual representation of this GUID.
+         * \brief Gets the textual representation of this Guid.
          *
-         * Returns the textual representation of this GUID, in the form
+         * Returns the textual representation of this Guid, in the form
          * of {xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}.
          */
-        std::string GUID::ToString() const
+        std::string Guid::ToString() const
         {
             std::ostringstream stream;
             stream << '{' << std::hex;
@@ -155,11 +155,11 @@ namespace Hatchit {
         }
 
         /**
-         * \brief Checks to see if this GUID is the same as another.
+         * \brief Checks to see if this Guid is the same as another.
          *
-         * \param other The other GUID.
+         * \param other The other Guid.
          */
-        bool GUID::operator==(const GUID& other) const
+        bool Guid::operator==(const Guid& other) const
         {
             for (int index = 0; index < 16; ++index)
             {
@@ -172,21 +172,21 @@ namespace Hatchit {
         }
 
         /**
-         * \brief Checks to see if this GUID is not the same as another.
+         * \brief Checks to see if this Guid is not the same as another.
          *
-         * \param other The other GUID.
+         * \param other The other Guid.
          */
-        bool GUID::operator!=(const GUID& other) const
+        bool Guid::operator!=(const Guid& other) const
         {
             return !(*this == other);
         }
 
         /**
-         * \brief Copies one GUID's information into this GUID.
+         * \brief Copies one Guid's information into this Guid.
          *
-         * \param other The other GUID.
+         * \param other The other Guid.
          */
-        GUID& GUID::operator=(const GUID& other)
+        Guid& Guid::operator=(const Guid& other)
         {
             for (int index = 0; index < 16; ++index)
             {
@@ -196,11 +196,11 @@ namespace Hatchit {
         }
 
         /**
-         * \brief Moves one GUID's information into this GUID.
+         * \brief Moves one Guid's information into this Guid.
          *
-         * \param other The other GUID.
+         * \param other The other Guid.
          */
-        GUID& GUID::operator=(GUID&& other)
+        Guid& Guid::operator=(Guid&& other)
         {
             for (int index = 0; index < 16; ++index)
             {

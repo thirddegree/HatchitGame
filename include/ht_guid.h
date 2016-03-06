@@ -23,82 +23,82 @@ namespace Hatchit {
     namespace Game {
 
         /**
-         * \class GUID
+         * \class Guid
          * \ingroup HatchitGame
          *
          * \brief Defines a simple globally-unique identifier.
          */
-        class HT_API GUID
+        class HT_API Guid
         {
             uint8_t m_uuid[16];
 
         public:
             /**
-             * \brief Creates a new GUID.
+             * \brief Creates a new Guid.
              */
-            GUID();
+            Guid();
 
             /**
-             * \brief Copies one GUID's information into this GUID.
+             * \brief Copies one Guid's information into this Guid.
              *
-             * \param other The other GUID.
+             * \param other The other Guid.
              */
-            GUID(const GUID& other);
+            Guid(const Guid& other);
 
             /**
-             * \brief Moves one GUID's information into this GUID.
+             * \brief Moves one Guid's information into this Guid.
              *
-             * \param other The other GUID.
+             * \param other The other Guid.
              */
-            GUID(GUID&& other);
+            Guid(Guid&& other);
 
             /**
-             * \brief Destroys this GUID.
+             * \brief Destroys this Guid.
              */
-            ~GUID();
+            ~Guid();
 
             /**
-             * \brief Hashes this GUID.
+             * \brief Hashes this Guid.
              *
-             * Provides a 64-bit unsigned integer hash representation of this GUID.
+             * Provides a 64-bit unsigned integer hash representation of this Guid.
              */
             uint64_t Hash() const;
 
             /**
-             * \brief Gets the textual representation of this GUID.
+             * \brief Gets the textual representation of this Guid.
              *
-             * Returns the textual representation of this GUID, in the form
+             * Returns the textual representation of this Guid, in the form
              * of {xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}.
              */
             std::string ToString() const;
 
             /**
-             * \brief Checks to see if this GUID is the same as another.
+             * \brief Checks to see if this Guid is the same as another.
              *
-             * \param other The other GUID.
+             * \param other The other Guid.
              */
-            bool operator==(const GUID& other) const;
+            bool operator==(const Guid& other) const;
 
             /**
-             * \brief Checks to see if this GUID is not the same as another.
+             * \brief Checks to see if this Guid is not the same as another.
              *
-             * \param other The other GUID.
+             * \param other The other Guid.
              */
-            bool operator!=(const GUID& other) const;
+            bool operator!=(const Guid& other) const;
 
             /**
-             * \brief Copies one GUID's information into this GUID.
+             * \brief Copies one Guid's information into this Guid.
              *
-             * \param other The other GUID.
+             * \param other The other Guid.
              */
-            GUID& operator=(const GUID& other);
+            Guid& operator=(const Guid& other);
 
             /**
-             * \brief Moves one GUID's information into this GUID.
+             * \brief Moves one Guid's information into this Guid.
              *
-             * \param other The other GUID.
+             * \param other The other Guid.
              */
-            GUID& operator=(GUID&& other);
+            Guid& operator=(Guid&& other);
         };
 
     }
@@ -107,14 +107,14 @@ namespace Hatchit {
 namespace std {
 
     /**
-     * \class hash<Hatchit::Game::GUID>
+     * \class hash<Hatchit::Game::Guid>
      * \ingroup std
      *
-     * \brief Defines a hash struct to allow Hatchit::Game::GUIDs to be used as keys in STL structures.
+     * \brief Defines a hash struct to allow Hatchit::Game::Guid's to be used as keys in STL structures.
      */
-    template<> struct hash<Hatchit::Game::GUID>
+    template<> struct hash<Hatchit::Game::Guid>
     {
-        inline size_t operator()(const Hatchit::Game::GUID& guid)
+        inline size_t operator()(const Hatchit::Game::Guid& guid)
         {
             return guid.Hash();
         }

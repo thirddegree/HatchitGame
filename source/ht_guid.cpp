@@ -1,4 +1,4 @@
-#include <ht_guid.hpp>
+#include <ht_guid.h>
 #include <chrono>
 #include <random>
 #include <sstream>
@@ -38,17 +38,23 @@ namespace Hatchit {
             /**
              * \brief Generates a high-quality random byte.
              */
-            static uint8_t GenerateByte()
+            static inline uint8_t GenerateByte()
             {
-                return s_Instance.m_distribution(s_Instance.m_mersenneTwister);
+                return static_cast<uint8_t>(s_Instance.m_distribution(s_Instance.m_mersenneTwister));
             }
         };
+
+        GuidHelper GuidHelper::s_Instance;
 
         /**
          * \brief Creates a new GUID.
          */
         GUID::GUID()
         {
+            for (int index = 0; index < 16; ++index)
+            {
+                m_uuid[index] = GuidHelper::GenerateByte();
+            }
         }
 
         /**
@@ -58,6 +64,7 @@ namespace Hatchit {
          */
         GUID::GUID(const GUID& other)
         {
+            *this = other;
         }
 
         /**
@@ -67,6 +74,7 @@ namespace Hatchit {
          */
         GUID::GUID(GUID&& other)
         {
+            *this = other;
         }
 
         /**
@@ -74,6 +82,10 @@ namespace Hatchit {
          */
         GUID::~GUID()
         {
+            for (int index = 0; index < 16; ++index)
+            {
+                m_uuid[index] = 0;
+            }
         }
 
         /**
@@ -114,6 +126,32 @@ namespace Hatchit {
          */
         std::string GUID::ToString() const
         {
+            std::ostringstream stream;
+            stream << '{' << std::hex;
+
+            for (int index = 0; index < 16; ++index)
+            {
+                // TODO - Get std::setfill and std::setw to work ... eventually
+                if (m_uuid[index] < 16)
+                {
+                    stream << '0';
+                }
+
+                stream << static_cast<int>(m_uuid[index]);
+
+                switch (index)
+                {
+                    case 3:
+                    case 5:
+                    case 7:
+                    case 9:
+                        stream << '-';
+                        break;
+                }
+            }
+
+            stream << '}';
+            return stream.str();
         }
 
         /**
@@ -123,6 +161,14 @@ namespace Hatchit {
          */
         bool GUID::operator==(const GUID& other) const
         {
+            for (int index = 0; index < 16; ++index)
+            {
+                if (m_uuid[index] != other.m_uuid[index])
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         /**
@@ -132,6 +178,7 @@ namespace Hatchit {
          */
         bool GUID::operator!=(const GUID& other) const
         {
+            return !(*this == other);
         }
 
         /**
@@ -141,6 +188,11 @@ namespace Hatchit {
          */
         GUID& GUID::operator=(const GUID& other)
         {
+            for (int index = 0; index < 16; ++index)
+            {
+                m_uuid[index] = other.m_uuid[index];
+            }
+            return *this;
         }
 
         /**
@@ -150,6 +202,12 @@ namespace Hatchit {
          */
         GUID& GUID::operator=(GUID&& other)
         {
+            for (int index = 0; index < 16; ++index)
+            {
+                m_uuid[index] = other.m_uuid[index];
+                other.m_uuid[index] = 0;
+            }
+            return *this;
         }
 
     }

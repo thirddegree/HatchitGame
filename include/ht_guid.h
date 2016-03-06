@@ -14,10 +14,9 @@
 
 #pragma once
 
+#include <ht_platform.h>
 #include <stdint.h>
 #include <string>
-
-#define HT_API
 
 namespace Hatchit {
 

@@ -18,6 +18,7 @@
 #include <ht_gameobject.h>
 #include <json.hpp>
 #include <vector>
+#include <ht_debug.h>
 
 #ifdef HT_SYS_LINUX
 	#include <cstdlib>
@@ -50,6 +51,8 @@ namespace Hatchit {
 			std::string name;
 
 		private:
+			GameObject* CreateGameObject(uint8_t uuid[]);
+
 			std::vector<GameObject> gameObjects;
 			nlohmann::json sceneDescription;
 

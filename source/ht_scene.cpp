@@ -20,15 +20,16 @@
 namespace Hatchit {
 
 	namespace Game {
-
+		using json = nlohmann::json;
 		Scene::Scene()
 		{
 
 		}
 
-		Scene::Scene(nlohmann::json data)
+		Scene::Scene(json data)
 		{
 			sceneDescription = data;
+			name = data["Name"].get<std::string>();
 		}
 
 		Scene::~Scene()
@@ -54,13 +55,27 @@ namespace Hatchit {
 
 		void Scene::Load()
 		{
-			
+			for (json::iterator iter = sceneDescription["GameObjects"].begin(); iter != sceneDescription["GameObjects"].end(); ++iter)
+			{
+				json val = iter.value();
+				std::string guid = val["GUID"];
+				GameObject* gameObject = CreateGameObject();
+				Transform* transform = gameObject->GetTransform();
+			}
+
+
 		}
 
 		GameObject* Scene::CreateGameObject()
 		{
 			gameObjects.emplace_back();
 			return (GameObject*) &gameObjects.back();
+		}
+
+		GameObject* Scene::CreateGameObject(uint8_t uuid[])
+		{
+			gameObjects.emplace_back(uuid);
+			return (GameObject*)&gameObjects.back();
 		}
 
 	}

@@ -33,6 +33,7 @@
 #include <ht_platform.h>
 #include <ht_component.h>
 #include <ht_transform.h>
+#include <ht_guid.h>
 
 #ifdef HT_SYS_LINUX
     #include <cstdlib>
@@ -58,6 +59,14 @@ namespace Hatchit {
             * Responsible for initializing the Component vector, Component bitmask, and child vector.
             */
             GameObject(void);
+
+			/**
+			* \brief The constructor for GameObject read from scene file.
+			*
+			* Responsible for initializing the Component vector, Component bitmask, and child vector.
+			* Sets the GameObject's guid to an existing value.
+			*/
+			GameObject::GameObject(uint8_t uuid[]);
 
             /**
             * \brief The destructor for GameObject.
@@ -267,6 +276,7 @@ namespace Hatchit {
             std::bitset<MAX_COMPONENTS> m_componentMask; /**< Bitmask indicating which Components are attached. */
             std::vector<Component*> m_components; /**< std::vector of all attached Components. */
             Transform m_transform;
+			Guid guid;
         };
 
         template <typename T>

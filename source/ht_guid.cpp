@@ -72,10 +72,10 @@ namespace Hatchit {
          *
          * \param other The other Guid.
          */
-        Guid::Guid(Guid&& other)
-        {
-            *this = other;
-        }
+		Guid::Guid(Guid&& other)
+		{
+			*this = other;
+		}
 
         /**
          * \brief Destroys this Guid.
@@ -87,6 +87,19 @@ namespace Hatchit {
                 m_uuid[index] = 0;
             }
         }
+
+		/**
+		* \brief Copies raw guid information into this guid.
+		*
+		* \param uuid Guid array.
+		*/
+		void Guid::Set(uint8_t uuid[])
+		{
+			for (int index = 0; index < 16; ++index)
+			{
+				m_uuid[index] = uuid[index];
+			}
+		}
 
         /**
          * \brief Hashes this Guid.

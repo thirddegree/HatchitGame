@@ -88,19 +88,6 @@ namespace Hatchit {
             }
         }
 
-		/**
-		* \brief Copies raw guid information into this guid.
-		*
-		* \param uuid Guid array.
-		*/
-		void Guid::Set(uint8_t uuid[])
-		{
-			for (int index = 0; index < 16; ++index)
-			{
-				m_uuid[index] = uuid[index];
-			}
-		}
-
         /**
          * \brief Hashes this Guid.
          *

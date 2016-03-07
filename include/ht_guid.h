@@ -57,13 +57,6 @@ namespace Hatchit {
              */
             ~Guid();
 
-			/**
-			* \brief Copies raw guid information into this guid.
-			*
-			* \param uuid Guid array.
-			*/
-			void Guid::Set(uint8_t uuid[]);
-
             /**
              * \brief Hashes this Guid.
              *

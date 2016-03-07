@@ -119,6 +119,89 @@ namespace Hatchit {
         }
 
         /**
+         * \brief Maps a hexadecimal character to its decimal equivalent.
+         *
+         * \param hex The hexadecimal character.
+         * \param out The value to output to.
+         * \return True if the mapping was successful, false if not.
+         */
+        static __forceinline bool MapHexToDec(char hex, uint8_t& out)
+        {
+            if (hex >= '0' && hex <= '9') { out = hex - '0';      return true; }
+            if (hex >= 'a' && hex <= 'f') { out = hex - 'a' + 10; return true; }
+            if (hex >= 'A' && hex <= 'F') { out = hex - 'A' + 10; return true; }
+            return false;
+        }
+
+        /**
+         * \brief Parses a byte from text.
+         *
+         * \param text The text to parse from.
+         * \param position The position in the text to parse from.
+         * \param out The output byte.
+         * \return True if parsing was successful, false if not.
+         */
+        static inline bool ParseByte(const std::string& text, size_t position, uint8_t& out)
+        {
+            if (position + 1 < text.length())
+            {
+                // Map the first and second character to their respective characters
+                uint8_t first = 0, second = 0;
+                if (MapHexToDec(text[position], first) && MapHexToDec(text[position + 1], second))
+                {
+                    out = first * 16 + second;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /**
+         * \brief Attempts to parse a Guid from its textual representation.
+         *
+         * \param text The text to parse.
+         * \param out The Guid to fill with information.
+         * \return True if parsing was successful, false if not.
+         */
+        bool Guid::Parse(const std::string& text, Guid& out)
+        {
+            if (text.length() != 38)
+            {
+                return false;
+            }
+
+            if (text[0] != '{' && text[37] != '}')
+            {
+                return false;
+            }
+
+            // 01234567890123456789012345678901234567
+            // {xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}
+            size_t offs = 1;
+            for (size_t index = 0; index < 16; ++index)
+            {
+                size_t position = offs + index * 2;
+                switch (text[position])
+                {
+                    case '-':
+                        ++offs;
+                        --index;
+                        break;
+                    default:
+                        uint8_t byte = 0;
+                        if (!ParseByte(text, position, byte))
+                        {
+                            return false;
+                        }
+                        out.m_uuid[index] = byte;
+                        break;
+                }
+            }
+
+            return true;
+        }
+
+        /**
          * \brief Gets the textual representation of this Guid.
          *
          * Returns the textual representation of this Guid, in the form

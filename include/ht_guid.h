@@ -99,6 +99,16 @@ namespace Hatchit {
              * \param other The other Guid.
              */
             Guid& operator=(Guid&& other);
+
+        public:
+            /**
+            * \brief Attempts to parse a Guid from its textual representation.
+            *
+            * \param text The text to parse.
+            * \param out The Guid to fill with information.
+            * \return True if parsing was successful, false if not.
+            */
+            static bool Parse(const std::string& text, Guid& out);
         };
 
     }

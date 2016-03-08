@@ -31,6 +31,8 @@
 #include <ht_vkrenderer.h>
 #endif
 
+#include <ht_time_singleton.h>
+
 namespace Hatchit {
 
     namespace Game {
@@ -127,7 +129,7 @@ namespace Hatchit {
         {
             Renderer& _instance = Renderer::instance();
 
-            _instance.m_renderer->VRender();
+            _instance.m_renderer->VRender(Time::DeltaTime());
         }
 
         void Renderer::Present()

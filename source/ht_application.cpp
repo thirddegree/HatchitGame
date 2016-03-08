@@ -114,8 +114,8 @@ namespace Hatchit {
             if (!Renderer::Initialize(rparams))
                 return false;
 
-			if (!SceneManager::Initialize())
-				return false;
+			/*if (!SceneManager::Initialize())
+				return false;*/
 
             return true;
         }

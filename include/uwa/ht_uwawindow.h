@@ -17,25 +17,69 @@
 #include <ht_platform.h>
 #include <ht_window.h>
 
+typedef ABI::Windows::Foundation::ITypedEventHandler<ABI::Windows::ApplicationModel::Core::CoreApplicationView *,
+    ABI::Windows::ApplicationModel::Activation::IActivatedEventArgs*>
+    IActivatedEventHandler;
+
 namespace Hatchit
 {
     namespace Game
     {
-        class HT_API UWAWindow : public IWindow
+        class HT_API UWAWindow : public ABI::Windows::ApplicationModel::Core::IFrameworkView,
+                                 public ABI::Windows::ApplicationModel::Core::IFrameworkViewSource,
+                                 IActivatedEventHandler
         {
         public:
-            UWAWindow(const WindowParams& params);
+            UWAWindow();
+
+            ~UWAWindow();
+
+            // Inherited via IFrameworkView
+            virtual HRESULT Initialize(ABI::Windows::ApplicationModel::Core::ICoreApplicationView * applicationView) override;
+            virtual HRESULT SetWindow(ABI::Windows::UI::Core::ICoreWindow * window) override;
+            virtual HRESULT Load(HSTRING entryPoint) override;
+            virtual HRESULT Run(void) override;
+            virtual HRESULT Uninitialize(void) override;
+
+            virtual HRESULT Invoke(ABI::Windows::ApplicationModel::Core::ICoreApplicationView* view,
+                ABI::Windows::ApplicationModel::Activation::IActivatedEventArgs* args) override;
+
+            virtual HRESULT QueryInterface(REFIID riid, void ** ppvObject) override;
+            virtual ULONG AddRef(void) override;
+            virtual ULONG Release(void) override;
+            virtual HRESULT GetIids(ULONG * iidCount, IID ** iids) override;
+            virtual HRESULT GetRuntimeClassName(HSTRING * className) override;
+            virtual HRESULT GetTrustLevel(TrustLevel * trustLevel) override;
+        
+            // Inherited via IFrameworkViewSource
+            virtual HRESULT CreateView(ABI::Windows::ApplicationModel::Core::IFrameworkView ** viewProvider) override;
+        
+        protected:
+            // Application lifecycle event handlers.
+            void OnActivated(ABI::Windows::ApplicationModel::Core::CoreApplicationView* applicationView, ABI::Windows::ApplicationModel::Activation::IActivatedEventArgs* args);
+            void OnSuspending(void* sender, ABI::Windows::ApplicationModel::SuspendingEventArgs* args);
+            void OnResuming(void* sender, void* args);
+
+            // Window event handlers.
+            void OnWindowSizeChanged(ABI::Windows::UI::Core::CoreWindow* sender, ABI::Windows::UI::Core::WindowSizeChangedEventArgs* args);
+            void OnVisibilityChanged(ABI::Windows::UI::Core::CoreWindow* sender, ABI::Windows::UI::Core::VisibilityChangedEventArgs* args);
+            void OnWindowClosed(ABI::Windows::UI::Core::CoreWindow* sender, ABI::Windows::UI::Core::CoreWindowEventArgs* args);
+
+            // DisplayInformation event handlers.
+            void OnDpiChanged(ABI::Windows::Graphics::Display::DisplayInformation* sender, void* args);
+            void OnOrientationChanged(ABI::Windows::Graphics::Display::DisplayInformation* sender, void* args);
+            void OnDisplayContentsInvalidated(ABI::Windows::Graphics::Display::DisplayInformation* sender, void* args);
 
         private:
+            bool m_closed;
+            bool m_visible;
+            uint32_t m_refCnt;
+            ABI::Windows::UI::Core::ICoreWindow*        m_window;
+            ABI::Windows::UI::Core::ICoreDispatcher*    m_dispatcher;
+            
 
-            // Inherited via IWindow
-            virtual bool VInitialize() override;
-            virtual void * VNativeWindowHandle() override;
-            virtual void * VNativeDisplayHandle() override;
-            virtual bool VIsRunning() override;
-            virtual void VPollEvents() override;
-            virtual void VClose() override;
-            virtual void VSwapBuffers() override;
         };
+
+
     }
 }

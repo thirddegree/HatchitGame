@@ -18,45 +18,65 @@
 #include <ht_singleton.h>
 #include <ht_scene.h>
 #include <ht_file.h>
-#include <json.hpp>
 #include <vector>
+#include <unordered_map>
 
 namespace Hatchit {
 
     namespace Game {
 
+        /**
+         * \brief Defines the singleton scene manager.
+         */
         class HT_API SceneManager : public Core::Singleton<SceneManager>
         {
         public:
+            /**
+             * \brief Creates the scene manager.
+             */
+            SceneManager();
 
             /**
-             * Loads data for scenes, then loads the first scene.
+             * \brief Destroys the scene manager.
+             */
+            virtual ~SceneManager();
+
+            /**
+             * \brief De-initializes the scene manager.
+             */
+            void Deinitialize();
+
+            /**
+             * \brief Initializes the scene manager.
              */
             bool Initialize();
 
-            void Deinitialize();
-            void Update();
-            void Render();
-
             /**
+             * \brief Loads the given scene.
+             *
              * Unloads the current scene and loads in the specified scene.
              * If the scene does not exist in the list of scenes, an error is thrown.
              */
-            void LoadScene(std::string sceneName);
-            
+            bool LoadScene(const std::string& sceneName);
+
             /**
+             * \brief Loads a scene asynchronously.
+             *
              * Begins loading the specified scene while the current scene continues to run.
              * When the scene is finished loading, unloads the current scene.
              * If the scene does not exist in the list of scenes, an error is thrown.
              */
-            void LoadSceneAsync(std::string sceneName);
+            void LoadSceneAsync(const std::string& sceneName);
+
+            /**
+             * \brief Updates the scene manager.
+             */
+            void Update();
 
         private:
-            void UnloadScene();
-            nlohmann::json LoadJSON(std::string filePath);
-
-            std::vector<Scene> scenes;
-            Scene* currentScene;
+            // TODO - Use something better than a vector
+            std::vector<Scene> m_scenes;
+            Scene* m_currentScene;
         };
     }
 }

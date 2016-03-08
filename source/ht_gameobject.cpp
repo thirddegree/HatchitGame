@@ -27,9 +27,10 @@ namespace Hatchit {
             m_componentMask = std::bitset<GameObject::MAX_COMPONENTS>();
         }
 
-		GameObject::GameObject(uint8_t uuid[]) : GameObject()
+		GameObject::GameObject(const Guid& guid)
+            : GameObject()
 		{
-			guid.Set(uuid);
+            m_guid = guid;
 		}
 
         GameObject::~GameObject(void)
@@ -39,6 +40,7 @@ namespace Hatchit {
                 if(m_componentMask.test(i))
                 {
                     delete m_components[i];
+                    m_components[i] = nullptr;
                 }
             }
         }

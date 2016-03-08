@@ -54,19 +54,21 @@ namespace Hatchit {
             GameObject& operator=(GameObject&& rhs) = default;
 
             /**
-            * \brief The constructor for GameObject.
-            *
-            * Responsible for initializing the Component vector, Component bitmask, and child vector.
-            */
+             * \brief The constructor for GameObject.
+             *
+             * Responsible for initializing the Component vector, Component bitmask, and child vector.
+             */
             GameObject(void);
 
-			/**
-			* \brief The constructor for GameObject read from scene file.
-			*
-			* Responsible for initializing the Component vector, Component bitmask, and child vector.
-			* Sets the GameObject's guid to an existing value.
-			*/
-			GameObject::GameObject(uint8_t uuid[]);
+            /**
+             * \brief The constructor for GameObject read from scene file.
+             *
+             * Responsible for initializing the Component vector, Component bitmask, and child vector.
+             * Sets the GameObject's guid to an existing value.
+             *
+             * \param guid This game object's GUID.
+             */
+            GameObject::GameObject(const Guid& guid);
 
             /**
             * \brief The destructor for GameObject.
@@ -276,7 +278,7 @@ namespace Hatchit {
             std::bitset<MAX_COMPONENTS> m_componentMask; /**< Bitmask indicating which Components are attached. */
             std::vector<Component*> m_components; /**< std::vector of all attached Components. */
             Transform m_transform;
-			Guid guid;
+            Guid m_guid;
         };
 
         template <typename T>

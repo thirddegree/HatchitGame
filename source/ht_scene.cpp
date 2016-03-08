@@ -12,71 +12,187 @@
 **
 **/
 
-
-
 #include "ht_scene.h"
+#include <json.hpp>
 
+#if defined(DEBUG) || defined(_DEBUG)
+    #include <ht_debug.h>
+#endif
 
 namespace Hatchit {
 
-	namespace Game {
-		using json = nlohmann::json;
-		Scene::Scene()
-		{
+    namespace Game {
 
-		}
+        using JSON = nlohmann::json;
+        using JsonVerifyFunc = bool(JSON::*)() const;
 
-		Scene::Scene(json data)
-		{
-			sceneDescription = data;
-			name = data["Name"].get<std::string>();
-		}
+        /**
+         * \brief Attempts to extract a value from a JSON object.
+         *
+         * \param json The JSON object.
+         * \param verify The JSON type verification function.
+         * \param name The name of the value to retrieve.
+         * \param out The output variable.
+         * \return True if the extraction was successful, false if not.
+         */
+        template<typename T>
+        static inline bool _ExtractFromJSON(const JSON& json, JsonVerifyFunc verify, const std::string& name, T& out)
+        {
+            auto  search = json.find(name);
+            auto& object = *search;
 
-		Scene::~Scene()
-		{
+            if (search == json.end() || !(object.*verify)())
+            {
+                return false;
+            }
 
-		}
+            out = search->get<T>();
+            return true;
+        }
 
-		void Scene::Update()
-		{
-			for (size_t i = 0; i < gameObjects.size(); i++)
-			{
-				gameObjects[i].Update();
-			}
-		}
+        /** Shorthand for retrieving a string from a JSON object. */
+        #define ExtractStringFromJSON(json, name, out) _ExtractFromJSON<std::string>(json, &JSON::is_string, name, out)
 
-		void Scene::Render()
-		{
-			for (size_t i = 0; i < gameObjects.size(); i++)
-			{
-				gameObjects[i].GetTransform()->UpdateWorldMatrix();
-			}
-		}
+        /**
+         * \brief Attempts to extract a Guid from a JSON object.
+         *
+         * \param json The JSON object.
+         * \param name The name of the Guid to retrieve.
+         * \param out The output Guid.
+         * \return True if the extraction was successful, false if not.
+         */
+        static __forceinline bool ExtractGuidFromJSON(const JSON& json, const std::string& name, Guid& out)
+        {
+            std::string guidText;
+            return ExtractStringFromJSON(json, name, guidText) && Guid::Parse(guidText, out);
+        }
 
-		void Scene::Load()
-		{
-			for (json::iterator iter = sceneDescription["GameObjects"].begin(); iter != sceneDescription["GameObjects"].end(); ++iter)
-			{
-				json val = iter.value();
-				std::string guid = val["GUID"];
-				GameObject* gameObject = CreateGameObject();
-				Transform* transform = gameObject->GetTransform();
-			}
+        /**
+         * \brief Creates a new, empty scene.
+         */
+        Scene::Scene()
+        {
+        }
 
+        /**
+         * \brief Destroys this scene.
+         */
+        Scene::~Scene()
+        {
 
-		}
+        }
 
-		GameObject* Scene::CreateGameObject()
-		{
-			gameObjects.emplace_back();
-			return (GameObject*) &gameObjects.back();
-		}
+        /**
+         * \brief Creates a game object inside of this scene.
+         */
+        GameObject* Scene::CreateGameObject()
+        {
+            Guid guid;
+            return CreateGameObject(guid);
+        }
 
-		GameObject* Scene::CreateGameObject(uint8_t uuid[])
-		{
-			gameObjects.emplace_back(uuid);
-			return (GameObject*)&gameObjects.back();
-		}
+        /**
+         * \brief Creates a new game object with the given GUID.
+         *
+         * \param guid The game object's globally-unique identifier.
+         * \return The new game object.
+         */
+        GameObject* Scene::CreateGameObject(const Guid& guid)
+        {
+            m_gameObjects.emplace_back(guid);
+            return &m_gameObjects.back();
+        }
 
-	}
+        /**
+         * \brief Gets this scene's Guid.
+         *
+         * \return This scene's Guid.
+         */
+        const Guid& Scene::GUID() const
+        {
+            return m_guid;
+        }
+
+        /**
+         * \brief Attempts to load scene data from a file.
+         *
+         * \param file The file to load from.
+         * \return True if loading was successful, false if not.
+         */
+        bool Scene::LoadFromFile(Core::File& file)
+        {
+            // Reserve enough memory to read the file
+            std::string contents;
+            contents.resize(file.SizeBytes());
+            
+            // Read the file
+            file.Read(reinterpret_cast<BYTE*>(&contents[0]), contents.length());
+
+            // Now parse the contents from memory
+            return LoadFromMemory(contents);
+        }
+
+        /**
+         * \brief Attempts to load scene data from memory.
+         *
+         * \param jsonText The JSON-encoded scene data.
+         * \return True if loading was successful, false if not.
+         */
+        bool Scene::LoadFromMemory(const std::string& jsonText)
+        {
+            JSON data = JSON::parse(jsonText);
+            // TODO - Verify JSON parsing was successful
+
+            // Get this scene's name
+            if (!ExtractStringFromJSON(data, "Name", m_name))
+            {
+#if defined(DEBUG) || defined(_DEBUG)
+                Core::DebugPrintF("Failed to find property 'Name' in scene description!\n");
+#endif
+                return false;
+            }
+
+            // Get this scene's Guid
+            if (!ExtractGuidFromJSON(data, "GUID", m_guid))
+            {
+#if defined(DEBUG) || defined(_DEBUG)
+                Core::DebugPrintF("Failed to find property 'GUID' in scene description!\n");
+#endif
+                return false;
+            }
+
+            return true;
+        }
+
+        /**
+         * \brief Gets this scene's name.
+         */
+        std::string Scene::Name() const
+        {
+            return m_name;
+        }
+
+        /**
+         * \brief Updates this scene.
+         */
+        void Scene::Update()
+        {
+            for (size_t i = 0; i < m_gameObjects.size(); i++)
+            {
+                m_gameObjects[i].Update();
+            }
+        }
+
+        /**
+         * \brief Renders this scene.
+         */
+        void Scene::Render()
+        {
+            for (size_t i = 0; i < m_gameObjects.size(); i++)
+            {
+                m_gameObjects[i].GetTransform()->UpdateWorldMatrix();
+            }
+        }
+
+    }
 }

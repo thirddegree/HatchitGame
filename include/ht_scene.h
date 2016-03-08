@@ -16,46 +16,91 @@
 
 #include <ht_platform.h>
 #include <ht_gameobject.h>
-#include <json.hpp>
+#include <ht_guid.h>
+#include <ht_file.h>
 #include <vector>
 #include <ht_debug.h>
 
 #ifdef HT_SYS_LINUX
-	#include <cstdlib>
+    #include <cstdlib>
 #endif
 
 namespace Hatchit {
 
-	namespace Game {
+    namespace Game {
 
-		class HT_API Scene
-		{
-		public:
-			Scene();
-			Scene(nlohmann::json data);
-			~Scene();
+        /**
+        * \brief Defines a scene.
+        */
+        class HT_API Scene
+        {
+        public:
+            /**
+             * \brief Creates a new, empty scene.
+             */
+            Scene();
 
-			void Update();
-			void Render();
+            /**
+             * \brief Destroys this scene.
+             */
+            ~Scene();
 
-			/**
-			 * Loads in assets and constructs GameObjects.
-			 */
-			void Load();
+            /**
+             * \brief Creates a game object inside of this scene.
+             */
+            GameObject* CreateGameObject();
 
-			/**
-			 * Creates GameObject and adds it to internal list.
-			 */
-			GameObject* CreateGameObject();
+            /**
+             * \brief Gets this scene's Guid.
+             *
+             * \return This scene's Guid.
+             */
+            const Guid& GUID() const;
 
-			std::string name;
+            /**
+             * \brief Attempts to load scene data from a file.
+             *
+             * \param file The file to load from.
+             * \return True if loading was successful, false if not.
+             */
+            bool LoadFromFile(Core::File& file);
 
-		private:
-			GameObject* CreateGameObject(uint8_t uuid[]);
+            /**
+             * \brief Attempts to load scene data from memory.
+             *
+             * \param json The JSON-encoded scene data.
+             * \return True if loading was successful, false if not.
+             */
+            bool LoadFromMemory(const std::string& json);
 
-			std::vector<GameObject> gameObjects;
-			nlohmann::json sceneDescription;
+            /**
+             * \brief Gets this scene's name.
+             */
+            std::string Name() const;
 
-		};
-	}
+            /**
+             * \brief Updates this scene.
+             */
+            void Update();
+
+            /**
+             * \brief Renders this scene.
+             */
+            void Render();
+
+        private:
+            /**
+             * \brief Creates a new game object with the given GUID.
+             *
+             * \param guid The game object's globally-unique identifier.
+             * \return The new game object.
+             */
+            GameObject* CreateGameObject(const Guid& guid);
+
+        private:
+            Guid m_guid;
+            std::vector<GameObject> m_gameObjects;
+            std::string m_name;
+        };
+    }
 }

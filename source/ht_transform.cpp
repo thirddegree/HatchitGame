@@ -304,10 +304,10 @@ namespace Hatchit {
 
 				//recalculate basis vectors (right, forward, up)
 				m_forward = m_world * Math::Vector4(0, 0, 1, 0);
-				m_forward = Math::MMVector3Normalize(m_forward);
+				m_forward = Math::MMVector3Normalized(m_forward);
 
 				m_up = m_world * Math::Vector4(0, 1, 0, 0);
-				m_up = Math::MMVector3Normalize(m_up);
+				m_up = Math::MMVector3Normalized(m_up);
 
 				m_right = Math::MMVector3Cross(m_up, m_forward);
 

@@ -45,9 +45,8 @@ namespace Hatchit {
 
                 Window::PollEvents();
 
-				//SceneManager::Update();
-
-				//SceneManager::Render();
+                //SceneManager::instance().Update();
+                //SceneManager::instance().Render();
 
                 Renderer::ClearBuffer(ClearArgs::ColorDepthStencil);
 
@@ -114,15 +113,15 @@ namespace Hatchit {
             if (!Renderer::Initialize(rparams))
                 return false;
 
-			if (!SceneManager::Initialize())
-				return false;
+            if (!SceneManager::instance().Initialize())
+                return false;
 
             return true;
         }
 
         void Application::DeInitialize()
         {
-			SceneManager::Deinitialize();
+            SceneManager::instance().Deinitialize();
             Renderer::DeInitialize();
             Window::DeInitialize();
         }

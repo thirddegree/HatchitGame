@@ -18,8 +18,8 @@
 #include <ht_gameobject.h>
 #include <ht_guid.h>
 #include <ht_file.h>
+#include <json.hpp>
 #include <vector>
-#include <ht_debug.h>
 
 #ifdef HT_SYS_LINUX
     #include <cstdlib>
@@ -58,6 +58,16 @@ namespace Hatchit {
             const Guid& GUID() const;
 
             /**
+             * \brief Checks to see if this scene is cached.
+             */
+            bool IsCached() const;
+            
+            /**
+             * \brief Attempts to load this scene from the cache.
+             */
+            bool LoadFromCache();
+
+            /**
              * \brief Attempts to load scene data from a file.
              *
              * \param file The file to load from.
@@ -79,14 +89,19 @@ namespace Hatchit {
             std::string Name() const;
 
             /**
+             * \brief Renders this scene.
+             */
+            void Render();
+            
+            /**
              * \brief Updates this scene.
              */
             void Update();
 
             /**
-             * \brief Renders this scene.
+             * \brief Unloads this scene and its game objects.
              */
-            void Render();
+            void Unload();
 
         private:
             /**
@@ -98,6 +113,7 @@ namespace Hatchit {
             GameObject* CreateGameObject(const Guid& guid);
 
         private:
+            nlohmann::json m_description;
             Guid m_guid;
             std::vector<GameObject> m_gameObjects;
             std::string m_name;

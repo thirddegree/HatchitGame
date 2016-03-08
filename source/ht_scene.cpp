@@ -114,6 +114,48 @@ namespace Hatchit {
         }
 
         /**
+         * \brief Checks to see if this scene is cached.
+         */
+        bool Scene::IsCached() const
+        {
+            static const JSON s_DefaultObject = JSON::object();
+
+            return m_description != s_DefaultObject;
+        }
+
+        /**
+         * \brief Attempts to load this scene from the cache.
+         */
+        bool Scene::LoadFromCache()
+        {
+            // If we're not cached, then we can't load from the cache
+            if (!IsCached())
+            {
+                return false;
+            }
+
+            // Get this scene's name
+            if (!ExtractStringFromJSON(m_description, "Name", m_name))
+            {
+#if defined(DEBUG) || defined(_DEBUG)
+                Core::DebugPrintF("Failed to find property 'Name' in scene description!\n");
+#endif
+                return false;
+            }
+
+            // Get this scene's Guid
+            if (!ExtractGuidFromJSON(m_description, "GUID", m_guid))
+            {
+#if defined(DEBUG) || defined(_DEBUG)
+                Core::DebugPrintF("Failed to find property 'GUID' in scene description!\n");
+#endif
+                return false;
+            }
+
+            return true;
+        }
+
+        /**
          * \brief Attempts to load scene data from a file.
          *
          * \param file The file to load from.
@@ -140,28 +182,28 @@ namespace Hatchit {
          */
         bool Scene::LoadFromMemory(const std::string& jsonText)
         {
-            JSON data = JSON::parse(jsonText);
-            // TODO - Verify JSON parsing was successful
+            JSON data;
+            bool loaded = false;
 
-            // Get this scene's name
-            if (!ExtractStringFromJSON(data, "Name", m_name))
+            try
+            {
+                // Attempt to parse the JSON
+                data = JSON::parse(jsonText);
+
+                // If we get here, then the JSON parsed successfully
+                m_description = data;
+                loaded = LoadFromCache(); // Loads from m_description
+            }
+            catch (...)
             {
 #if defined(DEBUG) || defined(_DEBUG)
-                Core::DebugPrintF("Failed to find property 'Name' in scene description!\n");
+                Core::DebugPrintF("Failed to parse scene JSON!\n");
 #endif
-                return false;
+                data = JSON::object();
+                loaded = false;
             }
 
-            // Get this scene's Guid
-            if (!ExtractGuidFromJSON(data, "GUID", m_guid))
-            {
-#if defined(DEBUG) || defined(_DEBUG)
-                Core::DebugPrintF("Failed to find property 'GUID' in scene description!\n");
-#endif
-                return false;
-            }
-
-            return true;
+            return loaded;
         }
 
         /**
@@ -170,17 +212,6 @@ namespace Hatchit {
         std::string Scene::Name() const
         {
             return m_name;
-        }
-
-        /**
-         * \brief Updates this scene.
-         */
-        void Scene::Update()
-        {
-            for (size_t i = 0; i < m_gameObjects.size(); i++)
-            {
-                m_gameObjects[i].Update();
-            }
         }
 
         /**
@@ -193,6 +224,26 @@ namespace Hatchit {
                 m_gameObjects[i].GetTransform()->UpdateWorldMatrix();
             }
         }
+        
+        /**
+         * \brief Updates this scene.
+         */
+        void Scene::Update()
+        {
+            for (size_t i = 0; i < m_gameObjects.size(); i++)
+            {
+                m_gameObjects[i].Update();
+            }
+        }
+        
+        /**
+         * \brief Unloads this scene and its game objects.
+         */
+        void Scene::Unload()
+        {
+            Core::DebugPrintF("TODO - Scene::Unload()\n");
+        }
+
 
     }
 }

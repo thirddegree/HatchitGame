@@ -53,48 +53,61 @@ namespace Hatchit {
          */
         bool SceneManager::Initialize()
         {
-            const std::string path = "./SceneList.json";
+            const std::string folder = "../../../../HatchitGame/";
+            const std::string sceneListFile = "SceneList.json";
             bool loaded = false;
 
             try
             {
                 // Open the file
                 File file;
-                file.Open(path, FileMode::ReadText);
+                file.Open(folder + sceneListFile, FileMode::ReadText);
 
                 // Prepare to read the file
+                size_t fileSize = file.SizeBytes();
+                if (fileSize == 0)
+                {
+                    DebugPrintF("WARNING: Scene list file is empty!\n");
+                    return true;
+                }
                 std::string contents;
-                contents.resize(file.SizeBytes());
+                contents.resize(fileSize);
+
 
                 // Read the file
                 file.Read(reinterpret_cast<BYTE*>(&contents[0]), contents.length());
                 file.Close();
 
 
-
+                
                 // Try to parse the scene list
                 JSON sceneList = JSON::parse(contents);
-                if (sceneList.is_array())
+
+                // TODO - Change this when we finalize the scene
+                DebugPrintF("Reading scene list...\n");
+                for (const std::string& scenePath : sceneList["scenes"])
                 {
-                    // TODO - Change this when we finalize the scene 
-                    for (const std::string& scenePath : sceneList["scenes"])
+                    DebugPrintF("** Loading '%s'... ", scenePath);
+
+                    File sceneFile;
+                    sceneFile.Open(folder + scenePath, FileMode::ReadText);
+
+                    m_scenes.emplace_back();
+                    if (m_scenes.back().LoadFromFile(sceneFile))
                     {
-                        File sceneFile;
-                        sceneFile.Open(scenePath, FileMode::ReadText);
-
-                        m_scenes.emplace_back();
-                        if (!m_scenes.back().LoadFromFile(sceneFile))
-                        {
-                            DebugPrintF("Failed to load '%s'\n", scenePath);
-                        }
-
-                        sceneFile.Close();
+                        DebugPrintF("Done!\n");
                     }
+                    else
+                    {
+                        DebugPrintF("Failed!\n");
+                    }
+
+                    sceneFile.Close();
                 }
 
 
 
-                return loaded;
+                loaded = true;
             }
             catch (...)
             {
@@ -102,32 +115,6 @@ namespace Hatchit {
             }
 
             return loaded;
-#if 0
-            //load list of scenes
-            JSON scenePaths = LoadJSON(path + "SceneList.json");
-
-            //Load json for each scene
-            for (std::string const sceneFile : scenePaths["scenes"])
-            {
-                std::string filePath = path + sceneFile;
-                Core::File file;
-                file.Open(filePath, Core::FileMode::ReadText);
-
-                m_scenes.emplace_back();
-                m_scenes.back().LoadFromFile(file);
-            }
-
-
-            //Load first scene
-            if (m_scenes.size() == 0)
-            {
-                return false;
-            }
-
-            Core::DebugPrintF("SceneManager loaded scenes successfully.");
-
-            return true;
-#endif
         }
 
         /**

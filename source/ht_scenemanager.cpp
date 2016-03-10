@@ -73,19 +73,16 @@ namespace Hatchit {
                 std::string contents;
                 contents.resize(fileSize);
 
-
                 // Read the file
                 file.Read(reinterpret_cast<BYTE*>(&contents[0]), contents.length());
                 file.Close();
 
-
-                
                 // Try to parse the scene list
                 JSON sceneList = JSON::parse(contents);
 
                 // TODO - Change this when we finalize the scene
                 DebugPrintF("Reading scene list...\n");
-                for (const std::string& scenePath : sceneList["scenes"])
+                for (const std::string& scenePath : sceneList)
                 {
                     DebugPrintF("** Loading '%s'... ", scenePath);
 
@@ -104,8 +101,6 @@ namespace Hatchit {
 
                     sceneFile.Close();
                 }
-
-
 
                 loaded = true;
             }

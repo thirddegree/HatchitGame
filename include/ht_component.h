@@ -34,6 +34,8 @@ namespace Hatchit {
 
     namespace Game {
 
+        class GameObject; /**< Forward declaration to avoid circular dependency. */
+
         class HT_API Component
         {
         public:
@@ -46,6 +48,12 @@ namespace Hatchit {
             static Guid GetComponentId(void);
 
             virtual ~Component(void) = default;
+
+            /**
+            * \brief Getter which returns the GameObject to which this Component is attached.
+            * \return Pointer to the GameObject.
+            */
+            GameObject* GetOwner(void);
 
             /**
             * \brief Getter that returns that value of m_enabled.
@@ -107,7 +115,16 @@ namespace Hatchit {
             */
             virtual void VOnDisabled() = 0;
 
+            /**
+            * \brief Setter that sets which GameObject this Component is attached to.
+            * \param owner  The GameObject to which this Component is attached.
+            */
+            void SetOwner(GameObject *owner);
+
             bool m_enabled{false}; /**< bool indicating if this Component is enabled. */
+            GameObject *m_owner; /**< The GameObject to which this Component is attached. */
+
+            friend GameObject;
         };
 
         template <typename T>

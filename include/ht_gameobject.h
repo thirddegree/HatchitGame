@@ -292,6 +292,8 @@ namespace Hatchit {
             m_componentMap.insert(std::make_pair(component_id, m_components.size()));
             m_components.push_back(component);
 
+            component->SetOwner(this);
+
             component->VOnInit();
 
             if (m_enabled)
@@ -313,6 +315,8 @@ namespace Hatchit {
             T *component = new T(std::forward<Args>(args)...);
             m_componentMap.insert(std::make_pair(component_id, m_components.size()));
             m_components.push_back(component);
+
+            component->SetOwner(this);
 
             component->VOnInit();
 

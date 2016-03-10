@@ -13,6 +13,7 @@
 **/
 
 #include <ht_renderer_singleton.h>
+#include <ht_time_singleton.H>
 #include <ht_debug.h>
 #ifdef HT_SYS_WINDOWS
 #ifdef DX11_SUPPORT
@@ -127,7 +128,7 @@ namespace Hatchit {
         {
             Renderer& _instance = Renderer::instance();
 
-            _instance.m_renderer->VRender();
+            _instance.m_renderer->VRender(Time::DeltaTime());
         }
 
         void Renderer::Present()

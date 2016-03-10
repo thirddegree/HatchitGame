@@ -124,7 +124,7 @@ namespace std {
      */
     template<> struct hash<Hatchit::Game::Guid>
     {
-        inline size_t operator()(const Hatchit::Game::Guid& guid)
+        inline size_t operator()(const Hatchit::Game::Guid& guid) const
         {
             return guid.Hash();
         }

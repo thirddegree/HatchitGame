@@ -17,8 +17,6 @@
 
 namespace Hatchit {
     namespace Game {
-        std::uint32_t Component::s_componentIdCounter = 0;
-
         bool Component::GetEnabled(void) const
         {
             return m_enabled;

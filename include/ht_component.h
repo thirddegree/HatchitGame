@@ -28,6 +28,7 @@
 #include <type_traits>
 
 #include <ht_platform.h>
+#include <ht_guid.h>
 
 namespace Hatchit {
 
@@ -42,9 +43,7 @@ namespace Hatchit {
             * \return A std::uint32_t which is this Component's unique ID.
             */
             template <typename T>
-            static std::uint32_t GetComponentId(void);
-
-            static std::uint32_t s_componentIdCounter; /**< A static counter that is incremented once with each instantiation of GetComponentID(). */
+            static Guid GetComponentId(void);
 
             virtual ~Component(void) = default;
 
@@ -112,10 +111,10 @@ namespace Hatchit {
         };
 
         template <typename T>
-        static std::uint32_t Component::GetComponentId(void)
+        static Guid Component::GetComponentId(void)
         {
             static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
-            static std::uint32_t id = s_componentIdCounter++; /**< This value is set once when the template is instantiated. */
+            static Guid id = Guid(); /**< This value is set once when the template is instantiated. */
             return id;
         }
     }

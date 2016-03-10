@@ -22,9 +22,9 @@ namespace Hatchit {
         {
             m_enabled = false;
             m_parent = nullptr;
-            m_components = std::vector<Component*>(GameObject::MAX_COMPONENTS, nullptr);
+            m_components = std::vector<Component*>();
             m_children = std::vector<GameObject*>();
-            m_componentMask = std::bitset<GameObject::MAX_COMPONENTS>();
+            m_componentMap = std::unordered_map<Guid, std::vector<Component*>::size_type>();
         }
 
 		GameObject::GameObject(const Guid& guid)
@@ -35,13 +35,9 @@ namespace Hatchit {
 
         GameObject::~GameObject(void)
         {
-            for (std::size_t i = 0; i < GameObject::MAX_COMPONENTS; ++i)
+            for (Component *component: m_components)
             {
-                if(m_componentMask.test(i))
-                {
-                    delete m_components[i];
-                    m_components[i] = nullptr;
-                }
+                delete component;
             }
         }
 
@@ -74,14 +70,10 @@ namespace Hatchit {
 
         void GameObject::Update(void)
         {
-            for (std::size_t i = 0; i < GameObject::MAX_COMPONENTS; ++i)
+            for (Component *component : m_components)
             {
-                if (m_componentMask.test(i))
-                {
-                    Component *component = m_components[i];
                     if(component->GetEnabled())
                         component->VOnUpdate();
-                }
             }
 
             for (std::size_t i = 0; i < m_children.size(); ++i)
@@ -103,15 +95,11 @@ namespace Hatchit {
         {
             Disable();
 
-            for (std::size_t i = 0; i < GameObject::MAX_COMPONENTS; ++i)
+            for (Component *component : m_components)
             {
-                if (m_componentMask.test(i))
-                {
-                    Component *component = m_components[i];
-                    if (component->GetEnabled())
-                        component->SetEnabled(false);
-                    component->VOnDestroy();
-                }
+                if (component->GetEnabled())
+                    component->SetEnabled(false);
+                component->VOnDestroy();
             }
 
             for (std::size_t i = 0; i < m_children.size(); ++i)

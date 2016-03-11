@@ -42,7 +42,7 @@ namespace Hatchit {
             /**
             * \brief Returns the unique id associated with a Component of type T.
             * \tparam T A sub-class of Component.
-            * \return A std::uint32_t which is this Component's unique ID.
+            * \return A Guid which is this Component's unique ID.
             */
             template <typename T>
             static Guid GetComponentId(void);

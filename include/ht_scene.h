@@ -18,7 +18,9 @@
 #include <ht_gameobject.h>
 #include <ht_guid.h>
 #include <ht_file.h>
+
 #include <json.hpp>
+
 #include <vector>
 
 #ifdef HT_SYS_LINUX
@@ -112,7 +114,16 @@ namespace Hatchit {
              */
             GameObject* CreateGameObject(const Guid& guid);
 
-        private:
+            /**
+            * TODO: Fill out documentation.
+            */
+            bool ParseGameObject(nlohmann::json& obj);
+
+            /**
+            * TODO: Fill out documentation.
+            */
+            bool ParseComponent(nlohmann::json& obj);
+
             nlohmann::json m_description;
             Guid m_guid;
             std::vector<GameObject> m_gameObjects;

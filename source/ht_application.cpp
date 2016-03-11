@@ -116,6 +116,8 @@ namespace Hatchit {
             if (!SceneManager::instance().Initialize())
                 return false;
 
+            SceneManager::instance().LoadScene("testscene.json");
+
             return true;
         }
 

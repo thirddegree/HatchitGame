@@ -12,12 +12,13 @@
 **
 **/
 
-#include "ht_scene.h"
-#include <json.hpp>
+#include <ht_scene.h>
 
 #if defined(DEBUG) || defined(_DEBUG)
     #include <ht_debug.h>
 #endif
+
+#include <set>
 
 namespace Hatchit {
 
@@ -25,6 +26,9 @@ namespace Hatchit {
 
         using JSON = nlohmann::json;
         using JsonVerifyFunc = bool(JSON::*)() const;
+
+        /** Shorthand for retrieving a string from a JSON object. */
+        #define ExtractStringFromJSON(json, name, out) _ExtractFromJSON<std::string>(json, &JSON::is_string, name, out)
 
         /**
          * \brief Attempts to extract a value from a JSON object.
@@ -50,9 +54,6 @@ namespace Hatchit {
             return true;
         }
 
-        /** Shorthand for retrieving a string from a JSON object. */
-        #define ExtractStringFromJSON(json, name, out) _ExtractFromJSON<std::string>(json, &JSON::is_string, name, out)
-
         /**
          * \brief Attempts to extract a Guid from a JSON object.
          *
@@ -65,6 +66,28 @@ namespace Hatchit {
         {
             std::string guidText;
             return ExtractStringFromJSON(json, name, guidText) && Guid::Parse(guidText, out);
+        }
+
+        /**
+        * \brief Attempts to extract a std::vector from a JSON object.
+        * \tparam T A JSON value type.
+        * \param json   The JSON object to examine.
+        * \param key    The key to locate in the JSON object.
+        * \param value  The std::vector to insert into.
+        * \return true if the std::vector could be successfully extracted.
+        */
+        template <typename Container>
+        static inline bool ExtractContainerFromJSON(const JSON& json, const std::string& key, Container& value)
+        {
+            JSON::const_iterator iter = json.find(key);
+            if (iter == json.cend() || !iter->is_array())
+            {
+                return false;
+            }
+
+            value = iter->get<Container>();
+
+            return true;
         }
 
         /**
@@ -152,6 +175,61 @@ namespace Hatchit {
                 return false;
             }
 
+            // Get the Guids for every GameObject in the scene.
+            std::set<std::string> guids{};
+            if (!ExtractContainerFromJSON<std::set<std::string>>(m_description, "GUIDs", guids))
+            {
+#if defined(DEBUG) || defined(_DEBUG)
+                Core::DebugPrintF("Failed to find property 'GUIDs' in scene description!\n");
+#endif
+                return false;
+            }
+
+            // Get an array of all the GameObjects in the scene.
+            std::vector<JSON> gameObjs{};
+            if (!ExtractContainerFromJSON<std::vector<JSON>>(m_description, "GameObjects", gameObjs))
+            {
+#if defined(DEBUG) || defined(_DEBUG)
+                Core::DebugPrintF("Failed to find property 'GameObjects' in scene description!\n");
+#endif
+                return false;
+            }
+
+            // Begin parsing the GameObjects in the scene.
+            Guid id;
+            for (JSON& obj : gameObjs)
+            {
+                if (!ExtractGuidFromJSON(obj, "GUID", id))
+                {
+#if defined(DEBUG) || defined(_DEBUG)
+                    Core::DebugPrintF("Failed to find property 'GUID' on GameObject in scene description!\n");
+#endif
+                    return false;
+                }
+
+                /**< TODO: Validate GUID contained in guids. */
+
+                if (!ParseGameObject(obj))
+                {
+#if defined(DEBUG) || defined(_DEBUG)
+                    Core::DebugPrintF("Failed to parse GameObject with Guid %s in scene description!\n", id.ToString());
+#endif
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        bool Scene::ParseGameObject(JSON& obj)
+        {
+            /**< Add GameObject parsing code! */
+            return true;
+        }
+
+        bool Scene::ParseComponent(JSON& obj)
+        {
+            /**< Add Component parsing code! */
             return true;
         }
 
@@ -219,9 +297,10 @@ namespace Hatchit {
          */
         void Scene::Render()
         {
-            for (size_t i = 0; i < m_gameObjects.size(); i++)
+            for (GameObject& obj : m_gameObjects)
             {
-                m_gameObjects[i].GetTransform()->UpdateWorldMatrix();
+                Transform *t = obj.GetTransform();
+                t->UpdateWorldMatrix();
             }
         }
         
@@ -230,9 +309,9 @@ namespace Hatchit {
          */
         void Scene::Update()
         {
-            for (size_t i = 0; i < m_gameObjects.size(); i++)
+            for (GameObject& obj : m_gameObjects)
             {
-                m_gameObjects[i].Update();
+                obj.Update();
             }
         }
         
@@ -243,7 +322,5 @@ namespace Hatchit {
         {
             Core::DebugPrintF("TODO - Scene::Unload()\n");
         }
-
-
     }
 }

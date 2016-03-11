@@ -44,12 +44,12 @@ namespace Hatchit {
             /**
              * \brief De-initializes the scene manager.
              */
-            void Deinitialize();
+            static void Deinitialize();
 
             /**
              * \brief Initializes the scene manager.
              */
-            bool Initialize();
+            static bool Initialize();
 
             /**
              * \brief Loads the given scene.
@@ -57,7 +57,7 @@ namespace Hatchit {
              * Unloads the current scene and loads in the specified scene.
              * If the scene does not exist in the list of scenes, an error is thrown.
              */
-            bool LoadScene(const std::string& sceneName);
+            static bool LoadScene(const std::string& sceneName);
 
             /**
              * \brief Loads a scene asynchronously.
@@ -66,12 +66,12 @@ namespace Hatchit {
              * When the scene is finished loading, unloads the current scene.
              * If the scene does not exist in the list of scenes, an error is thrown.
              */
-            void LoadSceneAsync(const std::string& sceneName);
+            static void LoadSceneAsync(const std::string& sceneName);
 
             /**
              * \brief Updates the scene manager.
              */
-            void Update();
+            static void Update();
 
         private:
             // TODO - Use something better than a vector

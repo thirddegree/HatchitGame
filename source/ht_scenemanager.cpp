@@ -18,8 +18,6 @@
 namespace Hatchit {
 
     namespace Game {
-
-
         using namespace Core;
 
         using JSON = nlohmann::json;
@@ -45,7 +43,9 @@ namespace Hatchit {
          */
         void SceneManager::Deinitialize()
         {
+#if defined(DEBUG) || defined(_DEBUG)
             Core::DebugPrintF("Scene Manager DeInitialized (not implemented)\n");
+#endif
         }
 
         /**
@@ -53,6 +53,8 @@ namespace Hatchit {
          */
         bool SceneManager::Initialize()
         {
+            SceneManager& _instance = SceneManager::instance();
+
             const std::string folder = "../../../../HatchitGame/";
             const std::string sceneListFile = "SceneList.json";
             bool loaded = false;
@@ -89,8 +91,8 @@ namespace Hatchit {
                     File sceneFile;
                     sceneFile.Open(folder + scenePath, FileMode::ReadText);
 
-                    m_scenes.emplace_back();
-                    if (m_scenes.back().LoadFromFile(sceneFile))
+                    _instance.m_scenes.emplace_back();
+                    if (_instance.m_scenes.back().LoadFromFile(sceneFile))
                     {
                         DebugPrintF("Done!\n");
                     }
@@ -120,27 +122,29 @@ namespace Hatchit {
          */
         bool SceneManager::LoadScene(const std::string& sceneName)
         {
+            SceneManager& _instance = SceneManager::instance();
+
             // Unload the current scene
-            if (m_currentScene)
+            if (_instance.m_currentScene)
             {
-                m_currentScene->Unload();
-                m_currentScene = nullptr;
+                _instance.m_currentScene->Unload();
+                _instance.m_currentScene = nullptr;
             }
 
             // Scan for the scene with the given name
-            for (Scene& scene : m_scenes)
+            for (Scene& scene : _instance.m_scenes)
             {
                 if (scene.Name() == sceneName)
                 {
-                    m_currentScene = &scene;
+                    _instance.m_currentScene = &scene;
                     break;
                 }
             }
 
             // If we've found the scene, load it from the cache
-            if (m_currentScene)
+            if (_instance.m_currentScene)
             {
-                return m_currentScene->LoadFromCache();
+                return _instance.m_currentScene->LoadFromCache();
             }
             return false;
         }
@@ -154,7 +158,9 @@ namespace Hatchit {
          */
         void SceneManager::LoadSceneAsync(const std::string& sceneName)
         {
+#if defined(DEBUG) || defined(_DEBUG)
             Core::DebugPrintF("TODO - SceneManager::LoadSceneAsync (add callback params)\n");
+#endif
         }
         
         /**
@@ -162,10 +168,12 @@ namespace Hatchit {
          */
         void SceneManager::Update()
         {
-            if (m_currentScene)
+            SceneManager& _instance = SceneManager::instance();
+
+            if (_instance.m_currentScene)
             {
-                m_currentScene->Update();
-                m_currentScene->Render();
+                _instance.m_currentScene->Update();
+                _instance.m_currentScene->Render();
             }
         }
 

@@ -14,11 +14,14 @@
 
 #include <ht_scene.h>
 
-#if defined(DEBUG) || defined(_DEBUG)
-    #include <ht_debug.h>
+#ifndef HT_DEBUG_PRINTF
+    #if defined(DEBUG) || defined(_DEBUG)
+        #include <ht_debug.h>
+        #define HT_DEBUG_PRINTF(fmt_string, ...) Hatchit::Core::DebugPrintF(fmt_string, __VA_ARGS__);
+    #else
+        #define HT_DEBUG_PRINTF(fmt_string, ...)
+    #endif
 #endif
-
-#include <set>
 
 namespace Hatchit {
 
@@ -91,21 +94,6 @@ namespace Hatchit {
         }
 
         /**
-         * \brief Creates a new, empty scene.
-         */
-        Scene::Scene()
-        {
-        }
-
-        /**
-         * \brief Destroys this scene.
-         */
-        Scene::~Scene()
-        {
-
-        }
-
-        /**
          * \brief Creates a game object inside of this scene.
          */
         GameObject* Scene::CreateGameObject()
@@ -124,6 +112,14 @@ namespace Hatchit {
         {
             m_gameObjects.emplace_back(guid);
             return &m_gameObjects.back();
+        }
+
+        /**
+        * \brief Gets this scene's name.
+        */
+        std::string Scene::Name() const
+        {
+            return m_name;
         }
 
         /**
@@ -160,60 +156,54 @@ namespace Hatchit {
             // Get this scene's name
             if (!ExtractStringFromJSON(m_description, "Name", m_name))
             {
-#if defined(DEBUG) || defined(_DEBUG)
-                Core::DebugPrintF("Failed to find property 'Name' in scene description!\n");
-#endif
+                HT_DEBUG_PRINTF("Failed to find property 'Name' in scene description!\n");
                 return false;
             }
 
             // Get this scene's Guid
             if (!ExtractGuidFromJSON(m_description, "GUID", m_guid))
             {
-#if defined(DEBUG) || defined(_DEBUG)
-                Core::DebugPrintF("Failed to find property 'GUID' in scene description!\n");
-#endif
+                HT_DEBUG_PRINTF("Failed to find property 'GUID' in scene description!\n");
                 return false;
             }
 
             // Get the Guids for every GameObject in the scene.
-            std::set<std::string> guids{};
-            if (!ExtractContainerFromJSON<std::set<std::string>>(m_description, "GUIDs", guids))
+            std::unordered_set<std::string> string_guids{};
+            if (!ExtractContainerFromJSON<std::unordered_set<std::string>>(m_description, "GUIDs", string_guids))
             {
-#if defined(DEBUG) || defined(_DEBUG)
-                Core::DebugPrintF("Failed to find property 'GUIDs' in scene description!\n");
-#endif
+                HT_DEBUG_PRINTF("Failed to find property 'GUIDs' in scene description!\n");
                 return false;
             }
 
-            // Get an array of all the GameObjects in the scene.
-            std::vector<JSON> gameObjs{};
-            if (!ExtractContainerFromJSON<std::vector<JSON>>(m_description, "GameObjects", gameObjs))
+            // Parse the Guid strings into Guids.
+            std::unordered_set<Guid> guids{};
+            for (const std::string& string_guid : string_guids)
             {
-#if defined(DEBUG) || defined(_DEBUG)
-                Core::DebugPrintF("Failed to find property 'GameObjects' in scene description!\n");
-#endif
+                Guid id;
+                if (!Guid::Parse(string_guid, id))
+                {
+                    HT_DEBUG_PRINTF("Failed to parse Guid %s in scene description!\n", string_guid);
+                    return false;
+                }
+
+                guids.insert(id);
+            }
+
+            // Get an array of all the GameObjects in the scene.
+            std::vector<JSON> json_gameobjs{};
+            if (!ExtractContainerFromJSON<std::vector<JSON>>(m_description, "GameObjects", json_gameobjs))
+            {
+                HT_DEBUG_PRINTF("Failed to find property 'GameObjects' in scene description!\n");
                 return false;
             }
 
             // Begin parsing the GameObjects in the scene.
-            Guid id;
-            for (JSON& obj : gameObjs)
+            for (const JSON& json_obj : json_gameobjs)
             {
-                if (!ExtractGuidFromJSON(obj, "GUID", id))
+                // Attempt to parse this GameObject from JSON.
+                if (!ParseGameObject(json_obj, guids))
                 {
-#if defined(DEBUG) || defined(_DEBUG)
-                    Core::DebugPrintF("Failed to find property 'GUID' on GameObject in scene description!\n");
-#endif
-                    return false;
-                }
-
-                /**< TODO: Validate GUID contained in guids. */
-
-                if (!ParseGameObject(obj))
-                {
-#if defined(DEBUG) || defined(_DEBUG)
-                    Core::DebugPrintF("Failed to parse GameObject with Guid %s in scene description!\n", id.ToString());
-#endif
+                    HT_DEBUG_PRINTF("Failed to parse GameObject in scene description!\n");
                     return false;
                 }
             }
@@ -221,15 +211,125 @@ namespace Hatchit {
             return true;
         }
 
-        bool Scene::ParseGameObject(JSON& obj)
+        bool Scene::ParseGameObject(const JSON& obj, const std::unordered_set<Guid>& guids)
         {
-            /**< Add GameObject parsing code! */
+            // Extract the GameObject's GUID.
+            Guid id;
+            if (!ExtractGuidFromJSON(obj, "GUID", id))
+            {
+                HT_DEBUG_PRINTF("Failed to find property 'GUID' on GameObject in scene description!\n");
+                return false;
+            }
+
+            // Extract the GameObject's Name.
+            std::string name;
+            if (!ExtractStringFromJSON(obj, "Name", name))
+            {
+                HT_DEBUG_PRINTF("Failed to find property 'Name' on GameObject with Guid:%s in scene description!\n", id.ToString());
+                return false;
+            }
+
+            // Attempt to extract the GameObject's Transform.
+            Transform t;
+            if (!ParseTransform(obj, t))
+            {
+                t = Transform{}; // Default Constructor if a Transform was not provided.
+            }
+
+            // Attempt to extract JSON array representing the child GameObjects.
+            std::unordered_set<std::string> string_guids;
+            if (ExtractContainerFromJSON<std::unordered_set<std::string>>(obj, "Children", string_guids))
+            {
+                // Convert from std::strings to Guids.
+                std::unordered_set<Guid> guids;
+                for (const std::string& string_guid : string_guids)
+                {
+                    Guid id;
+                    if (!Guid::Parse(string_guid, id))
+                    {
+                        HT_DEBUG_PRINTF("Failed to parse child with Guid: %s in scene description!\n", string_guid);
+                        return false;
+                    }
+
+                    guids.insert(id);
+                }
+
+                for (Guid child_guid : guids)
+                {
+                    // TODO: Parse Child GameObjects
+                }
+            }
+
+            // Extract an array of Component JSON objects.
+            std::vector<JSON> components;
+            if (ExtractContainerFromJSON(obj, "Components", components))
+            {
+                for (const JSON& json_component : components)
+                {
+                    // TODO: Parse Components.
+                }
+            }
+
             return true;
         }
 
-        bool Scene::ParseComponent(JSON& obj)
+        bool Scene::ParseTransform(const JSON& obj, Transform& out)
         {
-            /**< Add Component parsing code! */
+            JSON::const_iterator iter = obj.find("Transform");
+            if (iter == obj.cend())
+            {
+                return false;
+            }
+
+            JSON json_transform = *iter;
+
+            std::vector<float> position;
+            if (!ExtractContainerFromJSON(json_transform, "Position", position) && (position.size() == 3))
+            {
+                HT_DEBUG_PRINTF("Failed to locate property 'Position' on Transform in scene description!\n");
+                return false;
+            }
+
+            std::vector<float> rotation;
+            if (!ExtractContainerFromJSON(json_transform, "Rotation", rotation) && (rotation.size() == 3))
+            {
+                HT_DEBUG_PRINTF("Failed to locate property 'Rotation' on Transform in scene description!\n");
+                return false;
+            }
+
+            std::vector<float> scale;
+            if (!ExtractContainerFromJSON(json_transform, "Scale", scale) && (scale.size() == 3))
+            {
+                HT_DEBUG_PRINTF("Failed to locate property 'Scale' on Transform in scene description!\n");
+                return false;
+            }
+
+            out = Transform(
+                    position[0],    position[1],    position[2],
+                    rotation[0],    rotation[1],    rotation[2],
+                    scale[0],       scale[1],       scale[2]
+                );
+
+            return true;
+        }
+
+        bool Scene::ParseComponent(const JSON& obj)
+        {
+            std::string component_type;
+            if (!ExtractStringFromJSON(obj, "Name", component_type))
+            {
+                HT_DEBUG_PRINTF("Failed to locate property 'Name' on Component in scene description!\n");
+                return false;
+            }
+
+            // TODO: Add Component types here.
+
+            if(true)
+            {
+                HT_DEBUG_PRINTF("Unknown Component type %s in scene description!\n", component_type);
+                return false;
+            }
+
             return true;
         }
 
@@ -274,22 +374,12 @@ namespace Hatchit {
             }
             catch (...)
             {
-#if defined(DEBUG) || defined(_DEBUG)
-                Core::DebugPrintF("Failed to parse scene JSON!\n");
-#endif
+                HT_DEBUG_PRINTF("Failed to parse scene JSON!\n");
                 data = JSON::object();
                 loaded = false;
             }
 
             return loaded;
-        }
-
-        /**
-         * \brief Gets this scene's name.
-         */
-        std::string Scene::Name() const
-        {
-            return m_name;
         }
 
         /**
@@ -320,7 +410,7 @@ namespace Hatchit {
          */
         void Scene::Unload()
         {
-            Core::DebugPrintF("TODO - Scene::Unload()\n");
+            HT_DEBUG_PRINTF("TODO - Scene::Unload()\n");
         }
     }
 }

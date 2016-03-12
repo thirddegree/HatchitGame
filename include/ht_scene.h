@@ -22,6 +22,7 @@
 #include <json.hpp>
 
 #include <vector>
+#include <unordered_set>
 
 #ifdef HT_SYS_LINUX
     #include <cstdlib>
@@ -37,20 +38,22 @@ namespace Hatchit {
         class HT_API Scene
         {
         public:
-            /**
-             * \brief Creates a new, empty scene.
-             */
-            Scene();
-
-            /**
-             * \brief Destroys this scene.
-             */
-            ~Scene();
+            Scene(void) = default;
+            ~Scene(void) = default;
+            Scene(const Scene& rhs) = default;
+            Scene(Scene&& rhs) = default;
+            Scene& operator=(const Scene& rhs) = default;
+            Scene& operator=(Scene&& rhs) = default;
 
             /**
              * \brief Creates a game object inside of this scene.
              */
             GameObject* CreateGameObject();
+
+            /**
+            * \brief Gets this scene's name.
+            */
+            std::string Name() const;
 
             /**
              * \brief Gets this scene's Guid.
@@ -86,48 +89,54 @@ namespace Hatchit {
             bool LoadFromMemory(const std::string& json);
 
             /**
-             * \brief Gets this scene's name.
-             */
-            std::string Name() const;
-
-            /**
              * \brief Renders this scene.
              */
-            void Render();
+            void Render(void);
             
             /**
              * \brief Updates this scene.
              */
-            void Update();
+            void Update(void);
 
             /**
              * \brief Unloads this scene and its game objects.
              */
-            void Unload();
+            void Unload(void);
 
         private:
             /**
              * \brief Creates a new game object with the given GUID.
-             *
              * \param guid The game object's globally-unique identifier.
              * \return The new game object.
              */
             GameObject* CreateGameObject(const Guid& guid);
 
             /**
-            * TODO: Fill out documentation.
+            * \brief Attempts to parse a GameObject from the provided JSON.
+            * \param obj    The JSON object to parse.
+            * \return true if the GameObject was parsed successfully.
             */
-            bool ParseGameObject(nlohmann::json& obj);
+            bool ParseGameObject(const nlohmann::json& obj, const std::unordered_set<Guid>& guids);
 
             /**
-            * TODO: Fill out documentation.
+            * \brief Attempts to parse a Transform from the provided JSON.
+            * \param obj    The JSON object to parse.
+            * \param out    The Transform that will hold the result.
+            * \return true if the Transform was parsed successfully.
             */
-            bool ParseComponent(nlohmann::json& obj);
+            bool ParseTransform(const nlohmann::json& obj, Transform& out);
 
-            nlohmann::json m_description;
-            Guid m_guid;
-            std::vector<GameObject> m_gameObjects;
-            std::string m_name;
+            /**
+            * \brief Attempts to parse a Component from the provided JSON.
+            * \param obj    The JSON object to parse.
+            * \return true if the Component was parsed successfully.
+            */
+            bool ParseComponent(const nlohmann::json& obj);
+
+            std::string m_name; /**< The name associated with this scene. */
+            Guid m_guid; /**< The Guid associated with this scene. */
+            nlohmann::json m_description; /**< The JSON description of the scene. */
+            std::vector<GameObject> m_gameObjects; /**< std::vector of GameObjects present in the scene. */
         };
     }
 }

@@ -14,13 +14,8 @@
 
 #include <ht_scene.h>
 
-#ifndef HT_DEBUG_PRINTF
-    #if defined(DEBUG) || defined(_DEBUG)
-        #include <ht_debug.h>
-        #define HT_DEBUG_PRINTF(fmt_string, ...) Hatchit::Core::DebugPrintF(fmt_string, __VA_ARGS__);
-    #else
-        #define HT_DEBUG_PRINTF(fmt_string, ...)
-    #endif
+#if defined(DEBUG) || defined(_DEBUG)
+    #include <ht_debug.h>
 #endif
 
 namespace Hatchit {

@@ -23,6 +23,7 @@
 
 #include <vector>
 #include <unordered_set>
+#include <unordered_map>
 
 #ifdef HT_SYS_LINUX
     #include <cstdlib>
@@ -46,11 +47,6 @@ namespace Hatchit {
             Scene& operator=(Scene&& rhs) = default;
 
             /**
-             * \brief Creates a game object inside of this scene.
-             */
-            GameObject* CreateGameObject();
-
-            /**
             * \brief Gets this scene's name.
             */
             std::string Name() const;
@@ -69,8 +65,10 @@ namespace Hatchit {
             
             /**
              * \brief Attempts to load this scene from the cache.
+             * This method steps through the JSON file creating all the GameObjects in the scene.
+             * \sa ParseChildGameObjects(), ParseGameObject(), ParseTransform(), ParseComponent()
              */
-            bool LoadFromCache();
+            bool LoadFromCache(void);
 
             /**
              * \brief Attempts to load scene data from a file.
@@ -105,38 +103,52 @@ namespace Hatchit {
 
         private:
             /**
-             * \brief Creates a new game object with the given GUID.
-             * \param guid The game object's globally-unique identifier.
-             * \return The new game object.
-             */
-            GameObject* CreateGameObject(const Guid& guid);
+            * \brief Recursively establishes the parent/child relationship of the GameObject linked to the provided Guid.
+            * \param id                 The Guid of the GameObject to setup.
+            * \param guid_to_obj        Mapping of Guids to GameObject pointers.
+            * \param guid_to_json       Mapping of Guids to JSON objects.
+            *
+            * This method is recursively invoked on all the children of the GameObject listed in the JSON file.
+            *
+            * \sa ParseGameObject(), ParseTransform(), ParseComponent, LoadFromCache(), GameObject()
+            */
+            void ParseChildGameObjects(const Guid& id, std::unordered_map<Guid, GameObject*>& guid_to_obj, std::unordered_map<Guid, nlohmann::json>& guid_to_json);
 
             /**
             * \brief Attempts to parse a GameObject from the provided JSON.
             * \param obj    The JSON object to parse.
             * \return true if the GameObject was parsed successfully.
+            *
+            * \sa ParseChildGameObjects(), ParseTransform(), ParseComponent(), LoadFromCache(), GameObject()
             */
-            bool ParseGameObject(const nlohmann::json& obj, const std::unordered_set<Guid>& guids);
+            bool ParseGameObject(const nlohmann::json& obj, GameObject& out);
 
             /**
             * \brief Attempts to parse a Transform from the provided JSON.
             * \param obj    The JSON object to parse.
-            * \param out    The Transform that will hold the result.
-            * \return true if the Transform was parsed successfully.
+            * \return The resulting Transform.
+            *
+            * If there are any missing properties in the JSON, default values are substituted.
+            *
+            * \sa ParseChildGameObjects(), ParseGameObject(), ParseComponent(), LoadFromCache(), Transform()
             */
-            bool ParseTransform(const nlohmann::json& obj, Transform& out);
+            Transform ParseTransform(const nlohmann::json& obj);
 
             /**
             * \brief Attempts to parse a Component from the provided JSON.
             * \param obj    The JSON object to parse.
             * \return true if the Component was parsed successfully.
+            *
+            * Code to parse new Component types should be added to this method.
+            *
+            * \sa ParseChildGameObjects(), ParseGameObject(), ParseTransform(), LoadFromCache(), Component()
             */
-            bool ParseComponent(const nlohmann::json& obj);
+            bool ParseComponent(const nlohmann::json& obj, GameObject& out);
 
             std::string m_name; /**< The name associated with this scene. */
             Guid m_guid; /**< The Guid associated with this scene. */
             nlohmann::json m_description; /**< The JSON description of the scene. */
-            std::vector<GameObject> m_gameObjects; /**< std::vector of GameObjects present in the scene. */
+            std::vector<GameObject*> m_gameObjects; /**< std::vector of GameObjects present in the scene. */
         };
     }
 }

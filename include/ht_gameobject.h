@@ -64,9 +64,12 @@ namespace Hatchit {
              * Responsible for initializing the Component vector, Component bitmask, and child vector.
              * Sets the GameObject's guid to an existing value.
              *
-             * \param guid This game object's GUID.
+             * \param guid  The Guid for this GameObject.
+             * \param name  The name of this GameObject.
+             * \param t     The Transform for this GameObject.
+             * \sa Guid(), Transform()
              */
-            GameObject::GameObject(const Guid& guid);
+            GameObject::GameObject(const Guid& guid, const std::string& name, Transform& t);
 
             /**
             * \brief The destructor for GameObject.
@@ -75,7 +78,20 @@ namespace Hatchit {
             */
             ~GameObject(void);
 
-            Transform* GetTransform();
+            /**
+            * \brief Retrieve this GameObject's Guid.
+            */
+            const Guid& GetGuid(void) const;
+
+            /**
+            * \brief Retrieve this GameObject's name.
+            */
+            const std::string& GetName(void) const;
+
+            /**
+            * \brief Retrieve this GameObject's Transform.
+            */
+            Transform& GetTransform(void);
 
             /**
             * \brief Indicates whether or not this GameObject is enabled.
@@ -271,12 +287,13 @@ namespace Hatchit {
 
         private:
             bool m_enabled; /**< bool indicating if this GameObject is enabled. */
+            std::string m_name; /**< The name associated with this GameObject. */
+            Guid m_guid; /**< The Guid associated with this GameObject. */
+            Transform m_transform; /**< The Transform representing the position/orientation of this GameObject. */
             GameObject *m_parent; /**< The parent of this GameObject. */
             std::vector<GameObject*> m_children; /**< All the GameObjects which are children of this GameObject. */
             std::vector<Component*> m_components; /**< std::vector of all attached Components. */
             std::unordered_map<Guid, std::vector<Component*>::size_type> m_componentMap; /**< Unique mapping of Component to Guid. */
-            Transform m_transform;
-            Guid m_guid;
         };
 
         template <typename T>

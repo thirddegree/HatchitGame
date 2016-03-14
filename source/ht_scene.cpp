@@ -89,27 +89,6 @@ namespace Hatchit {
         }
 
         /**
-         * \brief Creates a game object inside of this scene.
-         */
-        GameObject* Scene::CreateGameObject()
-        {
-            Guid guid;
-            return CreateGameObject(guid);
-        }
-
-        /**
-         * \brief Creates a new game object with the given GUID.
-         *
-         * \param guid The game object's globally-unique identifier.
-         * \return The new game object.
-         */
-        GameObject* Scene::CreateGameObject(const Guid& guid)
-        {
-            m_gameObjects.emplace_back(guid);
-            return &m_gameObjects.back();
-        }
-
-        /**
         * \brief Gets this scene's name.
         */
         std::string Scene::Name() const
@@ -163,8 +142,8 @@ namespace Hatchit {
             }
 
             // Get the Guids for every GameObject in the scene.
-            std::unordered_set<std::string> string_guids{};
-            if (!ExtractContainerFromJSON<std::unordered_set<std::string>>(m_description, "GUIDs", string_guids))
+            std::vector<std::string> string_guids{};
+            if (!ExtractContainerFromJSON(m_description, "GUIDs", string_guids))
             {
                 HT_DEBUG_PRINTF("Failed to find property 'GUIDs' in scene description!\n");
                 return false;
@@ -184,29 +163,98 @@ namespace Hatchit {
                 guids.insert(id);
             }
 
-            // Get an array of all the GameObjects in the scene.
+            // Get an array of all the JSON GameObjects in the scene.
             std::vector<JSON> json_gameobjs{};
-            if (!ExtractContainerFromJSON<std::vector<JSON>>(m_description, "GameObjects", json_gameobjs))
+            if (!ExtractContainerFromJSON(m_description, "GameObjects", json_gameobjs))
             {
                 HT_DEBUG_PRINTF("Failed to find property 'GameObjects' in scene description!\n");
                 return false;
             }
 
-            // Begin parsing the GameObjects in the scene.
+            // Attempt to parse the JSON GameObjects.
+            std::unordered_map<Guid, GameObject*> guid_to_obj{};
+            std::unordered_map<Guid, JSON> guid_to_json{};
             for (const JSON& json_obj : json_gameobjs)
             {
-                // Attempt to parse this GameObject from JSON.
-                if (!ParseGameObject(json_obj, guids))
+                // Attempt to parse a GameObject from the provided JSON.
+                GameObject obj;
+                if (!ParseGameObject(json_obj, obj))
                 {
                     HT_DEBUG_PRINTF("Failed to parse GameObject in scene description!\n");
                     return false;
                 }
+
+                // Validate that the Guid for the parsed GameObject is present in the master list.
+                const Guid& id = obj.GetGuid();
+                std::unordered_set<Guid>::const_iterator iter = guids.find(id);
+                if (iter == guids.cend())
+                {
+                    HT_DEBUG_PRINTF("Failed to locate %s within 'GUIDs' array in scene description!\n", id.ToString());
+                    return false;
+                }
+
+                GameObject* allocated_obj = new GameObject(std::move(obj));
+                guid_to_obj.insert(std::make_pair(id, allocated_obj));
+                guid_to_json.insert(std::make_pair(id, json_obj));
+            }
+
+            // Handles all GameObject parent/child arrangements.
+            for (const Guid& id : guids)
+            {
+                ParseChildGameObjects(id, guid_to_obj, guid_to_json);
+            }
+
+            // Copy the remaining top-level GameObjects into std::vector.
+            for (const std::pair<Guid, GameObject*>& guid_obj_pair : guid_to_obj)
+            {
+                m_gameObjects.push_back(guid_obj_pair.second);
             }
 
             return true;
         }
 
-        bool Scene::ParseGameObject(const JSON& obj, const std::unordered_set<Guid>& guids)
+        void Scene::ParseChildGameObjects(const Guid& id, std::unordered_map<Guid, GameObject*>& guid_to_obj, std::unordered_map<Guid, JSON>& guid_to_json)
+        {
+            std::unordered_map<Guid, GameObject*>::const_iterator obj_iter = guid_to_obj.find(id);
+            std::unordered_map<Guid, JSON>::const_iterator json_iter = guid_to_json.find(id);
+            if ((obj_iter == guid_to_obj.cend()) || (json_iter == guid_to_json.cend()))
+                return;
+
+            const JSON& json_obj = json_iter->second;
+            GameObject* obj = obj_iter->second;
+
+            std::vector<std::string> string_guids{};
+            if (!ExtractContainerFromJSON(json_obj, "Children", string_guids))
+                return;
+
+            std::unordered_set<Guid> child_guids{};
+            for (const std::string& string_guid : string_guids)
+            {
+                Guid id;
+                if (!Guid::Parse(string_guid, id))
+                    continue;
+
+                child_guids.insert(id);
+            }
+
+            for (const Guid& child_guid : child_guids)
+            {
+                std::unordered_map<Guid, GameObject*>::const_iterator child_obj_iter = guid_to_obj.find(child_guid);
+                std::unordered_map<Guid, JSON>::const_iterator child_json_iter = guid_to_json.find(child_guid);
+                if ((child_obj_iter == guid_to_obj.cend()) || (child_json_iter == guid_to_json.cend()))
+                    continue;
+
+                ParseChildGameObjects(child_guid, guid_to_obj, guid_to_json);
+
+                GameObject* child_obj = child_obj_iter->second;
+                obj->AddChild(child_obj);
+
+                guid_to_obj.erase(child_guid);
+                guid_to_json.erase(child_guid);
+            }
+        }
+
+        bool Scene::ParseGameObject(const JSON& obj, GameObject& out)
         {
             // Extract the GameObject's GUID.
             Guid id;
@@ -220,95 +268,68 @@ namespace Hatchit {
             std::string name;
             if (!ExtractStringFromJSON(obj, "Name", name))
             {
-                HT_DEBUG_PRINTF("Failed to find property 'Name' on GameObject with Guid:%s in scene description!\n", id.ToString());
+                HT_DEBUG_PRINTF("Failed to find property 'Name' on GameObject %s in scene description!\n", id.ToString());
                 return false;
             }
 
             // Attempt to extract the GameObject's Transform.
-            Transform t;
-            if (!ParseTransform(obj, t))
-            {
-                t = Transform{}; // Default Constructor if a Transform was not provided.
-            }
+            Transform t = ParseTransform(obj);
 
-            // Attempt to extract JSON array representing the child GameObjects.
-            std::unordered_set<std::string> string_guids;
-            if (ExtractContainerFromJSON<std::unordered_set<std::string>>(obj, "Children", string_guids))
-            {
-                // Convert from std::strings to Guids.
-                std::unordered_set<Guid> guids;
-                for (const std::string& string_guid : string_guids)
-                {
-                    Guid id;
-                    if (!Guid::Parse(string_guid, id))
-                    {
-                        HT_DEBUG_PRINTF("Failed to parse child with Guid: %s in scene description!\n", string_guid);
-                        return false;
-                    }
+            // Construct the GameObject using the GUID, Name, and Transform extracted from JSON.
+            out = GameObject{id, name, t};
 
-                    guids.insert(id);
-                }
-
-                for (Guid child_guid : guids)
-                {
-                    // TODO: Parse Child GameObjects
-                }
-            }
-
-            // Extract an array of Component JSON objects.
+            // Attempt to extract a std::vector of Component JSON objects.
             std::vector<JSON> components;
             if (ExtractContainerFromJSON(obj, "Components", components))
             {
                 for (const JSON& json_component : components)
                 {
-                    // TODO: Parse Components.
+                    if (!ParseComponent(json_component, out))
+                    {
+                        HT_DEBUG_PRINTF("Failed to parse Component %s on GameObject %s in the scene description!\n", json_component.dump(), id.ToString());
+                    }
                 }
             }
 
             return true;
         }
 
-        bool Scene::ParseTransform(const JSON& obj, Transform& out)
+        Transform Scene::ParseTransform(const JSON& obj)
         {
             JSON::const_iterator iter = obj.find("Transform");
             if (iter == obj.cend())
             {
-                return false;
+                HT_DEBUG_PRINTF("Failed to locate property 'Transform,' using default values!\n");
+                return Transform{};
             }
 
             JSON json_transform = *iter;
 
             std::vector<float> position;
-            if (!ExtractContainerFromJSON(json_transform, "Position", position) && (position.size() == 3))
+            if (!ExtractContainerFromJSON(json_transform, "Position", position) || (position.size() != 3))
             {
-                HT_DEBUG_PRINTF("Failed to locate property 'Position' on Transform in scene description!\n");
-                return false;
+                HT_DEBUG_PRINTF("Failed to parse property 'Position' on Transform, defaulting to {0.0f, 0.0f, 0.0f}\n");
+                position = {0.0f, 0.0f, 0.0f};
             }
 
             std::vector<float> rotation;
-            if (!ExtractContainerFromJSON(json_transform, "Rotation", rotation) && (rotation.size() == 3))
+            if (!ExtractContainerFromJSON(json_transform, "Rotation", rotation) || (rotation.size() != 3))
             {
-                HT_DEBUG_PRINTF("Failed to locate property 'Rotation' on Transform in scene description!\n");
-                return false;
+                HT_DEBUG_PRINTF("Failed to parse property 'Rotation' on Transform, defaulting to {0.0f, 0.0f, 0.0f}\n");
+                rotation = {0.0f, 0.0f, 0.0f};
             }
 
             std::vector<float> scale;
-            if (!ExtractContainerFromJSON(json_transform, "Scale", scale) && (scale.size() == 3))
+            if (!ExtractContainerFromJSON(json_transform, "Scale", scale) || (scale.size() != 3))
             {
-                HT_DEBUG_PRINTF("Failed to locate property 'Scale' on Transform in scene description!\n");
-                return false;
+                HT_DEBUG_PRINTF("Failed to parse property 'Scale' on Transform, defaulting to {1.0f, 1.0f, 1.0f}\n");
+                scale = {1.0f, 1.0f, 1.0f};
             }
 
-            out = Transform(
-                    position[0],    position[1],    position[2],
-                    rotation[0],    rotation[1],    rotation[2],
-                    scale[0],       scale[1],       scale[2]
-                );
-
-            return true;
+            return Transform{position[0], position[1], position[2], rotation[0], rotation[1], rotation[2], scale[0], scale[1], scale[2]};
         }
 
-        bool Scene::ParseComponent(const JSON& obj)
+        bool Scene::ParseComponent(const JSON& obj, GameObject& out)
         {
             std::string component_type;
             if (!ExtractStringFromJSON(obj, "Name", component_type))
@@ -317,7 +338,7 @@ namespace Hatchit {
                 return false;
             }
 
-            // TODO: Add Component types here.
+            // TODO: Add cases for each Component type here.
 
             if(true)
             {
@@ -382,10 +403,10 @@ namespace Hatchit {
          */
         void Scene::Render()
         {
-            for (GameObject& obj : m_gameObjects)
+            for (GameObject* obj : m_gameObjects)
             {
-                Transform *t = obj.GetTransform();
-                t->UpdateWorldMatrix();
+                Transform& t = obj->GetTransform();
+                t.UpdateWorldMatrix();
             }
         }
         
@@ -394,9 +415,9 @@ namespace Hatchit {
          */
         void Scene::Update()
         {
-            for (GameObject& obj : m_gameObjects)
+            for (GameObject* obj : m_gameObjects)
             {
-                obj.Update();
+                obj->Update();
             }
         }
         

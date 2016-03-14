@@ -13,7 +13,10 @@
 **/
 
 #include <ht_gameobject.h>
-#include <ht_debug.h>
+
+#if defined(DEBUG) || defined(_DEBUG)
+    #include <ht_debug.h>
+#endif
 
 namespace Hatchit {
 
@@ -27,10 +30,12 @@ namespace Hatchit {
             m_componentMap = std::unordered_map<Guid, std::vector<Component*>::size_type>();
         }
 
-		GameObject::GameObject(const Guid& guid)
+		GameObject::GameObject(const Guid& guid, const std::string& name, Transform& t)
             : GameObject()
 		{
             m_guid = guid;
+            m_name = name;
+            m_transform = t;
 		}
 
         GameObject::~GameObject(void)
@@ -41,9 +46,19 @@ namespace Hatchit {
             }
         }
 
-        Transform* GameObject::GetTransform()
+        const Guid& GameObject::GetGuid(void) const
         {
-            return (Transform*)&m_transform;
+            return m_guid;
+        }
+
+        const std::string& GameObject::GetName(void) const
+        {
+            return m_name;
+        }
+
+        Transform& GameObject::GetTransform(void)
+        {
+            return m_transform;
         }
 
         bool GameObject::GetEnabled(void) const
@@ -63,9 +78,7 @@ namespace Hatchit {
 
         void GameObject::SetParent(GameObject *parent)
         {
-#ifdef _DEBUG
-            Core::DebugPrintF("GameObject SetParent. (not implemented)\n");
-#endif
+            HT_DEBUG_PRINTF("GameObject SetParent. (not implemented)\n");
         }
 
         void GameObject::Update(void)
@@ -86,9 +99,7 @@ namespace Hatchit {
 
         void GameObject::OnInit(void)
         {
-#ifdef _DEBUG
-            Core::DebugPrintF("GameObject OnInit. (not implemented)\n");
-#endif
+            HT_DEBUG_PRINTF("GameObject OnInit. (not implemented)\n");
         }
 
         void GameObject::OnDestroy(void)
@@ -120,16 +131,12 @@ namespace Hatchit {
 
         void GameObject::AddChild(GameObject *child)
         {
-#ifdef _DEBUG
-            Core::DebugPrintF("GameObject AddChild. (not implemented)\n");
-#endif
+            HT_DEBUG_PRINTF("GameObject AddChild. (not implemented)\n");
         }
 
         void GameObject::RemoveChildAtIndex(std::size_t index)
         {
-#ifdef _DEBUG
-            Core::DebugPrintF("GameObject RemoveChildAtIndex. (not implemented)\n");
-#endif
+            HT_DEBUG_PRINTF("GameObject RemoveChildAtIndex. (not implemented)\n");
         }
     }
 }

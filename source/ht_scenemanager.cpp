@@ -12,8 +12,11 @@
 **
 **/
 
-#include "ht_scenemanager.h"
-#include "ht_debug.h"
+#include <ht_scenemanager.h>
+
+#if defined(DEBUG) || defined(_DEBUG)
+    #include <ht_debug.h>
+#endif
 
 namespace Hatchit {
 
@@ -43,9 +46,7 @@ namespace Hatchit {
          */
         void SceneManager::Deinitialize()
         {
-#if defined(DEBUG) || defined(_DEBUG)
-            Core::DebugPrintF("Scene Manager DeInitialized (not implemented)\n");
-#endif
+            HT_DEBUG_PRINTF("Scene Manager DeInitialized (not implemented)\n");
         }
 
         /**
@@ -69,7 +70,7 @@ namespace Hatchit {
                 size_t fileSize = file.SizeBytes();
                 if (fileSize == 0)
                 {
-                    DebugPrintF("WARNING: Scene list file is empty!\n");
+                    HT_DEBUG_PRINTF("WARNING: Scene list file is empty!\n");
                     return true;
                 }
                 std::string contents;
@@ -83,10 +84,10 @@ namespace Hatchit {
                 JSON sceneList = JSON::parse(contents);
 
                 // TODO - Change this when we finalize the scene
-                DebugPrintF("Reading scene list...\n");
+                HT_DEBUG_PRINTF("Reading scene list...\n");
                 for (const std::string& scenePath : sceneList)
                 {
-                    DebugPrintF("** Loading '%s'... ", scenePath);
+                    HT_DEBUG_PRINTF("** Loading '%s'...\n", scenePath);
 
                     File sceneFile;
                     sceneFile.Open(folder + scenePath, FileMode::ReadText);
@@ -94,11 +95,11 @@ namespace Hatchit {
                     _instance.m_scenes.emplace_back();
                     if (_instance.m_scenes.back().LoadFromFile(sceneFile))
                     {
-                        DebugPrintF("Done!\n");
+                        HT_DEBUG_PRINTF("Done!\n");
                     }
                     else
                     {
-                        DebugPrintF("Failed!\n");
+                        HT_DEBUG_PRINTF("Failed!\n");
                     }
 
                     sceneFile.Close();
@@ -108,7 +109,7 @@ namespace Hatchit {
             }
             catch (...)
             {
-                DebugPrintF("Failed to load scene list!\n");
+                HT_DEBUG_PRINTF("Failed to load scene list!\n");
             }
 
             return loaded;
@@ -158,9 +159,7 @@ namespace Hatchit {
          */
         void SceneManager::LoadSceneAsync(const std::string& sceneName)
         {
-#if defined(DEBUG) || defined(_DEBUG)
-            Core::DebugPrintF("TODO - SceneManager::LoadSceneAsync (add callback params)\n");
-#endif
+            HT_DEBUG_PRINTF("TODO - SceneManager::LoadSceneAsync (add callback params)\n");
         }
         
         /**

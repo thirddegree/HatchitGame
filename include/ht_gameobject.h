@@ -26,13 +26,14 @@
 #pragma once
 
 #include <vector>
-#include <bitset>
+#include <unordered_map>
 #include <tuple>
 #include <utility>
 
 #include <ht_platform.h>
 #include <ht_component.h>
 #include <ht_transform.h>
+#include <ht_guid.h>
 
 #ifdef HT_SYS_LINUX
     #include <cstdlib>
@@ -45,19 +46,30 @@ namespace Hatchit {
         class HT_API GameObject
         {
         public:
-            static constexpr std::uint32_t MAX_COMPONENTS{50}; /**< The maximum number of Components that can be attached to a GameObject. */
-
             GameObject(const GameObject& rhs) = default;
             GameObject(GameObject&& rhs) = default;
             GameObject& operator=(const GameObject& rhs) = default;
             GameObject& operator=(GameObject&& rhs) = default;
 
             /**
-            * \brief The constructor for GameObject.
-            *
-            * Responsible for initializing the Component vector, Component bitmask, and child vector.
-            */
+             * \brief The constructor for GameObject.
+             *
+             * Responsible for initializing the Component vector, Component bitmask, and child vector.
+             */
             GameObject(void);
+
+            /**
+             * \brief The constructor for GameObject read from scene file.
+             *
+             * Responsible for initializing the Component vector, Component bitmask, and child vector.
+             * Sets the GameObject's guid to an existing value.
+             *
+             * \param guid  The Guid for this GameObject.
+             * \param name  The name of this GameObject.
+             * \param t     The Transform for this GameObject.
+             * \sa Guid(), Transform()
+             */
+            GameObject::GameObject(const Guid& guid, const std::string& name, Transform& t);
 
             /**
             * \brief The destructor for GameObject.
@@ -66,7 +78,20 @@ namespace Hatchit {
             */
             ~GameObject(void);
 
-            Transform* GetTransform();
+            /**
+            * \brief Retrieve this GameObject's Guid.
+            */
+            const Guid& GetGuid(void) const;
+
+            /**
+            * \brief Retrieve this GameObject's name.
+            */
+            const std::string& GetName(void) const;
+
+            /**
+            * \brief Retrieve this GameObject's Transform.
+            */
+            Transform& GetTransform(void);
 
             /**
             * \brief Indicates whether or not this GameObject is enabled.
@@ -262,11 +287,13 @@ namespace Hatchit {
 
         private:
             bool m_enabled; /**< bool indicating if this GameObject is enabled. */
+            std::string m_name; /**< The name associated with this GameObject. */
+            Guid m_guid; /**< The Guid associated with this GameObject. */
+            Transform m_transform; /**< The Transform representing the position/orientation of this GameObject. */
             GameObject *m_parent; /**< The parent of this GameObject. */
             std::vector<GameObject*> m_children; /**< All the GameObjects which are children of this GameObject. */
-            std::bitset<MAX_COMPONENTS> m_componentMask; /**< Bitmask indicating which Components are attached. */
             std::vector<Component*> m_components; /**< std::vector of all attached Components. */
-            Transform m_transform;
+            std::unordered_map<Guid, std::vector<Component*>::size_type> m_componentMap; /**< Unique mapping of Component to Guid. */
         };
 
         template <typename T>
@@ -274,16 +301,15 @@ namespace Hatchit {
         {
             static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
 
-            std::uint32_t component_id = Component::GetComponentId<T>();
-            if (component_id >= MAX_COMPONENTS)
+            Guid component_id = Component::GetComponentId<T>();
+            std::unordered_map<Guid, std::vector<Component*>::size_type>::const_iterator iter = m_componentMap.find(component_id);
+            if (iter != m_componentMap.cend())
                 return false;
 
-            if (m_componentMask.test(component_id))
-                return false;
+            m_componentMap.insert(std::make_pair(component_id, m_components.size()));
+            m_components.push_back(component);
 
-            m_componentMask.set(component_id);
-
-            m_components[component_id] = component;
+            component->SetOwner(this);
 
             component->VOnInit();
 
@@ -298,18 +324,16 @@ namespace Hatchit {
         {
             static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
 
-            std::uint32_t component_id = Component::GetComponentId<T>();
-            if (component_id >= MAX_COMPONENTS)
+            Guid component_id = Component::GetComponentId<T>();
+            std::unordered_map<Guid, std::vector<Component*>::size_type>::const_iterator iter = m_componentMap.find(component_id);
+            if (iter != m_componentMap.cend())
                 return false;
-
-            if (m_componentMask.test(component_id))
-                return false;
-
-            m_componentMask.set(component_id);
 
             T *component = new T(std::forward<Args>(args)...);
+            m_componentMap.insert(std::make_pair(component_id, m_components.size()));
+            m_components.push_back(component);
 
-            m_components[component_id] = component;
+            component->SetOwner(this);
 
             component->VOnInit();
 
@@ -324,20 +348,19 @@ namespace Hatchit {
         {
             static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
 
-            std::uint32_t component_id = Component::GetComponentId<T>();
-            if (component_id >= GameObject::MAX_COMPONENTS)
+            Guid component_id = Component::GetComponentId<T>();
+            std::unordered_map<Guid, std::vector<Component*>::size_type>::const_iterator iter = m_componentMap.find(component_id);
+            if (iter == m_componentMap.cend())
                 return false;
 
-            if (!m_componentMask.test(component_id))
-                return false;
-
-            Component *component = m_components[component_id];
+            std::vector<Component*>::size_type index = m_componentMap[component_id];
+            Component *component = m_components[index];
             if(component->GetEnabled())
                 component->Disable();
             component->VOnDestroy();
 
-            m_componentMask.reset(component_id);
-            m_components[component_id] = nullptr;
+            m_components[index] = nullptr;
+            m_componentMap.erase(component_id);
             delete component;
 
             return true;
@@ -347,23 +370,14 @@ namespace Hatchit {
         bool GameObject::HasComponent(void) const
         {
             static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
-
-            std::uint32_t component_id = Component::GetComponentId<T>();
-            if (component_id >= GameObject::MAX_COMPONENTS)
-                return false;
-
-            return m_componentMask.test(component_id);
+            Guid component_id = Component::GetComponentId<T>();
+            return (m_componentMap.find(component_id) != m_componentMap.cend());
         }
 
         template <typename T1, typename T2, typename... Args>
         bool GameObject::HasComponent(void) const
         {
             static_assert(std::is_base_of<Component, T1>::value, "Must be a sub-class of Hatchit::Game::Component!");
-
-            std::uint32_t component_id = Component::GetComponentId<T1>();
-            if (component_id >= GameObject::MAX_COMPONENTS)
-                return false;
-
             return HasComponent<T1>() && HasComponent<T2, Args...>();
         }
 
@@ -372,14 +386,13 @@ namespace Hatchit {
         {
             static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
 
-            std::uint32_t component_id = Component::GetComponentId<T>();
-            if (component_id >= GameObject::MAX_COMPONENTS)
+            Guid component_id = Component::GetComponentId<T>();
+            std::unordered_map<Guid, std::vector<Component*>::size_type>::const_iterator iter = m_componentMap.find(component_id);
+            if (iter == m_componentMap.cend())
                 return nullptr;
 
-            if (!m_componentMask.test(component_id))
-                return nullptr;
-
-            return dynamic_cast<T*>(m_components[component_id]);
+            std::vector<Component*>::size_type index = m_componentMap[component_id];
+            return dynamic_cast<T*>(m_components[index]);
         }
 
         template <typename... Args>
@@ -396,11 +409,9 @@ namespace Hatchit {
             if (!HasComponent<T>())
                 return false;
 
-            std::uint32_t component_id = Component::GetComponentId<T>();
-            if (component_id >= MAX_COMPONENTS)
-                return false;
-
-            Component *component = m_components[component_id];
+            Guid component_id = Component::GetComponentId<T>();
+            std::vector<Component*>::size_type index = m_componentMap[component_id];
+            Component *component = m_components[index];
             if (component->GetEnabled())
                 return false;
 
@@ -417,11 +428,9 @@ namespace Hatchit {
             if (!HasComponent<T>())
                 return false;
 
-            std::uint32_t component_id = Component::GetComponentId<T>();
-            if (component_id >= MAX_COMPONENTS)
-                return false;
-
-            Component *component = m_components[component_id];
+            Guid component_id = Component::GetComponentId<T>();
+            std::vector<Component*>::size_type index = m_componentMap[component_id];
+            Component *component = m_components[index];
             if (!component->GetEnabled())
                 return false;
 

@@ -1,20 +1,34 @@
 {
-    "Name": "SCENE NAME",
-    "GUID": "{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}",
+    "Name": "Test Scene",
+    "GUID": "{00000000-0000-0000-0000-000000000000}",
     "GUIDs": [
-        "{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}",
-        "{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}"
+        "{00000000-0000-0000-0000-000000000001}",
+        "{00000000-0000-0000-0000-000000000002}"
     ],
     "GameObjects": [
         {
-            "Name": "...",
-            "GUID": "{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}",
+            "Name": "ParentObject",
+            "GUID": "{00000000-0000-0000-0000-000000000001}",
             "Children": [
-                "{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}"
+                "{00000000-0000-0000-0000-000000000002}"
             ],
             "Components": [
                 {
                     "Name": "ClassName"
+                }
+            ],
+            "Transform": {
+                "Position": [0, 0, 0],
+                "Rotation": [0, 0, 0],
+                "Scale": [1, 1, 1]
+            }
+        },
+        {
+            "Name": "ChildObject",
+            "GUID": "{00000000-0000-0000-0000-000000000002}",
+            "Components": [
+                {
+                    "Name": "ClassName2"
                 }
             ],
             "Transform": {

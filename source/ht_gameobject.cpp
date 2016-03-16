@@ -13,7 +13,10 @@
 **/
 
 #include <ht_gameobject.h>
-#include <ht_debug.h>
+
+#if defined(DEBUG) || defined(_DEBUG)
+    #include <ht_debug.h>
+#endif
 
 namespace Hatchit {
 
@@ -22,25 +25,40 @@ namespace Hatchit {
         {
             m_enabled = false;
             m_parent = nullptr;
-            m_components = std::vector<Component*>(GameObject::MAX_COMPONENTS, nullptr);
+            m_components = std::vector<Component*>();
             m_children = std::vector<GameObject*>();
-            m_componentMask = std::bitset<GameObject::MAX_COMPONENTS>();
+            m_componentMap = std::unordered_map<Guid, std::vector<Component*>::size_type>();
         }
+
+		GameObject::GameObject(const Guid& guid, const std::string& name, Transform& t)
+            : GameObject()
+		{
+            m_guid = guid;
+            m_name = name;
+            m_transform = t;
+		}
 
         GameObject::~GameObject(void)
         {
-            for (std::size_t i = 0; i < GameObject::MAX_COMPONENTS; ++i)
+            for (Component *component: m_components)
             {
-                if(m_componentMask.test(i))
-                {
-                    delete m_components[i];
-                }
+                delete component;
             }
         }
 
-        Transform* GameObject::GetTransform()
+        const Guid& GameObject::GetGuid(void) const
         {
-            return (Transform*)&m_transform;
+            return m_guid;
+        }
+
+        const std::string& GameObject::GetName(void) const
+        {
+            return m_name;
+        }
+
+        Transform& GameObject::GetTransform(void)
+        {
+            return m_transform;
         }
 
         bool GameObject::GetEnabled(void) const
@@ -60,21 +78,15 @@ namespace Hatchit {
 
         void GameObject::SetParent(GameObject *parent)
         {
-#ifdef _DEBUG
-            Core::DebugPrintF("GameObject SetParent. (not implemented)\n");
-#endif
+            HT_DEBUG_PRINTF("GameObject SetParent. (not implemented)\n");
         }
 
         void GameObject::Update(void)
         {
-            for (std::size_t i = 0; i < GameObject::MAX_COMPONENTS; ++i)
+            for (Component *component : m_components)
             {
-                if (m_componentMask.test(i))
-                {
-                    Component *component = m_components[i];
                     if(component->GetEnabled())
                         component->VOnUpdate();
-                }
             }
 
             for (std::size_t i = 0; i < m_children.size(); ++i)
@@ -87,24 +99,18 @@ namespace Hatchit {
 
         void GameObject::OnInit(void)
         {
-#ifdef _DEBUG
-            Core::DebugPrintF("GameObject OnInit. (not implemented)\n");
-#endif
+            HT_DEBUG_PRINTF("GameObject OnInit. (not implemented)\n");
         }
 
         void GameObject::OnDestroy(void)
         {
             Disable();
 
-            for (std::size_t i = 0; i < GameObject::MAX_COMPONENTS; ++i)
+            for (Component *component : m_components)
             {
-                if (m_componentMask.test(i))
-                {
-                    Component *component = m_components[i];
-                    if (component->GetEnabled())
-                        component->SetEnabled(false);
-                    component->VOnDestroy();
-                }
+                if (component->GetEnabled())
+                    component->SetEnabled(false);
+                component->VOnDestroy();
             }
 
             for (std::size_t i = 0; i < m_children.size(); ++i)
@@ -125,16 +131,12 @@ namespace Hatchit {
 
         void GameObject::AddChild(GameObject *child)
         {
-#ifdef _DEBUG
-            Core::DebugPrintF("GameObject AddChild. (not implemented)\n");
-#endif
+            HT_DEBUG_PRINTF("GameObject AddChild. (not implemented)\n");
         }
 
         void GameObject::RemoveChildAtIndex(std::size_t index)
         {
-#ifdef _DEBUG
-            Core::DebugPrintF("GameObject RemoveChildAtIndex. (not implemented)\n");
-#endif
+            HT_DEBUG_PRINTF("GameObject RemoveChildAtIndex. (not implemented)\n");
         }
     }
 }

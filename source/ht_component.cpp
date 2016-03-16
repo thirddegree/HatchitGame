@@ -14,10 +14,19 @@
 
 #include <ht_component.h>
 #include <ht_debug.h>
+#include <ht_gameobject.h>
 
 namespace Hatchit {
     namespace Game {
-        std::uint32_t Component::s_componentIdCounter = 0;
+        GameObject* Component::GetOwner(void)
+        {
+            return m_owner;
+        }
+
+        void Component::SetOwner(GameObject *owner)
+        {
+            m_owner = owner;
+        }
 
         bool Component::GetEnabled(void) const
         {

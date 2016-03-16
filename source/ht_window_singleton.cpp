@@ -39,7 +39,7 @@ namespace Hatchit {
     #ifdef HT_WIN32_DESKTOP_APP
             _instance.m_window = new SDLWindow(params);
     #elif defined(HT_WIN32_UNIVERSAL_APP)
-            _instance.m_window = new UWAWindow(params);
+            //_instance.m_window = new UWAWindow(params);
     #endif
 #endif
             if (!_instance.m_window->VInitialize())

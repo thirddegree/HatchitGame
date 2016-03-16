@@ -30,16 +30,20 @@ namespace Hatchit {
             m_componentMap = std::unordered_map<Guid, std::vector<Component*>::size_type>();
         }
 
-		GameObject::GameObject(const Guid& guid, const std::string& name, Transform& t)
+        GameObject::GameObject(const Guid& guid, const std::string& name, Transform& t)
             : GameObject()
-		{
+        {
             m_guid = guid;
             m_name = name;
             m_transform = t;
-		}
+        }
 
         GameObject::~GameObject(void)
         {
+            for (GameObject* child : m_children)
+            {
+                delete child;
+            }
             for (Component *component: m_components)
             {
                 delete component;
@@ -131,12 +135,17 @@ namespace Hatchit {
 
         void GameObject::AddChild(GameObject *child)
         {
-            HT_DEBUG_PRINTF("GameObject AddChild. (not implemented)\n");
+            m_transform.AddChild(&child->GetTransform());
+        }
+
+        void GameObject::RemoveChild(GameObject* child)
+        {
+            m_transform.RemoveChild(&child->GetTransform());
         }
 
         void GameObject::RemoveChildAtIndex(std::size_t index)
         {
-            HT_DEBUG_PRINTF("GameObject RemoveChildAtIndex. (not implemented)\n");
+            m_transform.RemoveChildAtIndex(index);
         }
     }
 }

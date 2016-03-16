@@ -38,6 +38,7 @@ namespace Hatchit {
         */
         class HT_API Scene
         {
+
         public:
             Scene(void) = default;
             ~Scene(void) = default;

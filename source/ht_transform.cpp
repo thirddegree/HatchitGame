@@ -84,8 +84,8 @@ namespace Hatchit {
         void Transform::AddChild(Transform* transform)
         {
             m_childTransforms.push_back(transform);
-                        if (transform->m_parent)
-                                transform->m_parent->RemoveChild(transform);
+            if (transform->m_parent)
+                transform->m_parent->RemoveChild(transform);
             transform->m_parent = this;
             transform->SetDirty();
         }
@@ -100,6 +100,15 @@ namespace Hatchit {
                     m_childTransforms.erase(m_childTransforms.begin() + i);
                     return;
                 }
+            }
+        }
+
+        void Transform::RemoveChildAtIndex(std::size_t index)
+        {
+            if (index < m_childTransforms.size())
+            {
+                m_childTransforms.at(index)->m_parent = nullptr;
+                m_childTransforms.erase(m_childTransforms.begin() + index);
             }
         }
 

@@ -426,7 +426,11 @@ namespace Hatchit {
          */
         void Scene::Unload()
         {
-            HT_DEBUG_PRINTF("TODO - Scene::Unload()\n");
+            for (GameObject* gameObject : m_gameObjects)
+            {
+                delete gameObject;
+            }
+            m_gameObjects.clear();
         }
     }
 }

@@ -46,7 +46,8 @@ namespace Hatchit {
          */
         void SceneManager::Deinitialize()
         {
-            HT_DEBUG_PRINTF("Scene Manager DeInitialized (not implemented)\n");
+            SceneManager& _instance = SceneManager::instance();
+            _instance.m_currentScene->Unload();
         }
 
         /**

@@ -42,34 +42,16 @@
 namespace Hatchit {
 
     namespace Game {
-
+        class Scene;
         class HT_API GameObject
         {
+        friend class Scene;
         public:
             GameObject(const GameObject& rhs) = default;
             GameObject(GameObject&& rhs) = default;
             GameObject& operator=(const GameObject& rhs) = default;
             GameObject& operator=(GameObject&& rhs) = default;
 
-            /**
-             * \brief The constructor for GameObject.
-             *
-             * Responsible for initializing the Component vector, Component bitmask, and child vector.
-             */
-            GameObject(void);
-
-            /**
-             * \brief The constructor for GameObject read from scene file.
-             *
-             * Responsible for initializing the Component vector, Component bitmask, and child vector.
-             * Sets the GameObject's guid to an existing value.
-             *
-             * \param guid  The Guid for this GameObject.
-             * \param name  The name of this GameObject.
-             * \param t     The Transform for this GameObject.
-             * \sa Guid(), Transform()
-             */
-            GameObject::GameObject(const Guid& guid, const std::string& name, Transform& t);
 
             /**
             * \brief The destructor for GameObject.
@@ -151,6 +133,12 @@ namespace Hatchit {
             * \param index  The index of the GameObject to remove.
             */
             void RemoveChildAtIndex(std::size_t index);
+
+            /**
+            * \brief Attempts to remove provided GameObject from this GameObject.
+            * \param child  The GameObject to remove.
+            */
+            void RemoveChild(GameObject *child);
 
             /**
             * \brief Called when the gameobject is created to initialize all values.
@@ -286,6 +274,28 @@ namespace Hatchit {
             }
 
         private:
+
+
+            /**
+            * \brief The constructor for GameObject.
+            *
+            * Responsible for initializing the Component vector, Component bitmask, and child vector.
+            */
+            GameObject(void);
+
+            /**
+            * \brief The constructor for GameObject read from scene file.
+            *
+            * Responsible for initializing the Component vector, Component bitmask, and child vector.
+            * Sets the GameObject's guid to an existing value.
+            *
+            * \param guid  The Guid for this GameObject.
+            * \param name  The name of this GameObject.
+            * \param t     The Transform for this GameObject.
+            * \sa Guid(), Transform()
+            */
+            GameObject::GameObject(const Guid& guid, const std::string& name, Transform& t);
+
             bool m_enabled; /**< bool indicating if this GameObject is enabled. */
             std::string m_name; /**< The name associated with this GameObject. */
             Guid m_guid; /**< The Guid associated with this GameObject. */

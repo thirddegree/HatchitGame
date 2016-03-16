@@ -47,7 +47,8 @@ namespace Hatchit {
         void SceneManager::Deinitialize()
         {
             SceneManager& _instance = SceneManager::instance();
-            _instance.m_currentScene->Unload();
+            if (_instance.m_currentScene != nullptr)
+                _instance.m_currentScene->Unload();
         }
 
         /**

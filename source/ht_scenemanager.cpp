@@ -147,7 +147,12 @@ namespace Hatchit {
             // If we've found the scene, load it from the cache
             if (_instance.m_currentScene)
             {
-                return _instance.m_currentScene->LoadFromCache();
+                if (_instance.m_currentScene->LoadFromCache())
+                {
+                    _instance.m_currentScene->Init();
+                    return true;
+                }
+                return false;
             }
             return false;
         }

@@ -18,6 +18,7 @@
 #include <ht_gameobject.h>
 #include <ht_guid.h>
 #include <ht_file.h>
+#include <ht_test_component.h>
 
 #include <json.hpp>
 
@@ -38,7 +39,7 @@ namespace Hatchit {
         */
         class HT_API Scene
         {
-
+        friend class SceneManager;
         public:
             Scene(void) = default;
             ~Scene(void) = default;
@@ -103,6 +104,12 @@ namespace Hatchit {
             void Unload(void);
 
         private:
+
+            /**
+            * \brief Initializes GameObjects in scene
+            */
+            void Init();
+
             /**
             * \brief Recursively establishes the parent/child relationship of the GameObject linked to the provided Guid.
             * \param id                 The Guid of the GameObject to setup.

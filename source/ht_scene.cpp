@@ -272,11 +272,15 @@ namespace Hatchit {
                 return false;
             }
 
+            // Extract the GameObject's enabled state.
+            bool enabled = false;
+            //ExtractBoolFromJSON(obj, "Enabled", enabled)
+
             // Attempt to extract the GameObject's Transform.
             Transform t = ParseTransform(obj);
 
             // Construct the GameObject using the GUID, Name, and Transform extracted from JSON.
-            out = GameObject{id, name, t};
+            out = GameObject{id, name, t, enabled};
 
             // Attempt to extract a std::vector of Component JSON objects.
             std::vector<JSON> components;
@@ -338,9 +342,14 @@ namespace Hatchit {
                 return false;
             }
 
+            if (component_type == "TestComponent")
+            {
+                out.AddComponent<TestComponent>();
+            }
+
             // TODO: Add cases for each Component type here.
 
-            if(true)
+            else
             {
                 HT_DEBUG_PRINTF("Unknown Component type %s in scene description!\n", component_type);
                 return false;
@@ -398,6 +407,19 @@ namespace Hatchit {
             return loaded;
         }
 
+        void Scene::Init()
+        {
+            for (GameObject* gameObject : m_gameObjects)
+            {
+                //gameObject->OnInit();
+            }
+            for (GameObject* gameObject : m_gameObjects)
+            {
+                if (gameObject->GetEnabled())
+                    gameObject->OnEnabled();
+            }
+        }
+
         /**
          * \brief Renders this scene.
          */
@@ -426,6 +448,10 @@ namespace Hatchit {
          */
         void Scene::Unload()
         {
+            for (GameObject* gameObject : m_gameObjects)
+            {
+                gameObject->Destroy();
+            }
             for (GameObject* gameObject : m_gameObjects)
             {
                 delete gameObject;

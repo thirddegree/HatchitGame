@@ -23,19 +23,19 @@ namespace Hatchit {
     namespace Game {
         GameObject::GameObject(void)
         {
-            m_enabled = false;
             m_parent = nullptr;
             m_components = std::vector<Component*>();
             m_children = std::vector<GameObject*>();
             m_componentMap = std::unordered_map<Guid, std::vector<Component*>::size_type>();
         }
 
-        GameObject::GameObject(const Guid& guid, const std::string& name, Transform& t)
+        GameObject::GameObject(const Guid& guid, const std::string& name, Transform& t, bool enabled)
             : GameObject()
         {
             m_guid = guid;
             m_name = name;
             m_transform = t;
+            m_enabled = enabled;
         }
 
         GameObject::~GameObject(void)
@@ -104,6 +104,21 @@ namespace Hatchit {
         void GameObject::OnInit(void)
         {
             HT_DEBUG_PRINTF("GameObject OnInit. (not implemented)\n");
+        }
+
+        void GameObject::OnEnabled(void)
+        {
+            HT_DEBUG_PRINTF("GameObject OnEnable. (not implemented)\n");
+        }
+
+        void GameObject::OnDisabled(void)
+        {
+            HT_DEBUG_PRINTF("GameObject OnDisable. (not implemented)\n");
+        }
+
+        void GameObject::Destroy(void)
+        {
+            //OnDestroy();
         }
 
         void GameObject::OnDestroy(void)

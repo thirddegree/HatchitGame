@@ -153,12 +153,12 @@ namespace Hatchit {
             void Update(void);
 
             /**
-            * \brief Called when the gameobject is destroyed/deleted.
+            * \brief Destroys the GameObject.
             *
             * Objects are always disabled before destroyed.
             * When a scene is destroyed, all gameobjects are disabled before any are destroyed.
             */
-            void OnDestroy(void);
+            void Destroy(void);
 
             /**
             * \brief Attempts to attach a Component of type T.
@@ -289,12 +289,31 @@ namespace Hatchit {
             * Responsible for initializing the Component vector, Component bitmask, and child vector.
             * Sets the GameObject's guid to an existing value.
             *
-            * \param guid  The Guid for this GameObject.
-            * \param name  The name of this GameObject.
-            * \param t     The Transform for this GameObject.
+            * \param guid       The Guid for this GameObject.
+            * \param name       The name of this GameObject.
+            * \param t          The Transform for this GameObject.
+            * \param enabled    Whether or not this GameObject is enabled
             * \sa Guid(), Transform()
             */
-            GameObject::GameObject(const Guid& guid, const std::string& name, Transform& t);
+            GameObject::GameObject(const Guid& guid, const std::string& name, Transform& t, bool enabled);
+
+            /**
+            * \brief Called when the gameobject is enabled.
+            */
+            void OnEnabled(void);
+
+            /**
+            * \brief Called when the gameobject is disabled.
+            */
+            void OnDisabled(void);
+
+            /**
+            * \brief Called when the gameobject is destroyed/deleted.
+            *
+            * Objects are always disabled before destroyed.
+            * When a scene is destroyed, all gameobjects are disabled before any are destroyed.
+            */
+            void OnDestroy(void);
 
             bool m_enabled; /**< bool indicating if this GameObject is enabled. */
             std::string m_name; /**< The name associated with this GameObject. */
@@ -323,8 +342,7 @@ namespace Hatchit {
 
             component->VOnInit();
 
-            if (m_enabled)
-                component->Enable();
+            component->Enable();
 
             return true;
         }

@@ -45,7 +45,7 @@ namespace Hatchit {
             * \return A Guid which is this Component's unique ID.
             */
             template <typename T>
-            static Guid GetComponentId(void);
+            static Core::Guid GetComponentId(void);
 
             virtual ~Component(void) = default;
 
@@ -128,10 +128,10 @@ namespace Hatchit {
         };
 
         template <typename T>
-        static Guid Component::GetComponentId(void)
+        static Core::Guid Component::GetComponentId(void)
         {
             static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
-            static Guid id = Guid(); /**< This value is set once when the template is instantiated. */
+            static Core::Guid id = Core::Guid(); /**< This value is set once when the template is instantiated. */
             return id;
         }
     }

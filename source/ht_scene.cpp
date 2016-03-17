@@ -13,7 +13,7 @@
 **/
 
 #include <ht_scene.h>
-
+#include <ht_jsonhelper.h>
 #if defined(DEBUG) || defined(_DEBUG)
     #include <ht_debug.h>
 #endif
@@ -23,48 +23,8 @@ namespace Hatchit {
     namespace Game {
 
         using JSON = nlohmann::json;
-        using JsonVerifyFunc = bool(JSON::*)() const;
-
-        /** Shorthand for retrieving a string from a JSON object. */
-        #define ExtractStringFromJSON(json, name, out) _ExtractFromJSON<std::string>(json, &JSON::is_string, name, out)
-
-        /**
-         * \brief Attempts to extract a value from a JSON object.
-         *
-         * \param json The JSON object.
-         * \param verify The JSON type verification function.
-         * \param name The name of the value to retrieve.
-         * \param out The output variable.
-         * \return True if the extraction was successful, false if not.
-         */
-        template<typename T>
-        static inline bool _ExtractFromJSON(const JSON& json, JsonVerifyFunc verify, const std::string& name, T& out)
-        {
-            auto  search = json.find(name);
-            auto& object = *search;
-
-            if (search == json.end() || !(object.*verify)())
-            {
-                return false;
-            }
-
-            out = search->get<T>();
-            return true;
-        }
-
-        /**
-         * \brief Attempts to extract a Guid from a JSON object.
-         *
-         * \param json The JSON object.
-         * \param name The name of the Guid to retrieve.
-         * \param out The output Guid.
-         * \return True if the extraction was successful, false if not.
-         */
-        static __forceinline bool ExtractGuidFromJSON(const JSON& json, const std::string& name, Guid& out)
-        {
-            std::string guidText;
-            return ExtractStringFromJSON(json, name, guidText) && Guid::Parse(guidText, out);
-        }
+        using Core::Guid;
+        using Core::_JsonExtractValue;
 
         /**
         * \brief Attempts to extract a std::vector from a JSON object.
@@ -128,14 +88,14 @@ namespace Hatchit {
             }
 
             // Get this scene's name
-            if (!ExtractStringFromJSON(m_description, "Name", m_name))
+            if (!JsonExtractString(m_description, "Name", m_name))
             {
                 HT_DEBUG_PRINTF("Failed to find property 'Name' in scene description!\n");
                 return false;
             }
 
             // Get this scene's Guid
-            if (!ExtractGuidFromJSON(m_description, "GUID", m_guid))
+            if (!JsonExtractGuid(m_description, "GUID", m_guid))
             {
                 HT_DEBUG_PRINTF("Failed to find property 'GUID' in scene description!\n");
                 return false;
@@ -258,7 +218,7 @@ namespace Hatchit {
         {
             // Extract the GameObject's GUID.
             Guid id;
-            if (!ExtractGuidFromJSON(obj, "GUID", id))
+            if (!JsonExtractGuid(obj, "GUID", id))
             {
                 HT_DEBUG_PRINTF("Failed to find property 'GUID' on GameObject in scene description!\n");
                 return false;
@@ -266,7 +226,7 @@ namespace Hatchit {
 
             // Extract the GameObject's Name.
             std::string name;
-            if (!ExtractStringFromJSON(obj, "Name", name))
+            if (!JsonExtractString(obj, "Name", name))
             {
                 HT_DEBUG_PRINTF("Failed to find property 'Name' on GameObject %s in scene description!\n", id.ToString());
                 return false;
@@ -336,7 +296,7 @@ namespace Hatchit {
         bool Scene::ParseComponent(const JSON& obj, GameObject& out)
         {
             std::string component_type;
-            if (!ExtractStringFromJSON(obj, "Name", component_type))
+            if (!JsonExtractString(obj, "Name", component_type))
             {
                 HT_DEBUG_PRINTF("Failed to locate property 'Name' on Component in scene description!\n");
                 return false;

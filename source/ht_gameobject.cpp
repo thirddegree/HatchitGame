@@ -26,10 +26,10 @@ namespace Hatchit {
             m_parent = nullptr;
             m_components = std::vector<Component*>();
             m_children = std::vector<GameObject*>();
-            m_componentMap = std::unordered_map<Guid, std::vector<Component*>::size_type>();
+            m_componentMap = std::unordered_map<Core::Guid, std::vector<Component*>::size_type>();
         }
 
-        GameObject::GameObject(const Guid& guid, const std::string& name, Transform& t, bool enabled)
+        GameObject::GameObject(const Core::Guid& guid, const std::string& name, Transform& t, bool enabled)
             : GameObject()
         {
             m_guid = guid;
@@ -50,7 +50,7 @@ namespace Hatchit {
             }
         }
 
-        const Guid& GameObject::GetGuid(void) const
+        const Core::Guid& GameObject::GetGuid(void) const
         {
             return m_guid;
         }

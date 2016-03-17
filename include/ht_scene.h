@@ -58,7 +58,7 @@ namespace Hatchit {
              *
              * \return This scene's Guid.
              */
-            const Guid& GUID() const;
+            const Core::Guid& GUID() const;
 
             /**
              * \brief Checks to see if this scene is cached.
@@ -120,7 +120,7 @@ namespace Hatchit {
             *
             * \sa ParseGameObject(), ParseTransform(), ParseComponent, LoadFromCache(), GameObject()
             */
-            void ParseChildGameObjects(const Guid& id, std::unordered_map<Guid, GameObject*>& guid_to_obj, std::unordered_map<Guid, nlohmann::json>& guid_to_json);
+            void ParseChildGameObjects(const Core::Guid& id, std::unordered_map<Core::Guid, GameObject*>& guid_to_obj, std::unordered_map<Core::Guid, nlohmann::json>& guid_to_json);
 
             /**
             * \brief Attempts to parse a GameObject from the provided JSON.
@@ -154,7 +154,7 @@ namespace Hatchit {
             bool ParseComponent(const nlohmann::json& obj, GameObject& out);
 
             std::string m_name; /**< The name associated with this scene. */
-            Guid m_guid; /**< The Guid associated with this scene. */
+            Core::Guid m_guid; /**< The Guid associated with this scene. */
             nlohmann::json m_description; /**< The JSON description of the scene. */
             std::vector<GameObject*> m_gameObjects; /**< std::vector of GameObjects present in the scene. */
         };

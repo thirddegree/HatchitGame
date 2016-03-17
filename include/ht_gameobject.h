@@ -63,7 +63,7 @@ namespace Hatchit {
             /**
             * \brief Retrieve this GameObject's Guid.
             */
-            const Guid& GetGuid(void) const;
+            const Core::Guid& GetGuid(void) const;
 
             /**
             * \brief Retrieve this GameObject's name.
@@ -295,7 +295,7 @@ namespace Hatchit {
             * \param enabled    Whether or not this GameObject is enabled
             * \sa Guid(), Transform()
             */
-            GameObject::GameObject(const Guid& guid, const std::string& name, Transform& t, bool enabled);
+            GameObject::GameObject(const Core::Guid& guid, const std::string& name, Transform& t, bool enabled);
 
             /**
             * \brief Called when the gameobject is enabled.
@@ -317,12 +317,12 @@ namespace Hatchit {
 
             bool m_enabled; /**< bool indicating if this GameObject is enabled. */
             std::string m_name; /**< The name associated with this GameObject. */
-            Guid m_guid; /**< The Guid associated with this GameObject. */
+            Core::Guid m_guid; /**< The Guid associated with this GameObject. */
             Transform m_transform; /**< The Transform representing the position/orientation of this GameObject. */
             GameObject *m_parent; /**< The parent of this GameObject. */
             std::vector<GameObject*> m_children; /**< All the GameObjects which are children of this GameObject. */
             std::vector<Component*> m_components; /**< std::vector of all attached Components. */
-            std::unordered_map<Guid, std::vector<Component*>::size_type> m_componentMap; /**< Unique mapping of Component to Guid. */
+            std::unordered_map<Core::Guid, std::vector<Component*>::size_type> m_componentMap; /**< Unique mapping of Component to Guid. */
         };
 
         template <typename T>

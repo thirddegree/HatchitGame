@@ -112,7 +112,7 @@ namespace Hatchit {
         };
 
         template <typename T>
-        static std::uint32_t Component::GetComponentId(void)
+        std::uint32_t Component::GetComponentId(void)
         {
             static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
             static std::uint32_t id = s_componentIdCounter++; /**< This value is set once when the template is instantiated. */

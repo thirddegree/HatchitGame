@@ -17,6 +17,7 @@
 #include <ht_window_singleton.h>
 #include <ht_renderer_singleton.h>
 #include <ht_time_singleton.h>
+#include <ht_input_singleton.h>
 #include <ht_scenemanager.h>
 
 namespace Hatchit {
@@ -58,6 +59,8 @@ namespace Hatchit {
                 Window::SwapBuffers();
 
                 Time::CalculateFPS();
+
+                Input::Update();
             }
 
             DeInitialize();
@@ -114,6 +117,8 @@ namespace Hatchit {
             if (!Renderer::Initialize(rparams))
                 return false;
 
+            Input::Initialize();
+
 			/*if (!SceneManager::Initialize())
 				return false;*/
 
@@ -123,6 +128,7 @@ namespace Hatchit {
         void Application::DeInitialize()
         {
 			SceneManager::Deinitialize();
+            Input::DeInitialize();
             Renderer::DeInitialize();
             Window::DeInitialize();
         }

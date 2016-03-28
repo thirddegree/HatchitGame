@@ -18,7 +18,6 @@
 #include <ht_window.h>
 #include <ht_sdl.h>
 
-
 namespace Hatchit {
 
     namespace Game {

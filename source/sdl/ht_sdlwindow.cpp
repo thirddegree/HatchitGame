@@ -15,6 +15,8 @@
 #include <ht_sdlwindow.h>
 #include <ht_debug.h>
 #include <ht_time_singleton.h>
+#include <ht_input_singleton.h>
+#include <ht_sdlkeyboard.h>
 
 namespace Hatchit {
 
@@ -103,6 +105,16 @@ namespace Hatchit {
                 case SDL_QUIT:
                     VClose();
                     break;
+
+                case SDL_KEYDOWN:
+                {
+                    static_cast<SDLKeyboard*>(Input::Keyboard())->RegisterKeyDown(event.key.keysym.scancode);
+                } break;
+
+                case SDL_KEYUP:
+                {
+                    static_cast<SDLKeyboard*>(Input::Keyboard())->RegisterKeyUp(event.key.keysym.scancode);
+                } break;
 
                 case SDL_WINDOWEVENT:
                 {

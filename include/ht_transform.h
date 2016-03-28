@@ -78,6 +78,8 @@ namespace Hatchit {
             
             void RemoveChild(Transform* transform);
 
+            void RemoveChildAtIndex(std::size_t index);
+
             bool IsDirty();
 
         private:

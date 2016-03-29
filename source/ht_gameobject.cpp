@@ -150,17 +150,26 @@ namespace Hatchit {
 
         void GameObject::AddChild(GameObject *child)
         {
-            m_transform.AddChild(&child->GetTransform());
+            if (std::find(m_children.begin(), m_children.end(), child) == m_children.end())
+                m_children.push_back(child);
+            child->m_transform.m_parent = &m_transform;
         }
 
         void GameObject::RemoveChild(GameObject* child)
         {
-            m_transform.RemoveChild(&child->GetTransform());
+            auto iter = std::find(m_children.begin(), m_children.end(), child);
+            if (iter != m_children.end())
+                m_children.erase(iter);
+            child->m_parent = nullptr;
         }
 
         void GameObject::RemoveChildAtIndex(std::size_t index)
         {
-            m_transform.RemoveChildAtIndex(index);
+            if (index < m_children.size())
+            {
+                m_children[index]->m_transform.m_parent = nullptr;
+                m_children.erase(m_children.begin() + index);
+            }
         }
     }
 }

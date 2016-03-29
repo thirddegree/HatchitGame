@@ -31,6 +31,7 @@ namespace Hatchit {
         void TestComponent::VOnInit()
         {
             HT_DEBUG_PRINTF("Initialized Test Component.\n");
+            
         }
 
         void TestComponent::VOnUpdate()

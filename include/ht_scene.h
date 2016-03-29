@@ -103,6 +103,11 @@ namespace Hatchit {
              */
             void Unload(void);
 
+            /**
+             * \brief Creates GameObject and adds it to the scene.
+             */
+            GameObject* CreateGameObject();
+
         private:
 
             /**

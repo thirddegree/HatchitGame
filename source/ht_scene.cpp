@@ -418,5 +418,11 @@ namespace Hatchit {
             }
             m_gameObjects.clear();
         }
+
+        GameObject* Scene::CreateGameObject()
+        {
+            m_gameObjects.emplace_back(nullptr);
+            return (GameObject*)&m_gameObjects.back();
+        }
     }
 }

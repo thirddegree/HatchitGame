@@ -28,7 +28,7 @@ namespace Hatchit {
 
 
 
-            m_parent = NULL;
+            m_parent = nullptr;
             SetDirty();
         }
 
@@ -46,7 +46,7 @@ namespace Hatchit {
 
 
 
-            m_parent = NULL;
+            m_parent = nullptr;
             SetDirty();
         }
 
@@ -79,37 +79,6 @@ namespace Hatchit {
 
             if (!m_localDirty)
                 m_localDirty = true;
-        }
-
-        void Transform::AddChild(Transform* transform)
-        {
-            m_childTransforms.push_back(transform);
-            if (transform->m_parent)
-                transform->m_parent->RemoveChild(transform);
-            transform->m_parent = this;
-            transform->SetDirty();
-        }
-
-        void Transform::RemoveChild(Transform * transform)
-        {
-            for (uint32_t i = 0; i < m_childTransforms.size(); i++)
-            {
-                if (m_childTransforms.at(i) == transform)
-                {
-                    m_childTransforms.at(i)->m_parent = nullptr;
-                    m_childTransforms.erase(m_childTransforms.begin() + i);
-                    return;
-                }
-            }
-        }
-
-        void Transform::RemoveChildAtIndex(std::size_t index)
-        {
-            if (index < m_childTransforms.size())
-            {
-                m_childTransforms.at(index)->m_parent = nullptr;
-                m_childTransforms.erase(m_childTransforms.begin() + index);
-            }
         }
 
         void Transform::TranslateX(float val)
@@ -282,7 +251,7 @@ namespace Hatchit {
         Math::Matrix4* Transform::GetWorldMatrix()
         {
 
-                        UpdateWorldMatrix();
+            UpdateWorldMatrix();
 
             return &m_world;
         }

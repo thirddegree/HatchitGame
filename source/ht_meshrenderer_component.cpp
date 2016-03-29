@@ -67,6 +67,8 @@ namespace Hatchit {
                 break;
 #endif
             }
+
+            HT_DEBUG_PRINTF("Initialized Mesh Renderer Component.\n");
         }
 
         void MeshRenderer::VOnUpdate()

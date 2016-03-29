@@ -40,8 +40,11 @@ namespace Hatchit {
 
             static void ResizeBuffers(uint32_t width, uint32_t height);
 
+            static Graphics::RendererType GetRendererType();
+
         private:
             Graphics::IRenderer* m_renderer;
+            Graphics::RendererType m_rendererType;
         };
 
     }

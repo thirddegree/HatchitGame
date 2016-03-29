@@ -14,7 +14,7 @@
 
 #include <ht_scene.h>
 #include <ht_jsonhelper.h>
-#if defined(DEBUG) || defined(_DEBUG)
+#ifdef _DEBUG
     #include <ht_debug.h>
 #endif
 
@@ -305,6 +305,11 @@ namespace Hatchit {
             if (component_type == "TestComponent")
             {
                 out.AddUninitializedComponent<TestComponent>();
+            }
+
+            else if (component_type == "MeshRenderer")
+            {
+                out.AddUninitializedComponent<MeshRenderer>();
             }
 
             // TODO: Add cases for each Component type here.

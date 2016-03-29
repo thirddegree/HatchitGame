@@ -19,6 +19,7 @@
 #include <ht_guid.h>
 #include <ht_file.h>
 #include <ht_test_component.h>
+#include <ht_meshrenderer_component.h>
 
 #include <json.hpp>
 

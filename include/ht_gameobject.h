@@ -481,8 +481,8 @@ namespace Hatchit {
             return true;
         }
 
-        template <typename T, typename... Args>
-        bool AddUninitializedComponent(Args&&... args)
+        template<typename T, typename ...Args>
+        inline bool Hatchit::Game::GameObject::AddUninitializedComponent(Args && ...args)
         {
             static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
 
@@ -497,6 +497,7 @@ namespace Hatchit {
 
             component->SetOwner(this);
 
+            return true;
         }
     }
 }

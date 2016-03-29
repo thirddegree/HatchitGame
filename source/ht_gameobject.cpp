@@ -14,7 +14,7 @@
 
 #include <ht_gameobject.h>
 
-#if defined(DEBUG) || defined(_DEBUG)
+#ifdef _DEBUG
     #include <ht_debug.h>
 #endif
 

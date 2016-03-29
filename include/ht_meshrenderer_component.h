@@ -14,16 +14,37 @@
 
 #pragma once
 
+#ifdef HT_SYS_WINDOWS
+#ifdef DX11_SUPPORT
+#include <ht_d3d11meshrenderer.h>
+#endif
+#ifdef DX12_SUPPORT
+#include <ht_d3d12meshrenderer.h>
+#endif
+#endif
+
+#ifdef GL_SUPPORT
+#include <ht_glmeshrenderer.h>
+#endif
+
+#ifdef VK_SUPPORT
+#include <ht_vkmeshrenderer.h>
+#endif
+
 #include <ht_component.h>
 
 namespace Hatchit {
 
     namespace Game {
 
-        class TestComponent : public Component
+        class MeshRenderer : public Component
         {
         public:
-            TestComponent(void);
+            MeshRenderer(void);
+
+            void SetRenderable(Graphics::IMesh* mesh, 
+                Graphics::IMaterial* material, 
+                Graphics::IRenderPass* renderPass);
 
             void VOnInit() override;
             void VOnUpdate() override;
@@ -34,6 +55,7 @@ namespace Hatchit {
             void VOnDisabled() override;
 
         private:
+            Graphics::IMeshRenderer* m_meshRenderer;
         };
 
     }

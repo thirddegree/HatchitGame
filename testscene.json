@@ -14,7 +14,7 @@
             ],
             "Components": [
                 {
-                    "Name": "TestComponent"
+                    "Name": "MeshRenderer"
                 }
             ],
             "Transform": {
@@ -28,7 +28,7 @@
             "GUID": "{00000000-0000-0000-0000-000000000002}",
             "Components": [
                 {
-                    "Name": "TestComponent"
+                    "Name": "MeshRenderer"
                 }
             ],
             "Transform": {

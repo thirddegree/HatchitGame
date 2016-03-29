@@ -12,10 +12,9 @@
 **
 **/
 
-
 #include <ht_test_component.h>
 
-#if defined(DEBUG) || defined(_DEBUG)
+#ifdef _DEBUG
     #include <ht_debug.h>
 #endif
 
@@ -31,7 +30,6 @@ namespace Hatchit {
         void TestComponent::VOnInit()
         {
             HT_DEBUG_PRINTF("Initialized Test Component.\n");
-            
         }
 
         void TestComponent::VOnUpdate()

@@ -43,7 +43,7 @@ namespace Hatchit {
         bool Renderer::Initialize(const RendererParams& params)
         {
             Renderer& _instance = Renderer::instance();
-           
+            _instance.m_rendererType = params.renderer;
 
 #ifdef HT_SYS_LINUX
             if (params.renderer == RendererType::OPENGL)
@@ -152,6 +152,13 @@ namespace Hatchit {
             Renderer& _instance = Renderer::instance();
 
             _instance.m_renderer->VResizeBuffers(width, height);
+        }
+
+        RendererType Renderer::GetRendererType()
+        {
+            Renderer& _instance = Renderer::instance();
+
+            return _instance.m_rendererType;
         }
     }
 

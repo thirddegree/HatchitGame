@@ -18,11 +18,13 @@
     #ifdef HT_WIN32_DESKTOP_APP
         #define SDL_SUPPORT TRUE
         #include <ht_sdlkeyboard.h>
+        #include <ht_sdlmouse.h>
     #endif
 #else
     #ifndef VK_SUPPORT
         #define SDL_SUPPORT TRUE
         #include <ht_sdlkeyboard.h>
+        #include <ht_sdlmouse.h>
     #endif
 #endif
 
@@ -35,6 +37,7 @@ namespace Hatchit
             Input& _instance = Input::instance();
 #ifdef SDL_SUPPORT
             _instance.m_keyboard = new SDLKeyboard;
+            _instance.m_mouse = new SDLMouse;
 #endif
         }
 
@@ -59,11 +62,60 @@ namespace Hatchit
             return _instance.m_keyboard->VKeyRelease(key);
         }
 
-        bool Input::SingleKeyPress(Key key)
+        bool Input::KeySinglePress(Key key)
         {
             Input& _instance = Input::instance();
 
             return _instance.m_keyboard->VSingleKeyPress(key);
+        }
+
+        int Input::MouseX()
+        {
+            Input& _instance = Input::instance();
+
+            return _instance.m_mouse->VMouseX();
+        }
+
+        int Input::MouseY()
+        {
+            Input& _instance = Input::instance();
+
+            return _instance.m_mouse->VMouseY();
+        }
+
+        int Input::DeltaX(int val)
+        {
+            Input& _instance = Input::instance();
+
+            return _instance.m_mouse->VDeltaX(val);
+        }
+
+        int Input::DeltaY(int val)
+        {
+            Input& _instance = Input::instance();
+
+            return _instance.m_mouse->VDeltaY(val);
+        }
+
+        bool Input::MouseButtonPress(MouseButton button)
+        {
+            Input& _instance = Input::instance();
+
+            return _instance.m_mouse->VButtonPress(button);
+        }
+
+        bool Input::MouseButtonRelease(MouseButton button)
+        {
+            Input& _instance = Input::instance();
+
+            return _instance.m_mouse->VButtonRelease(button);
+        }
+
+        bool Input::MouseButtonSinglePress(MouseButton button)
+        {
+            Input& _instance = Input::instance();
+
+            return _instance.m_mouse->VSingleButtonPress(button);
         }
 
         IKeyboard* const Input::Keyboard()
@@ -71,11 +123,17 @@ namespace Hatchit
             return Input::instance().m_keyboard;
         }
 
+        IMouse* const Input::Mouse()
+        {
+            return Input::instance().m_mouse;
+        }
+
         void Input::Update()
         {
             Input& _instance = Input::instance();
 
             _instance.m_keyboard->VUpdate();
+            _instance.m_mouse->VUpdate();
         }
 
     }

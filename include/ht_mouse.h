@@ -41,6 +41,7 @@ namespace Hatchit
             virtual bool    VButtonRelease(MouseButton button) = 0;
             virtual bool    VButtonPress(MouseButton button) = 0;
             virtual bool    VSingleButtonPress(MouseButton button) = 0;
+            virtual void    VUpdate() = 0;
         };
     }
 }

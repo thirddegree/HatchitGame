@@ -17,6 +17,7 @@
 #include <ht_time_singleton.h>
 #include <ht_input_singleton.h>
 #include <ht_sdlkeyboard.h>
+#include <ht_sdlmouse.h>
 
 namespace Hatchit {
 
@@ -116,6 +117,22 @@ namespace Hatchit {
                     static_cast<SDLKeyboard*>(Input::Keyboard())->RegisterKeyUp(event.key.keysym.scancode);
                 } break;
 
+                case SDL_MOUSEBUTTONDOWN:
+                case SDL_MOUSEBUTTONUP:
+                {
+                    static_cast<SDLMouse*>(Input::Mouse())->RegisterMouseButtonEvent(event.button);
+                } break;
+
+                case SDL_MOUSEWHEEL:
+                {
+                    static_cast<SDLMouse*>(Input::Mouse())->RegisterMouseWheelEvent(event.wheel);
+                } break;
+
+                case SDL_MOUSEMOTION:
+                {
+                    static_cast<SDLMouse*>(Input::Mouse())->RegisterMouseMove(event.motion.x, event.motion.y);
+                } break;
+
                 case SDL_WINDOWEVENT:
                 {
 #ifdef _DEBUG
@@ -187,8 +204,13 @@ namespace Hatchit {
                 }
             }
 
-            if (m_params.displayFPS)
-                SDL_SetWindowTitle(m_handle, (m_params.title + " FPS: " + std::to_string((int)Time::FramesPerSecond())).c_str());
+            
+        
+            std::string title = m_params.title + (m_params.displayFPS ? (" FPS: " + std::to_string((int)Time::FramesPerSecond())) : "")
+                                                + (m_params.displayMouse ? (" Mouse: [" + std::to_string(Input::MouseX()) + "," +
+                                                    std::to_string(Input::MouseY()) + "]") : "");
+            SDL_SetWindowTitle(m_handle, title.c_str());
+            
         }
 
         void* SDLWindow::VNativeWindowHandle()

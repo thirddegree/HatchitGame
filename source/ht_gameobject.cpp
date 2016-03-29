@@ -103,7 +103,10 @@ namespace Hatchit {
 
         void GameObject::OnInit(void)
         {
-            HT_DEBUG_PRINTF("GameObject OnInit. (not implemented)\n");
+            for (Component *component : m_components)
+            {
+                component->VOnInit();
+            }
         }
 
         void GameObject::OnEnabled(void)
@@ -118,7 +121,7 @@ namespace Hatchit {
 
         void GameObject::Destroy(void)
         {
-            //OnDestroy();
+            OnDestroy();
         }
 
         void GameObject::OnDestroy(void)

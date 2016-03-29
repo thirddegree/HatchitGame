@@ -304,7 +304,7 @@ namespace Hatchit {
 
             if (component_type == "TestComponent")
             {
-                out.AddComponent<TestComponent>();
+                out.AddUninitializedComponent<TestComponent>();
             }
 
             // TODO: Add cases for each Component type here.
@@ -371,7 +371,7 @@ namespace Hatchit {
         {
             for (GameObject* gameObject : m_gameObjects)
             {
-                //gameObject->OnInit();
+                gameObject->OnInit();
             }
             for (GameObject* gameObject : m_gameObjects)
             {

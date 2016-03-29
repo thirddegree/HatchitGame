@@ -315,6 +315,20 @@ namespace Hatchit {
             */
             void OnDestroy(void);
 
+            /**
+            * \brief Attempts to attach a Component of type T.
+            * \param args   The arguments to pass to the constructor for T.
+            * \tparam T A sub-class of Component.
+            * \tparam Args... The arguments to provide to T's constructor.
+            * \return bool indicating if the Component could be attached.
+            * \sa AddComponent(T *component)
+            *
+            * This method constructs the Component of type T using the provided args.
+            * If the Component can be attached, its VOnInit and VOnEnabled will be invoked.
+            */
+            template <typename T, typename... Args>
+            bool AddUninitializedComponent(Args&&... args);
+
             bool m_enabled; /**< bool indicating if this GameObject is enabled. */
             std::string m_name; /**< The name associated with this GameObject. */
             Core::Guid m_guid; /**< The Guid associated with this GameObject. */
@@ -465,6 +479,24 @@ namespace Hatchit {
             component->Disable();
 
             return true;
+        }
+
+        template <typename T, typename... Args>
+        bool AddUninitializedComponent(Args&&... args)
+        {
+            static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
+
+            Guid component_id = Component::GetComponentId<T>();
+            std::unordered_map<Guid, std::vector<Component*>::size_type>::const_iterator iter = m_componentMap.find(component_id);
+            if (iter != m_componentMap.cend())
+                return false;
+
+            T *component = new T(std::forward<Args>(args)...);
+            m_componentMap.insert(std::make_pair(component_id, m_components.size()));
+            m_components.push_back(component);
+
+            component->SetOwner(this);
+
         }
     }
 }

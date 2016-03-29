@@ -13,34 +13,56 @@
 **/
 
 #include <ht_gameobject.h>
-#include <ht_debug.h>
+
+#if defined(DEBUG) || defined(_DEBUG)
+    #include <ht_debug.h>
+#endif
 
 namespace Hatchit {
 
     namespace Game {
         GameObject::GameObject(void)
         {
-            m_enabled = false;
             m_parent = nullptr;
-            m_components = std::vector<Component*>(GameObject::MAX_COMPONENTS, nullptr);
+            m_components = std::vector<Component*>();
             m_children = std::vector<GameObject*>();
-            m_componentMask = std::bitset<GameObject::MAX_COMPONENTS>();
+            m_componentMap = std::unordered_map<Core::Guid, std::vector<Component*>::size_type>();
+        }
+
+        GameObject::GameObject(const Core::Guid& guid, const std::string& name, Transform& t, bool enabled)
+            : GameObject()
+        {
+            m_guid = guid;
+            m_name = name;
+            m_transform = t;
+            m_enabled = enabled;
         }
 
         GameObject::~GameObject(void)
         {
-            for (std::size_t i = 0; i < GameObject::MAX_COMPONENTS; ++i)
+            for (GameObject* child : m_children)
             {
-                if(m_componentMask.test(i))
-                {
-                    delete m_components[i];
-                }
+                delete child;
+            }
+            for (Component *component: m_components)
+            {
+                delete component;
             }
         }
 
-        Transform* GameObject::GetTransform()
+        const Core::Guid& GameObject::GetGuid(void) const
         {
-            return (Transform*)&m_transform;
+            return m_guid;
+        }
+
+        const std::string& GameObject::GetName(void) const
+        {
+            return m_name;
+        }
+
+        Transform& GameObject::GetTransform(void)
+        {
+            return m_transform;
         }
 
         bool GameObject::GetEnabled(void) const
@@ -60,21 +82,15 @@ namespace Hatchit {
 
         void GameObject::SetParent(GameObject *parent)
         {
-#ifdef _DEBUG
-            Core::DebugPrintF("GameObject SetParent. (not implemented)\n");
-#endif
+            HT_DEBUG_PRINTF("GameObject SetParent. (not implemented)\n");
         }
 
         void GameObject::Update(void)
         {
-            for (std::size_t i = 0; i < GameObject::MAX_COMPONENTS; ++i)
+            for (Component *component : m_components)
             {
-                if (m_componentMask.test(i))
-                {
-                    Component *component = m_components[i];
                     if(component->GetEnabled())
                         component->VOnUpdate();
-                }
             }
 
             for (std::size_t i = 0; i < m_children.size(); ++i)
@@ -87,24 +103,36 @@ namespace Hatchit {
 
         void GameObject::OnInit(void)
         {
-#ifdef _DEBUG
-            Core::DebugPrintF("GameObject OnInit. (not implemented)\n");
-#endif
+            for (Component *component : m_components)
+            {
+                component->VOnInit();
+            }
+        }
+
+        void GameObject::OnEnabled(void)
+        {
+            HT_DEBUG_PRINTF("GameObject OnEnable. (not implemented)\n");
+        }
+
+        void GameObject::OnDisabled(void)
+        {
+            HT_DEBUG_PRINTF("GameObject OnDisable. (not implemented)\n");
+        }
+
+        void GameObject::Destroy(void)
+        {
+            OnDestroy();
         }
 
         void GameObject::OnDestroy(void)
         {
             Disable();
 
-            for (std::size_t i = 0; i < GameObject::MAX_COMPONENTS; ++i)
+            for (Component *component : m_components)
             {
-                if (m_componentMask.test(i))
-                {
-                    Component *component = m_components[i];
-                    if (component->GetEnabled())
-                        component->SetEnabled(false);
-                    component->VOnDestroy();
-                }
+                if (component->GetEnabled())
+                    component->SetEnabled(false);
+                component->VOnDestroy();
             }
 
             for (std::size_t i = 0; i < m_children.size(); ++i)
@@ -125,16 +153,26 @@ namespace Hatchit {
 
         void GameObject::AddChild(GameObject *child)
         {
-#ifdef _DEBUG
-            Core::DebugPrintF("GameObject AddChild. (not implemented)\n");
-#endif
+            if (std::find(m_children.begin(), m_children.end(), child) == m_children.end())
+                m_children.push_back(child);
+            child->m_transform.m_parent = &m_transform;
+        }
+
+        void GameObject::RemoveChild(GameObject* child)
+        {
+            auto iter = std::find(m_children.begin(), m_children.end(), child);
+            if (iter != m_children.end())
+                m_children.erase(iter);
+            child->m_parent = nullptr;
         }
 
         void GameObject::RemoveChildAtIndex(std::size_t index)
         {
-#ifdef _DEBUG
-            Core::DebugPrintF("GameObject RemoveChildAtIndex. (not implemented)\n");
-#endif
+            if (index < m_children.size())
+            {
+                m_children[index]->m_transform.m_parent = nullptr;
+                m_children.erase(m_children.begin() + index);
+            }
         }
     }
 }

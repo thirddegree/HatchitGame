@@ -24,6 +24,7 @@ namespace Hatchit {
 
         class HT_API Transform
         {
+            friend class GameObject;
         public:
             Transform();
             Transform(float posX, float posY, float posZ,
@@ -35,7 +36,7 @@ namespace Hatchit {
             Math::Matrix4* GetWorldMatrix();
             Math::Matrix4* GetLocalMatrix();
 
-			void UpdateWorldMatrix();
+            void UpdateWorldMatrix();
 
             void SetDirty();
 
@@ -73,10 +74,6 @@ namespace Hatchit {
             float ScaleZ() const;
 
             void DebugPrint();
-
-            void AddChild(Transform* transform);
-            
-            void RemoveChild(Transform* transform);
 
             bool IsDirty();
 

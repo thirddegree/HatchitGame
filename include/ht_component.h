@@ -28,10 +28,13 @@
 #include <type_traits>
 
 #include <ht_platform.h>
+#include <ht_guid.h>
 
 namespace Hatchit {
 
     namespace Game {
+
+        class GameObject; /**< Forward declaration to avoid circular dependency. */
 
         class HT_API Component
         {
@@ -39,14 +42,18 @@ namespace Hatchit {
             /**
             * \brief Returns the unique id associated with a Component of type T.
             * \tparam T A sub-class of Component.
-            * \return A std::uint32_t which is this Component's unique ID.
+            * \return A Guid which is this Component's unique ID.
             */
             template <typename T>
-            static std::uint32_t GetComponentId(void);
-
-            static std::uint32_t s_componentIdCounter; /**< A static counter that is incremented once with each instantiation of GetComponentID(). */
+            static Core::Guid GetComponentId(void);
 
             virtual ~Component(void) = default;
+
+            /**
+            * \brief Getter which returns the GameObject to which this Component is attached.
+            * \return Pointer to the GameObject.
+            */
+            GameObject* GetOwner(void);
 
             /**
             * \brief Getter that returns that value of m_enabled.
@@ -108,14 +115,23 @@ namespace Hatchit {
             */
             virtual void VOnDisabled() = 0;
 
+            /**
+            * \brief Setter that sets which GameObject this Component is attached to.
+            * \param owner  The GameObject to which this Component is attached.
+            */
+            void SetOwner(GameObject *owner);
+
             bool m_enabled{false}; /**< bool indicating if this Component is enabled. */
+            GameObject *m_owner; /**< The GameObject to which this Component is attached. */
+
+            friend GameObject;
         };
 
         template <typename T>
-        std::uint32_t Component::GetComponentId(void)
+        static Core::Guid Component::GetComponentId(void)
         {
             static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
-            static std::uint32_t id = s_componentIdCounter++; /**< This value is set once when the template is instantiated. */
+            static Core::Guid id = Core::Guid(); /**< This value is set once when the template is instantiated. */
             return id;
         }
     }

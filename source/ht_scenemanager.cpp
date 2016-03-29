@@ -12,117 +12,176 @@
 **
 **/
 
-#include "ht_scenemanager.h"
-#include "ht_debug.h"
+#include <ht_scenemanager.h>
+
+#if defined(DEBUG) || defined(_DEBUG)
+    #include <ht_debug.h>
+#endif
 
 namespace Hatchit {
 
-	namespace Game {
+    namespace Game {
+        using namespace Core;
 
-		using namespace Core;
-		using json = nlohmann::json;
+        using JSON = nlohmann::json;
 
-		bool SceneManager::Initialize()
-		{
-			SceneManager& _instance = SceneManager::instance();
-			std::string path = "C:\\Users\\MagicUser\\Desktop\\Hatchit\\HatchitGame\\";
-			//load list of scenes
-			json scenePaths = LoadJSON(path + "scenelist.json");			
+        /**
+         * \brief Creates the scene manager.
+         */
+        SceneManager::SceneManager()
+            : m_currentScene(nullptr)
+        {
+        }
 
-			//Load json for each scene
-			for (std::string const sceneFile : scenePaths["scenes"])
-			{
-				json data = LoadJSON(path + sceneFile);
-				_instance.scenes.emplace_back(data);
-			}
+        /**
+         * \brief Destroys the scene manager.
+         */
+        SceneManager::~SceneManager()
+        {
+            m_currentScene = nullptr;
+        }
 
+        /**
+         * \brief De-initializes the scene manager.
+         */
+        void SceneManager::Deinitialize()
+        {
+            SceneManager& _instance = SceneManager::instance();
+            if (_instance.m_currentScene != nullptr)
+                _instance.m_currentScene->Unload();
+        }
 
-			//Load first scene
-			if (_instance.scenes.size() == 0)
-				return false;
+        /**
+         * \brief Initializes the scene manager.
+         */
+        bool SceneManager::Initialize()
+        {
+            SceneManager& _instance = SceneManager::instance();
 
-			_instance.scenes[0].Load();
+            const std::string folder = "../../../../HatchitGame/";
+            const std::string sceneListFile = "SceneList.json";
+            bool loaded = false;
 
-			Core::DebugPrintF("SceneManager loaded scenes successfully.");
+            try
+            {
+                // Open the file
+                File file;
+                file.Open(folder + sceneListFile, FileMode::ReadText);
 
-			return true;
-		}
+                // Prepare to read the file
+                size_t fileSize = file.SizeBytes();
+                if (fileSize == 0)
+                {
+                    HT_DEBUG_PRINTF("WARNING: Scene list file is empty!\n");
+                    return true;
+                }
+                std::string contents;
+                contents.resize(fileSize);
 
-		void SceneManager::Deinitialize()
-		{
-			Core::DebugPrintF("Scene Manager DeInitialized (not implemented)\n");
-		}
+                // Read the file
+                file.Read(reinterpret_cast<BYTE*>(&contents[0]), contents.length());
+                file.Close();
 
-		void SceneManager::Update()
-		{
-			SceneManager& _instance = SceneManager::instance();
-			_instance.currentScene->Update();
-		}
+                // Try to parse the scene list
+                JSON sceneList = JSON::parse(contents);
 
-		void SceneManager::Render()
-		{
-			SceneManager& _instance = SceneManager::instance();
-			_instance.currentScene->Render();
-		}
-		
-		void SceneManager::LoadScene(std::string sceneName)
-		{
-            SceneManager& _manager = SceneManager::instance();
+                // TODO - Change this when we finalize the scene
+                HT_DEBUG_PRINTF("Reading scene list...\n");
+                for (const std::string& scenePath : sceneList)
+                {
+                    HT_DEBUG_PRINTF("** Loading '%s'...\n", scenePath);
 
-			UnloadScene();
+                    File sceneFile;
+                    sceneFile.Open(folder + scenePath, FileMode::ReadText);
 
-			SceneManager& _instance = SceneManager::instance();
+                    _instance.m_scenes.emplace_back();
+                    if (_instance.m_scenes.back().LoadFromFile(sceneFile))
+                    {
+                        HT_DEBUG_PRINTF("Done!\n");
+                    }
+                    else
+                    {
+                        HT_DEBUG_PRINTF("Failed!\n");
+                    }
 
-			for (auto const scene : _manager.scenes)
-			{
-				if (_instance.currentScene->name == sceneName)
-				{
-					_instance.currentScene = (Scene*) &scene;
-					break;
-				}
-			}
+                    sceneFile.Close();
+                }
 
-			_instance.currentScene->Load();
-		}
+                loaded = true;
+            }
+            catch (...)
+            {
+                HT_DEBUG_PRINTF("Failed to load scene list!\n");
+            }
 
-		void SceneManager::LoadSceneAsync(std::string sceneName)
-		{
-			Core::DebugPrintF("Scene Manager LoadSceneAsync (not implemented)\n");
-		}
-		
-		void SceneManager::UnloadScene()
-		{
-			Core::DebugPrintF("Scene Manager UnloadScene (not implemented)\n");
-		}
+            return loaded;
+        }
 
-		json SceneManager::LoadJSON(std::string filepath)
-		{
-			Core::File file;
-			try {
-				file.Open(filepath, FileMode::ReadText);
-			}
-			catch (FileException e) {
-				Core::DebugPrintF("Scene file not found.");
-				return true;
-			}
+        /**
+         * \brief Loads the given scene.
+         *
+         * Unloads the current scene and loads in the specified scene.
+         * If the scene does not exist in the list of scenes, an error is thrown.
+         */
+        bool SceneManager::LoadScene(const std::string& sceneName)
+        {
+            SceneManager& _instance = SceneManager::instance();
 
-			//get size of file
-			size_t size = file.SizeBytes();
-			if (size == -1)
-			{
-				Core::DebugPrintF("Scene file is corrupted.");
-				return true;
-			}
-			BYTE* byteArray = (BYTE*)malloc(size + 1);
-			memset(byteArray, '\0', size + 1);
-			file.Read(byteArray, size);
-			file.Close();
+            // Unload the current scene
+            if (_instance.m_currentScene)
+            {
+                _instance.m_currentScene->Unload();
+                _instance.m_currentScene = nullptr;
+            }
 
-			json data = json::parse((char*)byteArray);
+            // Scan for the scene with the given name
+            for (Scene& scene : _instance.m_scenes)
+            {
+                if (scene.Name() == sceneName)
+                {
+                    _instance.m_currentScene = &scene;
+                    break;
+                }
+            }
 
-			free(byteArray);
+            // If we've found the scene, load it from the cache
+            if (_instance.m_currentScene)
+            {
+                if (_instance.m_currentScene->LoadFromCache())
+                {
+                    _instance.m_currentScene->Init();
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        }
 
-			return data;
-		}
-	}
+        /**
+         * \brief Loads a scene asynchronously.
+         *
+         * Begins loading the specified scene while the current scene continues to run.
+         * When the scene is finished loading, unloads the current scene.
+         * If the scene does not exist in the list of scenes, an error is thrown.
+         */
+        void SceneManager::LoadSceneAsync(const std::string& sceneName)
+        {
+            HT_DEBUG_PRINTF("TODO - SceneManager::LoadSceneAsync (add callback params)\n");
+        }
+        
+        /**
+         * \brief Updates the scene manager.
+         */
+        void SceneManager::Update()
+        {
+            SceneManager& _instance = SceneManager::instance();
+
+            if (_instance.m_currentScene)
+            {
+                _instance.m_currentScene->Update();
+                _instance.m_currentScene->Render();
+            }
+        }
+
+    }
 }

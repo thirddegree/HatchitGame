@@ -30,17 +30,29 @@ namespace Hatchit
 
             static void DeInitialize();
 
-            /*Keyboard functions*/
+            /*Keyboard*/
             static bool KeyPress(Key key);
-            static bool SingleKeyPress(Key key);
+            static bool KeySinglePress(Key key);
             static bool KeyRelease(Key key);
+
+            /*Mouse*/
+            static int  MouseX();
+            static int  MouseY();
+            static int  DeltaX(int val);
+            static int  DeltaY(int val);
+            static bool MouseButtonPress(MouseButton button);
+            static bool MouseButtonSinglePress(MouseButton button);
+            static bool MouseButtonRelease(MouseButton button);
+
 
             static void Update();
 
             static IKeyboard* const Keyboard();
+            static IMouse*    const Mouse();
             
         private:
             IKeyboard* m_keyboard;
+            IMouse*    m_mouse;
         };
     }
 }

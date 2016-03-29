@@ -32,6 +32,7 @@ namespace Hatchit {
             int height;
             Graphics::RendererType renderer;
             bool displayFPS;
+            bool displayMouse;
             bool debugWindowEvents;
         };
 

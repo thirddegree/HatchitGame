@@ -128,7 +128,7 @@ namespace Hatchit {
         };
 
         template <typename T>
-        static Core::Guid Component::GetComponentId(void)
+        Core::Guid Component::GetComponentId(void)
         {
             static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
             static Core::Guid id = Core::Guid(); /**< This value is set once when the template is instantiated. */

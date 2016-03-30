@@ -18,6 +18,8 @@
     #include <ht_debug.h>
 #endif
 
+#include <algorithm>
+
 namespace Hatchit {
 
     namespace Game {

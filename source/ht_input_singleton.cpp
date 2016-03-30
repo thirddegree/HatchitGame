@@ -48,21 +48,21 @@ namespace Hatchit
             delete _instance.m_keyboard;
         }
 
-        bool Input::KeyPress(Key key)
+        bool Input::KeyPressed(IKeyboard::Key key)
         {
             Input& _instance = Input::instance();
 
             return _instance.m_keyboard->VKeyPress(key);
         }
 
-        bool Input::KeyRelease(Key key)
+        bool Input::KeyReleased(IKeyboard::Key key)
         {
             Input& _instance = Input::instance();
 
             return _instance.m_keyboard->VKeyRelease(key);
         }
 
-        bool Input::KeySinglePress(Key key)
+        bool Input::KeySinglePressed(IKeyboard::Key key)
         {
             Input& _instance = Input::instance();
 

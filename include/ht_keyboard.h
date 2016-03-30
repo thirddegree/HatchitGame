@@ -20,74 +20,75 @@ namespace Hatchit
 {
     namespace Game
     {
-        enum class Key
-        {
-            A,
-            B,
-            C,
-            D,
-            E,
-            F,
-            G,
-            H,
-            I,
-            J,
-            K,
-            L,
-            M,
-            N,
-            O,
-            P,
-            Q,
-            R,
-            S,
-            T,
-            U,
-            V,
-            W,
-            X,
-            Y,
-            Z,
-            Up,
-            Down,
-            Left,
-            Right,
-            F1,
-            F2,
-            F3,
-            F4,
-            F5,
-            F6,
-            F7,
-            F8,
-            F9,
-            F10,
-            F11,
-            F12,
-            Num1,
-            Num2,
-            Num3,
-            Num4,
-            Num5,
-            Num6,
-            Num7,
-            Num8,
-            Num9,
-            Num0,
-            Esc,
-            Enter,
-            Space
-        };
-
         class IKeyboard
         {
-        public:
+        public:       
+            enum class Key
+            { 
+                A,
+                B,
+                C,
+                D,
+                E,
+                F,
+                G,
+                H,
+                I,
+                J,
+                K,
+                L,
+                M,
+                N,
+                O,
+                P,
+                Q,
+                R,
+                S,
+                T,
+                U,
+                V,
+                W,
+                X,
+                Y,
+                Z,
+                Up,
+                Down,
+                Left,
+                Right,
+                F1,
+                F2,
+                F3,
+                F4,
+                F5,
+                F6,
+                F7,
+                F8,
+                F9,
+                F10,
+                F11,
+                F12,
+                Num1,
+                Num2,
+                Num3,
+                Num4,
+                Num5,
+                Num6,
+                Num7,
+                Num8,
+                Num9,
+                Num0,
+                Esc,
+                Enter,
+                Space   
+            };
+
             virtual ~IKeyboard() { };
 
             virtual bool VKeyPress(Key k) = 0;
             virtual bool VKeyRelease(Key k) = 0;
             virtual bool VSingleKeyPress(Key k) = 0;
             virtual void VUpdate() = 0;
+ 
         };
     }
 }

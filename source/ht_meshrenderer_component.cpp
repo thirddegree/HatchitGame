@@ -58,7 +58,7 @@ namespace Hatchit {
 #endif
 #ifdef GL_SUPPORT
             case Hatchit::Graphics::OPENGL:
-                m_meshRenderer = new GL::GLMeshRenderer();
+//                m_meshRenderer = new GL::GLMeshRenderer();
                 break;
 #endif
 #ifdef VK_SUPPORT

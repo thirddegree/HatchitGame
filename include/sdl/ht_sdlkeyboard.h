@@ -33,16 +33,16 @@ namespace Hatchit
             void RegisterKeyUp(SDL_Scancode code);
             
 
-            bool VKeyPress(Key k)           override;
-            bool VKeyRelease(Key k)         override;
-            bool VSingleKeyPress(Key k)     override;
-            void VUpdate()                  override;
+            bool VKeyPress(IKeyboard::Key k)            override;
+            bool VKeyRelease(IKeyboard::Key k)          override;
+            bool VSingleKeyPress(IKeyboard::Key k)      override;
+            void VUpdate()                              override;
 
         private:
             KeyState m_current;
             KeyState m_previous;
 
-            SDL_Scancode ConvertFromKey(Key k);
+            SDL_Scancode ConvertFromKey(IKeyboard::Key k);
         };
     }
 }

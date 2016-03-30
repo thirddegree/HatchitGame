@@ -31,9 +31,9 @@ namespace Hatchit
             static void DeInitialize();
 
             /*Keyboard*/
-            static bool KeyPress(Key key);
-            static bool KeySinglePress(Key key);
-            static bool KeyRelease(Key key);
+            static bool KeyPressed(IKeyboard::Key key);
+            static bool KeySinglePressed(IKeyboard::Key key);
+            static bool KeyReleased(IKeyboard::Key key);
 
             /*Mouse*/
             static int  MouseX();

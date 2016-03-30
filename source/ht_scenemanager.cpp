@@ -17,6 +17,7 @@
 #ifdef _DEBUG
     #include <ht_debug.h>
 #endif
+#include <ht_os.h>
 
 namespace Hatchit {
 
@@ -58,15 +59,14 @@ namespace Hatchit {
         {
             SceneManager& _instance = SceneManager::instance();
 
-            const std::string folder = "../../../../HatchitGame/";
-            const std::string sceneListFile = "SceneList.json";
+            
+            const std::string sceneListFile = "scenelist.json";
             bool loaded = false;
-
             try
             {
                 // Open the file
                 File file;
-                file.Open(folder + sceneListFile, FileMode::ReadText);
+                file.Open(Core::os_exec_dir() + sceneListFile, FileMode::ReadText);
 
                 // Prepare to read the file
                 size_t fileSize = file.SizeBytes();
@@ -92,7 +92,7 @@ namespace Hatchit {
                     HT_DEBUG_PRINTF("** Loading '%s'...\n", scenePath);
 
                     File sceneFile;
-                    sceneFile.Open(folder + scenePath, FileMode::ReadText);
+                    sceneFile.Open(Core::os_exec_dir() + scenePath, FileMode::ReadText);
 
                     _instance.m_scenes.emplace_back();
                     if (_instance.m_scenes.back().LoadFromFile(sceneFile))

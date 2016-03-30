@@ -23,19 +23,19 @@ namespace Hatchit
 
         }
 
-        bool SDLKeyboard::VKeyPress(Key k)
+        bool SDLKeyboard::VKeyPress(IKeyboard::Key k)
         {
             return m_current[ConvertFromKey(k)];
         }
 
-        bool SDLKeyboard::VKeyRelease(Key k)
+        bool SDLKeyboard::VKeyRelease(IKeyboard::Key k)
         {
             SDL_Scancode code = ConvertFromKey(k);
 
             return m_current[code] && m_previous[code];
         }
 
-        bool SDLKeyboard::VSingleKeyPress(Key k)
+        bool SDLKeyboard::VSingleKeyPress(IKeyboard::Key k)
         {
             SDL_Scancode code = ConvertFromKey(k);
 
@@ -57,120 +57,120 @@ namespace Hatchit
             m_current[code] = false;
         }
 
-       
-        SDL_Scancode SDLKeyboard::ConvertFromKey(Key k)
+
+        SDL_Scancode SDLKeyboard::ConvertFromKey(IKeyboard::Key k)
         {
             switch (k)
             {
-            case Key::A:
+            case IKeyboard::Key::A:
                 return SDL_SCANCODE_A;
-            case Key::B:
+            case IKeyboard::Key::B:
                 return SDL_SCANCODE_B;
-            case Key::C:
+            case IKeyboard::Key::C:
                 return SDL_SCANCODE_C;
-            case Key::D:
+            case IKeyboard::Key::D:
                 return SDL_SCANCODE_D;
-            case Key::E:
+            case IKeyboard::Key::E:
                 return SDL_SCANCODE_E;
-            case Key::F:
+            case IKeyboard::Key::F:
                 return SDL_SCANCODE_F;
-            case Key::G:
+            case IKeyboard::Key::G:
                 return SDL_SCANCODE_G;
-            case Key::H:
+            case IKeyboard::Key::H:
                 return SDL_SCANCODE_H;
-            case Key::I:
+            case IKeyboard::Key::I:
                 return SDL_SCANCODE_I;
-            case Key::J:
+            case IKeyboard::Key::J:
                 return SDL_SCANCODE_J;
-            case Key::K:
+            case IKeyboard::Key::K:
                 return SDL_SCANCODE_K;
-            case Key::L:
+            case IKeyboard::Key::L:
                 return SDL_SCANCODE_L;
-            case Key::M:
+            case IKeyboard::Key::M:
                 return SDL_SCANCODE_M;
-            case Key::N:
+            case IKeyboard::Key::N:
                 return SDL_SCANCODE_N;
-            case Key::O:
+            case IKeyboard::Key::O:
                 return SDL_SCANCODE_O;
-            case Key::P:
+            case IKeyboard::Key::P:
                 return SDL_SCANCODE_P;
-            case Key::Q:
+            case IKeyboard::Key::Q:
                 return SDL_SCANCODE_Q;
-            case Key::R:
+            case IKeyboard::Key::R:
                 return SDL_SCANCODE_R;
-            case Key::S:
+            case IKeyboard::Key::S:
                 return SDL_SCANCODE_S;
-            case Key::T:
+            case IKeyboard::Key::T:
                 return SDL_SCANCODE_T;
-            case Key::U:
+            case IKeyboard::Key::U:
                 return SDL_SCANCODE_U;
-            case Key::V:
+            case IKeyboard::Key::V:
                 return SDL_SCANCODE_V;
-            case Key::W:
+            case IKeyboard::Key::W:
                 return SDL_SCANCODE_W;
-            case Key::X:
+            case IKeyboard::Key::X:
                 return SDL_SCANCODE_X;
-            case Key::Y:
+            case IKeyboard::Key::Y:
                 return SDL_SCANCODE_Y;
-            case Key::Z:
+            case IKeyboard::Key::Z:
                 return SDL_SCANCODE_Z;
-            case Key::Up:
+            case IKeyboard::Key::Up:
                 return SDL_SCANCODE_UP;
-            case Key::Down:
+            case IKeyboard::Key::Down:
                 return SDL_SCANCODE_DOWN;
-            case Key::Left:
+            case IKeyboard::Key::Left:
                 return SDL_SCANCODE_LEFT;
-            case Key::Right:
+            case IKeyboard::Key::Right:
                 return SDL_SCANCODE_RIGHT;
-            case Key::Space:
+            case IKeyboard::Key::Space:
                 return SDL_SCANCODE_SPACE;
-            case Key::F1:
+            case IKeyboard::Key::F1:
                 return SDL_SCANCODE_F1;
-            case Key::F2:
+            case IKeyboard::Key::F2:
                 return SDL_SCANCODE_F2;
-            case Key::F3:
+            case IKeyboard::Key::F3:
                 return SDL_SCANCODE_F3;
-            case Key::F4:
+            case IKeyboard::Key::F4:
                 return SDL_SCANCODE_F4;
-            case Key::F5:
+            case IKeyboard::Key::F5:
                 return SDL_SCANCODE_F5;
-            case Key::F6:
+            case IKeyboard::Key::F6:
                 return SDL_SCANCODE_F6;
-            case Key::F7:
+            case IKeyboard::Key::F7:
                 return SDL_SCANCODE_F7;
-            case Key::F8:
+            case IKeyboard::Key::F8:
                 return SDL_SCANCODE_F8;
-            case Key::F9:
+            case IKeyboard::Key::F9:
                 return SDL_SCANCODE_F9;
-            case Key::F10:
+            case IKeyboard::Key::F10:
                 return SDL_SCANCODE_F10;
-            case Key::F11:
+            case IKeyboard::Key::F11:
                 return SDL_SCANCODE_F11;
-            case Key::F12:
+            case IKeyboard::Key::F12:
                 return SDL_SCANCODE_F12;
-            case Key::Num0:
+            case IKeyboard::Key::Num0:
                 return SDL_SCANCODE_0;
-            case Key::Num1:
+            case IKeyboard::Key::Num1:
                 return SDL_SCANCODE_1;
-            case Key::Num2:
+            case IKeyboard::Key::Num2:
                 return SDL_SCANCODE_2;
-            case Key::Num3:
+            case IKeyboard::Key::Num3:
                 return SDL_SCANCODE_3;
-            case Key::Num4:
+            case IKeyboard::Key::Num4:
                 return SDL_SCANCODE_4;
-            case Key::Num5:
+            case IKeyboard::Key::Num5:
                 return SDL_SCANCODE_5;
-            case Key::Num6:
+            case IKeyboard::Key::Num6:
                 return SDL_SCANCODE_6;
-            case Key::Num7:
+            case IKeyboard::Key::Num7:
                 return SDL_SCANCODE_7;
-            case Key::Num8:
+            case IKeyboard::Key::Num8:
                 return SDL_SCANCODE_8;
-            case Key::Num9:
+            case IKeyboard::Key::Num9:
                 return SDL_SCANCODE_9;
-            case Key::Esc:
+            case IKeyboard::Key::Esc:
                 return SDL_SCANCODE_ESCAPE;
-            case Key::Enter:
+            case IKeyboard::Key::Enter:
                 return SDL_SCANCODE_RETURN;
             default:
                 return SDL_SCANCODE_0;

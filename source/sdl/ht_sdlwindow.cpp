@@ -207,7 +207,7 @@ namespace Hatchit {
             
         
             std::string title = m_params.title + (m_params.displayFPS ? (" FPS: " + std::to_string((int)Time::FramesPerSecond())) : "")
-                                                + (m_params.displayMouse ? (" Mouse: [" + std::to_string(Input::MouseX()) + "," +
+                                                + (m_params.displayMouse ? (" [" + std::to_string(Input::MouseX()) + "," +
                                                     std::to_string(Input::MouseY()) + "]") : "");
             SDL_SetWindowTitle(m_handle, title.c_str());
             

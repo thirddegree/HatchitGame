@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <ht_meshrenderer.h>
 #ifdef HT_SYS_WINDOWS
 #ifdef DX11_SUPPORT
 #include <ht_d3d11meshrenderer.h>

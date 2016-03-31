@@ -97,11 +97,11 @@ namespace Hatchit {
                     _instance.m_scenes.emplace_back();
                     if (_instance.m_scenes.back().LoadFromFile(sceneFile))
                     {
-                        HT_DEBUG_PRINTF("Done!\n");
+                        HT_DEBUG_PRINTF("Loaded %s!\n", scenePath);
                     }
                     else
                     {
-                        HT_DEBUG_PRINTF("Failed!\n");
+                        HT_DEBUG_PRINTF("Failed %s!\n", scenePath);
                     }
 
                     sceneFile.Close();

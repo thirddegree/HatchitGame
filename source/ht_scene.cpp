@@ -170,6 +170,37 @@ namespace Hatchit {
                 m_gameObjects.push_back(guid_obj_pair.second);
             }
 
+            // Get an array of all the JSON GameObjects in the scene.
+            std::vector<JSON> json_prefabs{};
+            if (!ExtractContainerFromJSON(m_description, "Prefabs", json_prefabs))
+            {
+                HT_DEBUG_PRINTF("Failed to find property 'Prefabs' in scene description!\n");
+                //return false;
+            }
+
+            for (const JSON& json_obj : json_prefabs)
+            {
+                // Attempt to parse a GameObject from the provided JSON.
+                GameObject obj;
+                if (!ParseGameObject(json_obj, obj))
+                {
+                    HT_DEBUG_PRINTF("Failed to parse Prefab in scene description!\n");
+                    return false;
+                }
+
+                // Validate that the Guid for the parsed GameObject is present in the master list.
+                const Guid& id = obj.GetGuid();
+                std::unordered_set<Guid>::const_iterator iter = guids.find(id);
+                if (iter == guids.cend())
+                {
+                    HT_DEBUG_PRINTF("Failed to locate %s within 'GUIDs' array in scene description!\n", id.ToString());
+                    return false;
+                }
+
+                GameObject* allocated_obj = new GameObject(std::move(obj));
+                m_prefabs.push_back(allocated_obj);
+            }
+
             return true;
         }
 

@@ -163,6 +163,7 @@ namespace Hatchit {
             Core::Guid m_guid; /**< The Guid associated with this scene. */
             nlohmann::json m_description; /**< The JSON description of the scene. */
             std::vector<GameObject*> m_gameObjects; /**< std::vector of GameObjects present in the scene. */
+            std::vector<GameObject*> m_prefabs;
         };
     }
 }

@@ -14,9 +14,7 @@
 
 #include <ht_scene.h>
 #include <ht_jsonhelper.h>
-#ifdef _DEBUG
-    #include <ht_debug.h>
-#endif
+#include <ht_debug.h>
 
 namespace Hatchit {
 
@@ -24,7 +22,9 @@ namespace Hatchit {
 
         using JSON = nlohmann::json;
         using Core::Guid;
+#if defined(_DEBUG) || defined(DEBUG)
         using Core::_JsonExtractValue;
+#endif
 
         /**
         * \brief Attempts to extract a std::vector from a JSON object.

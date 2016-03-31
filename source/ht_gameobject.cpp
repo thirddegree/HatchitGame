@@ -13,11 +13,7 @@
 **/
 
 #include <ht_gameobject.h>
-
-#ifdef _DEBUG
-    #include <ht_debug.h>
-#endif
-
+#include <ht_debug.h>
 #include <algorithm>
 
 namespace Hatchit {

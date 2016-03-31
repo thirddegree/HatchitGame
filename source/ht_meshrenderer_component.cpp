@@ -52,7 +52,7 @@ namespace Hatchit {
 #endif
 #ifdef DX12_SUPPORT
             case Hatchit::Graphics::DIRECTX12:
-                m_meshRenderer = new DX::DX12MeshRenderer();
+                //m_meshRenderer = new DX::DX12MeshRenderer();
                 break;
 #endif
 #endif

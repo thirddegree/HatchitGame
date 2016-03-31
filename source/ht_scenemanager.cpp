@@ -109,8 +109,9 @@ namespace Hatchit {
 
                 loaded = true;
             }
-            catch (...)
+            catch (std::exception& e)
             {
+				HT_DEBUG_PRINTF("%s\n", e.what())
                 HT_DEBUG_PRINTF("Failed to load scene list!\n");
             }
 

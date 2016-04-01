@@ -14,6 +14,7 @@
 
 #include <ht_test_component.h>
 #include <ht_debug.h>
+#include <ht_scenemanager.h>
 
 namespace Hatchit {
 
@@ -27,6 +28,7 @@ namespace Hatchit {
         void TestComponent::VOnInit()
         {
             HT_DEBUG_PRINTF("Initialized Test Component.\n");
+            testObject = Scene::CreateGameObject(*GetOwner());
         }
 
         void TestComponent::VOnUpdate()

@@ -34,6 +34,7 @@ namespace Hatchit {
             void VOnDisabled() override;
 
         private:
+            GameObject* testObject;
         };
 
     }

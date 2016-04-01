@@ -150,6 +150,7 @@ namespace Hatchit {
             {
                 if (_instance.m_currentScene->LoadFromCache())
                 {
+                    Scene::instance = _instance.m_currentScene;
                     _instance.m_currentScene->Init();
                     return true;
                 }

@@ -31,6 +31,7 @@ namespace Hatchit {
                 float rotX, float rotY, float rotZ,
                 float scaleX, float scaleY, float scaleZ);
             Transform(Math::Vector3 position, Math::Vector3 rotation, Math::Vector3 scale);
+            Transform(const Transform& transform);
 
 
             Math::Matrix4* GetWorldMatrix();

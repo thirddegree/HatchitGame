@@ -42,6 +42,7 @@ namespace Hatchit {
         {
         friend class SceneManager;
         public:
+            
             Scene(void) = default;
             ~Scene(void) = default;
             Scene(const Scene& rhs) = default;
@@ -105,9 +106,14 @@ namespace Hatchit {
             void Unload(void);
 
             /**
-             * \brief Creates GameObject and adds it to the scene.
+             * \brief Creates empty GameObject and adds it to the scene.
              */
-            GameObject* CreateGameObject();
+            static GameObject* CreateGameObject();
+
+            /**
+            * \brief Creates GameObject from prefab and adds it to the scene.
+            */
+            static GameObject* CreateGameObject(GameObject& prefab);
 
         private:
 
@@ -159,6 +165,7 @@ namespace Hatchit {
             */
             bool ParseComponent(const nlohmann::json& obj, GameObject& out);
 
+            static Scene* instance;
             std::string m_name; /**< The name associated with this scene. */
             Core::Guid m_guid; /**< The Guid associated with this scene. */
             nlohmann::json m_description; /**< The JSON description of the scene. */

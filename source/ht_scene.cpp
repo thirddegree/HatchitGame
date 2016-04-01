@@ -170,7 +170,7 @@ namespace Hatchit {
                 m_gameObjects.push_back(guid_obj_pair.second);
             }
 
-            // Get an array of all the JSON GameObjects in the scene.
+            // Get an array of all the JSON Prefabs.
             std::vector<JSON> json_prefabs{};
             if (!ExtractContainerFromJSON(m_description, "Prefabs", json_prefabs))
             {
@@ -455,10 +455,36 @@ namespace Hatchit {
             m_gameObjects.clear();
         }
 
+        /**
+         * \brief Creates empty GameObject and adds it to the scene.
+         */
         GameObject* Scene::CreateGameObject()
         {
-            m_gameObjects.emplace_back(nullptr);
-            return (GameObject*)&m_gameObjects.back();
+            instance->m_gameObjects.emplace_back(nullptr);
+            return (GameObject*)&instance->m_gameObjects.back();
+        }
+
+        /**
+         * \brief Creates GameObject from prefab and adds it to the scene.
+         */
+        GameObject* Scene::CreateGameObject(GameObject& prefab)
+        {
+            GameObject* gameObject = CreateGameObject();
+            gameObject->m_transform = prefab.GetTransform();
+            auto components = prefab.GetComponents();
+            for (const Game::Component* component : prefab.m_components)
+            {
+                gameObject->AddUninitializedComponent(component);
+            }
+            for (Game::Component* component : gameObject->m_components)
+            {
+                component->VOnInit();
+            }
+            for (Game::Component* component : gameObject->m_components)
+            {
+                component->Enable();
+            }
+            return gameObject;
         }
     }
 }

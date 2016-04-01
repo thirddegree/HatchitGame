@@ -43,8 +43,9 @@ namespace Hatchit {
             static Graphics::RendererType GetRendererType();
 
         private:
-            Graphics::IRenderer* m_renderer;
-            Graphics::RendererType m_rendererType;
+            Graphics::IRenderer*    m_renderer;
+            Graphics::RendererType  m_rendererType;
+            bool                    m_initialized;
         };
 
     }

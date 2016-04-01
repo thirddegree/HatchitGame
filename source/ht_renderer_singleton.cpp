@@ -107,6 +107,8 @@ namespace Hatchit {
             if (!_instance.m_renderer->VInitialize(params))
                 return false;
 
+            _instance.m_initialized = true;
+
             return true;
         }
 
@@ -114,9 +116,14 @@ namespace Hatchit {
         {
             Renderer& _instance = Renderer::instance();
 
+            if (!_instance.m_initialized)
+                return;
+
             _instance.m_renderer->VDeInitialize();
 
             delete _instance.m_renderer;
+
+            _instance.m_initialized = false;
         }
 
         void Renderer::SetClearColor(const Color& color)

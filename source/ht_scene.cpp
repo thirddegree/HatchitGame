@@ -26,6 +26,8 @@ namespace Hatchit {
         using Core::_JsonExtractValue;
 #endif
 
+        Scene* Scene::instance;
+
         /**
         * \brief Attempts to extract a std::vector from a JSON object.
         * \tparam T A JSON value type.

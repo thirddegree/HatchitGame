@@ -14,6 +14,7 @@
 
 #include <ht_application.h>
 #include <ht_debug.h>
+#include <ht_path_singleton.h>
 #include <ht_window_singleton.h>
 #include <ht_renderer_singleton.h>
 #include <ht_time_singleton.h>
@@ -68,6 +69,9 @@ namespace Hatchit {
 
         bool Application::Initialize()
         {
+			/*Initialize path manager*/
+			Core::Path::Initialize(m_settings);
+
             /*Initialize Window with values from settings file*/
             WindowParams wparams;
             wparams.title = m_settings->GetValue("WINDOW", "sTitle", std::string("Hatchit Engine"));
@@ -133,6 +137,7 @@ namespace Hatchit {
             Input::DeInitialize();
             Renderer::DeInitialize();
             Window::DeInitialize();
+			Core::Path::DeInitialize();
         }
   }
 

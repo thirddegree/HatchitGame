@@ -13,6 +13,7 @@
 **/
 
 #include <ht_scenemanager.h>
+#include <ht_path_singleton.h>
 
 #ifdef _DEBUG
     #include <ht_debug.h>
@@ -66,7 +67,7 @@ namespace Hatchit {
             {
                 // Open the file
                 File file;
-                file.Open(Core::os_exec_dir() + sceneListFile, FileMode::ReadText);
+                file.Open(Core::Path::Value(Core::Path::Directory::Scenes) + sceneListFile, FileMode::ReadText);
 
                 // Prepare to read the file
                 size_t fileSize = file.SizeBytes();
@@ -92,7 +93,7 @@ namespace Hatchit {
                     HT_DEBUG_PRINTF("** Loading '%s'...\n", scenePath);
 
                     File sceneFile;
-                    sceneFile.Open(Core::os_exec_dir() + scenePath, FileMode::ReadText);
+                    sceneFile.Open(Core::Path::Value(Core::Path::Directory::Scenes) + scenePath, FileMode::ReadText);
 
                     _instance.m_scenes.emplace_back();
                     if (_instance.m_scenes.back().LoadFromFile(sceneFile))

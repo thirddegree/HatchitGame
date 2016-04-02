@@ -14,10 +14,7 @@
 
 #include <ht_scenemanager.h>
 #include <ht_path_singleton.h>
-
-#ifdef _DEBUG
-    #include <ht_debug.h>
-#endif
+#include <ht_debug.h>
 #include <ht_os.h>
 
 namespace Hatchit {

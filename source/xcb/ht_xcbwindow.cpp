@@ -48,9 +48,7 @@ namespace Hatchit{
             m_connection = xcb_connect(nullptr, &src);
             if(m_connection == nullptr)
             {
-#ifdef _DEBUG
-                Core::DebugPrintF("Failed to connect XCB to X11 Server. Exiting.\n");
-#endif
+                HT_DEBUG_PRINTF("Failed to connect XCB to X11 Server. Exiting.\n");
                 return false;
             }
 

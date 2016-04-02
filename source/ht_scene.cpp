@@ -14,9 +14,7 @@
 
 #include <ht_scene.h>
 #include <ht_jsonhelper.h>
-#ifdef _DEBUG
-    #include <ht_debug.h>
-#endif
+#include <ht_debug.h>
 
 namespace Hatchit {
 

@@ -13,10 +13,7 @@
 **/
 
 #include <ht_test_component.h>
-
-#ifdef _DEBUG
-    #include <ht_debug.h>
-#endif
+#include <ht_debug.h>
 
 namespace Hatchit {
 

@@ -82,13 +82,13 @@ namespace Hatchit {
             /*Initialize Renderer with values from settings file*/
             RendererParams rparams;
 
-	    std::string renderer = m_settings->GetValue("RENDERER", "sRenderer", std::string("DIRECTX"));
+        std::string renderer = m_settings->GetValue("RENDERER", "sRenderer", std::string("DIRECTX"));
 
 #ifdef HT_SYS_LINUX
-	        if(renderer == "OPENGL")
-            	rparams.renderer = RendererType::OPENGL;
-	        else if(renderer == "VULKAN")
-		        rparams.renderer = RendererType::VULKAN;
+            if(renderer == "OPENGL")
+                rparams.renderer = RendererType::OPENGL;
+            else if(renderer == "VULKAN")
+                rparams.renderer = RendererType::VULKAN;
 #else
             if (renderer == "DIRECTX11")
                 rparams.renderer = RendererType::DIRECTX11;
@@ -129,7 +129,7 @@ namespace Hatchit {
 
         void Application::DeInitialize()
         {
-			SceneManager::Deinitialize();
+            SceneManager::Deinitialize();
             Input::DeInitialize();
             Renderer::DeInitialize();
             Window::DeInitialize();

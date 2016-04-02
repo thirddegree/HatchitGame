@@ -18,6 +18,7 @@
 #include <ht_input_singleton.h>
 #include <ht_sdlkeyboard.h>
 #include <ht_sdlmouse.h>
+#include <ht_renderer_singleton.h>
 
 namespace Hatchit {
 
@@ -64,18 +65,18 @@ namespace Hatchit {
             SDL_SysWMinfo info;
             SDL_VERSION(&info.version);
             if (SDL_GetWindowWMInfo(m_handle, &info))
-	        {
+            {
                 m_nativeWindowHandle = info.info.win.window;
-		        m_nativeDisplayHandle = nullptr;
-	        }
+                m_nativeDisplayHandle = nullptr;
+            }
 #elif defined(HT_SYS_LINUX)
-	        SDL_SysWMinfo info;
-	        SDL_VERSION(&info.version);
-	        if (SDL_GetWindowWMInfo(m_handle, &info))
-	        {
-		        m_nativeWindowHandle = (void*)info.info.x11.window;
-	    	    m_nativeDisplayHandle = info.info.x11.display;
-	        }
+            SDL_SysWMinfo info;
+            SDL_VERSION(&info.version);
+            if (SDL_GetWindowWMInfo(m_handle, &info))
+            {
+                m_nativeWindowHandle = (void*)info.info.x11.window;
+                m_nativeDisplayHandle = info.info.x11.display;
+            }
 #endif
             if (m_params.renderer == Graphics::RendererType::OPENGL)
             {
@@ -135,68 +136,79 @@ namespace Hatchit {
 
                 case SDL_WINDOWEVENT:
                 {
-#ifdef _DEBUG
-                    if (m_params.debugWindowEvents)
+                    switch (event.window.event)
                     {
-                        switch (event.window.event)
-                        {
-                        case SDL_WINDOWEVENT_SHOWN:
-                            SDL_Log("Window %d shown", event.window.windowID);
-                            break;
-                        case SDL_WINDOWEVENT_HIDDEN:
-                            SDL_Log("Window %d hidden", event.window.windowID);
-                            break;
-                        case SDL_WINDOWEVENT_EXPOSED:
-                            SDL_Log("Window %d exposed", event.window.windowID);
-                            break;
-                        case SDL_WINDOWEVENT_MOVED:
-                            SDL_Log("Window %d moved to %d,%d",
+                    case SDL_WINDOWEVENT_SHOWN:
+                        if (m_params.debugWindowEvents)
+                            HT_DEBUG_PRINTF("Window %d shown", event.window.windowID);
+                        break;
+                    case SDL_WINDOWEVENT_HIDDEN:
+                        if (m_params.debugWindowEvents)
+                            HT_DEBUG_PRINTF("Window %d hidden", event.window.windowID);
+                        break;
+                    case SDL_WINDOWEVENT_EXPOSED:
+                        if (m_params.debugWindowEvents)
+                            HT_DEBUG_PRINTF("Window %d exposed", event.window.windowID);
+                        break;
+                    case SDL_WINDOWEVENT_MOVED:
+                        if (m_params.debugWindowEvents)
+                            HT_DEBUG_PRINTF("Window %d moved to %d,%d",
                                 event.window.windowID, event.window.data1,
                                 event.window.data2);
-                            break;
-                        case SDL_WINDOWEVENT_RESIZED:
-                            SDL_Log("Window %d resized to %dx%d",
+                        break;
+                    case SDL_WINDOWEVENT_RESIZED:
+                        if (m_params.debugWindowEvents)
+                            HT_DEBUG_PRINTF("Window %d resized to %dx%d",
                                 event.window.windowID, event.window.data1,
                                 event.window.data2);
-                            break;
-                        case SDL_WINDOWEVENT_SIZE_CHANGED:
-                            SDL_Log("Window %d size changed to %dx%d",
+                        Renderer::ResizeBuffers(event.window.data1, event.window.data2);
+                        break;
+                    case SDL_WINDOWEVENT_SIZE_CHANGED:
+                        if (m_params.debugWindowEvents)
+                            HT_DEBUG_PRINTF("Window %d size changed to %dx%d",
                                 event.window.windowID, event.window.data1,
                                 event.window.data2);
-                            break;
-                        case SDL_WINDOWEVENT_MINIMIZED:
-                            SDL_Log("Window %d minimized", event.window.windowID);
-                            break;
-                        case SDL_WINDOWEVENT_MAXIMIZED:
-                            SDL_Log("Window %d maximized", event.window.windowID);
-                            break;
-                        case SDL_WINDOWEVENT_RESTORED:
-                            SDL_Log("Window %d restored", event.window.windowID);
-                            break;
-                        case SDL_WINDOWEVENT_ENTER:
-                            SDL_Log("Mouse entered window %d",
+                        break;
+                    case SDL_WINDOWEVENT_MINIMIZED:
+                        if (m_params.debugWindowEvents)
+                            HT_DEBUG_PRINTF("Window %d minimized", event.window.windowID);
+                        break;
+                    case SDL_WINDOWEVENT_MAXIMIZED:
+                        if (m_params.debugWindowEvents)
+                            HT_DEBUG_PRINTF("Window %d maximized", event.window.windowID);
+                        break;
+                    case SDL_WINDOWEVENT_RESTORED:
+                        if (m_params.debugWindowEvents)
+                            HT_DEBUG_PRINTF("Window %d restored", event.window.windowID);
+                        break;
+                    case SDL_WINDOWEVENT_ENTER:
+                        if (m_params.debugWindowEvents)
+                            HT_DEBUG_PRINTF("Mouse entered window %d",
                                 event.window.windowID);
-                            break;
-                        case SDL_WINDOWEVENT_LEAVE:
-                            SDL_Log("Mouse left window %d", event.window.windowID);
-                            break;
-                        case SDL_WINDOWEVENT_FOCUS_GAINED:
-                            SDL_Log("Window %d gained keyboard focus",
+                        break;
+                    case SDL_WINDOWEVENT_LEAVE:
+                        if (m_params.debugWindowEvents)
+                            HT_DEBUG_PRINTF("Mouse left window %d", event.window.windowID);
+                        break;
+                    case SDL_WINDOWEVENT_FOCUS_GAINED:
+                        if (m_params.debugWindowEvents)
+                            HT_DEBUG_PRINTF("Window %d gained keyboard focus",
                                 event.window.windowID);
-                            break;
-                        case SDL_WINDOWEVENT_FOCUS_LOST:
-                            SDL_Log("Window %d lost keyboard focus",
+                        break;
+                    case SDL_WINDOWEVENT_FOCUS_LOST:
+                        if (m_params.debugWindowEvents)
+                            HT_DEBUG_PRINTF("Window %d lost keyboard focus",
                                 event.window.windowID);
-                            break;
-                        case SDL_WINDOWEVENT_CLOSE:
-                            SDL_Log("Window %d closed", event.window.windowID);
-                            break;
-                        default:
-                            SDL_Log("Window %d got unknown event %d",
+                        break;
+                    case SDL_WINDOWEVENT_CLOSE:
+                        if (m_params.debugWindowEvents)
+                            HT_DEBUG_PRINTF("Window %d closed", event.window.windowID);
+                        break;
+                    default:
+                        if (m_params.debugWindowEvents)
+                            HT_DEBUG_PRINTF("Window %d got unknown event %d",
                                 event.window.windowID, event.window.event);
-                        }
                     }
-#endif
                 } break;
 
                 default:
@@ -217,10 +229,10 @@ namespace Hatchit {
         {
             return m_nativeWindowHandle;
         }
-	    void* SDLWindow::VNativeDisplayHandle()
-	    {
-	        return m_nativeDisplayHandle;
-	    }
+        void* SDLWindow::VNativeDisplayHandle()
+        {
+            return m_nativeDisplayHandle;
+        }
 
 
         bool SDLWindow::VIsRunning()

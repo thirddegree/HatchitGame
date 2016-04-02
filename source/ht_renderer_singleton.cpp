@@ -129,6 +129,8 @@ namespace Hatchit {
         void Renderer::SetClearColor(const Color& color)
         {
             Renderer& _instance = Renderer::instance();
+			if (!_instance.m_initialized)
+				return;
 
             _instance.m_renderer->VSetClearColor(color);
         }
@@ -136,6 +138,8 @@ namespace Hatchit {
         void Renderer::Render() 
         {
             Renderer& _instance = Renderer::instance();
+			if (!_instance.m_initialized)
+				return;
 
             _instance.m_renderer->VRender(Time::DeltaTime());
         }
@@ -143,6 +147,8 @@ namespace Hatchit {
         void Renderer::Present()
         {
             Renderer& _instance = Renderer::instance();
+			if (!_instance.m_initialized)
+				return;
 
             _instance.m_renderer->VPresent();
         }
@@ -150,6 +156,8 @@ namespace Hatchit {
         void Renderer::ClearBuffer(ClearArgs args)
         {
             Renderer& _instance = Renderer::instance();
+			if (!_instance.m_initialized)
+				return;
 
             _instance.m_renderer->VClearBuffer(args);
         }
@@ -157,6 +165,8 @@ namespace Hatchit {
         void Renderer::ResizeBuffers(uint32_t width, uint32_t height)
         {
             Renderer& _instance = Renderer::instance();
+			if (!_instance.m_initialized)
+				return;
 
             _instance.m_renderer->VResizeBuffers(width, height);
         }

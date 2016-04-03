@@ -40,9 +40,7 @@ namespace Hatchit {
         bool SDLWindow::VInitialize()
         {
             if (SDL_Init(SDL_INIT_TIMER) != 0) {
-#ifdef _DEBUG
-                Core::DebugPrintF("SDL Failed to Initialize. Exiting\n");
-#endif
+                HT_DEBUG_PRINTF("SDL Failed to Initialize. Exiting\n");
                 return false;
             }
 
@@ -54,9 +52,7 @@ namespace Hatchit {
                 SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
             if (!m_handle)
             {
-#ifdef _DEBUG
-                Core::DebugPrintF("Failed to create SDL_Window handle. Exiting.\n");
-#endif 
+                HT_DEBUG_PRINTF("Failed to create SDL_Window handle. Exiting.\n");
                 SDL_Quit();
                 return false;
             }
@@ -83,9 +79,7 @@ namespace Hatchit {
                 m_glcontext = SDL_GL_CreateContext(m_handle);
                 if (!m_glcontext)
                 {
-#ifdef _DEBUG
-                    Core::DebugPrintF("Failed to create SDL_GL_Context handle. Exiting.\n");
-#endif
+                    HT_DEBUG_PRINTF("Failed to create SDL_GL_Context handle. Exiting.\n");
                     SDL_Quit();
                     return false;
                 }

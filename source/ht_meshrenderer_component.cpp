@@ -14,10 +14,7 @@
 
 #include <ht_meshrenderer_component.h>
 #include <ht_renderer_singleton.h>
-
-#ifdef _DEBUG
 #include <ht_debug.h>
-#endif
 
 namespace Hatchit {
 

@@ -29,6 +29,7 @@
 
 #include <ht_platform.h>
 #include <ht_guid.h>
+#include <ht_icloneable.h>
 
 namespace Hatchit {
 

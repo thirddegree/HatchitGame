@@ -20,7 +20,7 @@
 #include <ht_d3d11meshrenderer.h>
 #endif
 #ifdef DX12_SUPPORT
-//#include <ht_d3d12meshrenderer.h>
+#include <ht_d3d12meshrenderer.h>
 #endif
 #endif
 

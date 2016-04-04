@@ -20,7 +20,13 @@ namespace Hatchit {
 
     namespace Game {
 
-        class TestComponent : public Component
+
+        using JSONToComponentPtr = Component* (*)(nlohmann::json& obj);
+        using ComponentToJSONPtr = nlohmann::json(*)(Component*);
+
+        #define REGISTER_COMPONENT_MACRO(T, factory_function_ptr) ComponentFactory::RegisterComponentFunction<T>(factory_function_ptr);
+
+        class TestComponent : public Component, public ICloneable<TestComponent>
         {
         public:
             TestComponent(void);

@@ -26,7 +26,7 @@
 #endif
 
 #ifdef GL_SUPPORT
-#include <ht_glmeshrenderer.h>
+//#include <ht_glmeshrenderer.h>
 #endif
 
 #ifdef VK_SUPPORT

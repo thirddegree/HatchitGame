@@ -19,7 +19,7 @@ namespace Hatchit {
          *
          * \param value The initial value.
          */
-        TweenValue::TweenValue(Math::Float2 value)
+        TweenValue::TweenValue(const Math::Float2& value)
         {
             SetValue(value);
         }
@@ -29,7 +29,7 @@ namespace Hatchit {
          *
          * \param value The initial value.
          */
-        TweenValue::TweenValue(Math::Float3 value)
+        TweenValue::TweenValue(const Math::Float3& value)
         {
             SetValue(value);
         }
@@ -39,7 +39,7 @@ namespace Hatchit {
          *
          * \param value The initial value.
          */
-        TweenValue::TweenValue(Math::Float4 value)
+        TweenValue::TweenValue(const Math::Float4& value)
         {
             SetValue(value);
         }
@@ -99,7 +99,7 @@ namespace Hatchit {
          *
          * \param value The new value.
          */
-        void TweenValue::SetValue(Math::Float2 value)
+        void TweenValue::SetValue(const Math::Float2& value)
         {
             m_values = Math::Float4(value.x, value.y, 0, 0);
         }
@@ -109,7 +109,7 @@ namespace Hatchit {
          *
          * \param value The new value.
          */
-        void TweenValue::SetValue(Math::Float3 value)
+        void TweenValue::SetValue(const Math::Float3& value)
         {
             m_values = Math::Float4(value.x, value.y, value.z, 0);
         }
@@ -119,7 +119,7 @@ namespace Hatchit {
          *
          * \param value The new value.
          */
-        void TweenValue::SetValue(Math::Float4 value)
+        void TweenValue::SetValue(const Math::Float4& value)
         {
             m_values = value;
         }

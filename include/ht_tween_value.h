@@ -36,21 +36,21 @@ namespace Hatchit {
              *
              * \param value The initial value.
              */
-            TweenValue(Math::Float2 value);
+            TweenValue(const Math::Float2& value);
 
             /**
              * \brief Creates a new tween value.
              *
              * \param value The initial value.
              */
-            TweenValue(Math::Float3 value);
+            TweenValue(const Math::Float3& value);
 
             /**
              * \brief Creates a new tween value.
              *
              * \param value The initial value.
              */
-            TweenValue(Math::Float4 value);
+            TweenValue(const Math::Float4& value);
 
             /**
              * \brief Gets this tween value as a single float.
@@ -89,21 +89,21 @@ namespace Hatchit {
              *
              * \param value The new value.
              */
-            void SetValue(Math::Float2 value);
+            void SetValue(const Math::Float2& value);
             
             /**
              * \brief Sets this tween value's underlying value.
              *
              * \param value The new value.
              */
-            void SetValue(Math::Float3 value);
+            void SetValue(const Math::Float3& value);
 
             /**
              * \brief Sets this tween value's underlying value.
              *
              * \param value The new value.
              */
-            void SetValue(Math::Float4 value);
+            void SetValue(const Math::Float4& value);
 
             /**
              * \brief Checks to see if this tween value is equal to another.

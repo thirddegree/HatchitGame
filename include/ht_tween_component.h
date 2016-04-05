@@ -77,32 +77,107 @@ namespace Hatchit {
         class HT_API TweenComponent : public Component
         {
         public:
+            /**
+             * \brief The type for tween function pointers.
+             *
+             * \param start The start value.
+             * \param end The end value.
+             * \param time The current time in the tween.
+             * \param duration The duration of the tween.
+             * \return The resulting tween value.
+             */
+            typedef float(*TweenFunction)(float start, float end, float time, float duration);
+
+            /**
+             * \brief Creates a new tween component.
+             *
+             * \param owner The owner game object.
+             */
             TweenComponent(GameObject* owner);
 
+            /**
+             * \brief Destroys this tween component.
+             */
             virtual ~TweenComponent();
 
+            /**
+             * \brief Gets the duration of the tween.
+             */
             float GetDuration() const;
 
+            /**
+             * \brief Gets the tween method.
+             */
             TweenMethod GetMethod() const;
 
+            /**
+             * \brief Gets the tween play mode.
+             */
             TweenPlayMode GetPlayMode() const;
 
+            /**
+             * \brief Checks to see if this tween is playing.
+             */
             bool IsPlaying() const;
 
-            void Play();
+            /**
+             * \brief Plays the tween.
+             *
+             * \return True if the tween has begun, false if there was an error.
+             */
+            bool Play();
 
-            void Play(float duration);
+            /**
+             * \brief Plays the tween.
+             *
+             * \param duration The duration of the tween.
+             * \return True if the tween has begun, false if there was an error.
+             */
+            bool Play(float duration);
 
-            void Play(float duration, TweenMethod method);
+            /**
+             * \brief Plays the tween.
+             *
+             * \param duration The duration of the tween.
+             * \param method The tween method.
+             * \return True if the tween has begun, false if there was an error.
+             */
+            bool Play(float duration, TweenMethod method);
 
-            void Play(float duration, TweenMethod method, TweenPlayMode mode);
+            /**
+             * \brief Plays the tween.
+             *
+             * \param duration The duration of the tween.
+             * \param method The tween method.
+             * \param mode The play mode.
+             * \return True if the tween has begun, false if there was an error.
+             */
+            bool Play(float duration, TweenMethod method, TweenPlayMode mode);
 
+            /**
+             * \brief Sets the tween's duration.
+             *
+             * \param duration The new duration.
+             */
             void SetDuration(float duration);
 
+            /**
+             * \brief Sets the tween method.
+             *
+             * \param method The new method.
+             */
             void SetMethod(TweenMethod method);
 
+            /**
+             * \brief Sets the play mode.
+             *
+             * \param method The new play mode.
+             */
             void SetPlayMode(TweenPlayMode mode);
 
+            /**
+             * \brief Stops the tween.
+             */
             void Stop();
 
             /**
@@ -126,17 +201,6 @@ namespace Hatchit {
             void VOnDestroy() override;
 
         protected:
-            /**
-             * \brief The type for tween function pointers.
-             *
-             * \param start The start value.
-             * \param end The end value.
-             * \param time The current time in the tween.
-             * \param duration The duration of the tween.
-             * \return The resulting tween value.
-             */
-            typedef float(*TweenFunction)(float start, float end, float time, float duration);
-
             static std::vector<TweenFunction> s_tweenFunctions;
 
             TweenValue    m_targetValue;
@@ -160,18 +224,6 @@ namespace Hatchit {
             bool AreValuesCompatible() const;
 
             /**
-             * \brief Called when this tween component begins playing.
-             */
-            virtual void VOnPlay() = 0;
-
-            /**
-             * \brief Called when this tween component stops playing.
-             *
-             * \param interrupted True if the tween was interrupted, false if not.
-             */
-            virtual void VOnStop(bool interrupted) = 0;
-
-            /**
              * \brief Called when the Component is enabled.
              *
              * This happens when a scene has finished loading, or immediately after creation if the scene is already loaded.
@@ -185,6 +237,21 @@ namespace Hatchit {
              * When a scene is destroyed, all Components are disabled before any are destroyed.
              */
             void VOnDisabled() override;
+
+        private:
+            /**
+             * \brief Begins playing the tween by assuming all parameters are set.
+             *
+             * \return True if the tween has begun, false if there was an error.
+             */
+            bool BeginPlay();
+
+            /**
+             * \brief Called when this tween component stops playing.
+             *
+             * \param interrupted True if the tween was interrupted, false if not.
+             */
+            void OnStop(bool interrupted);
         };
 
     }

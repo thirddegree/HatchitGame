@@ -74,7 +74,6 @@ namespace Hatchit {
         bool Scene::IsCached() const
         {
             static const JSON s_DefaultObject = JSON::object();
-
             return m_description != s_DefaultObject;
         }
 
@@ -177,7 +176,6 @@ namespace Hatchit {
             if (!ExtractContainerFromJSON(m_description, "Prefabs", json_prefabs))
             {
                 HT_DEBUG_PRINTF("Failed to find property 'Prefabs' in scene description!\n");
-                //return false;
             }
 
             for (const JSON& json_obj : json_prefabs)
@@ -474,9 +472,9 @@ namespace Hatchit {
             GameObject* gameObject = CreateGameObject();
             gameObject->m_transform = prefab.GetTransform();
             auto components = prefab.GetComponents();
-            for (const Game::Component* component : prefab.m_components)
+            for (const Game::Component* const component : prefab.m_components)
             {
-                gameObject->AddUninitializedComponent(component);
+                gameObject->AddUninitializedComponent(component->VClone());
             }
             for (Game::Component* component : gameObject->m_components)
             {

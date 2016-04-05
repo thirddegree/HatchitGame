@@ -52,9 +52,7 @@ namespace Hatchit {
 #endif
             if (!_instance.m_window->VInitialize())
             {
-#ifdef _DEBUG
-                Core::DebugPrintF("Failed to initialize Window. Exiting. \n");
-#endif
+                HT_DEBUG_PRINTF("Failed to initialize Window. Exiting. \n");
                 return false;
             }
 

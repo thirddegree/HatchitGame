@@ -14,6 +14,7 @@
 
 #include <ht_gameobject.h>
 #include <ht_debug.h>
+
 #include <algorithm>
 
 namespace Hatchit {

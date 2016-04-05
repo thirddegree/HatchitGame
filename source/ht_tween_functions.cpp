@@ -1,6 +1,6 @@
 #include <ht_tween_component.h>
 
-// Defines a tween song
+// Defines a tween function
 #define DefineTweenFunction(name) \
     static float name##Tween(float start, float end, float time, float duration)
 

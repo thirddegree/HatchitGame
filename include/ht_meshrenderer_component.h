@@ -1,6 +1,6 @@
 /**
 **    Hatchit Engine
-**    Copyright(c) 2015 Third-Degree
+**    Copyright(c) 2015-2016 Third-Degree
 **
 **    GNU Lesser General Public License
 **    This file may be used under the terms of the GNU Lesser
@@ -15,6 +15,7 @@
 #pragma once
 
 #include <ht_meshrenderer.h>
+
 #ifdef HT_SYS_WINDOWS
 #ifdef DX11_SUPPORT
 #include <ht_d3d11meshrenderer.h>
@@ -25,7 +26,7 @@
 #endif
 
 #ifdef GL_SUPPORT
-#include <ht_glmeshrenderer.h>
+//#include <ht_glmeshrenderer.h>
 #endif
 
 #ifdef VK_SUPPORT

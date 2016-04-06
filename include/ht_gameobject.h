@@ -366,7 +366,8 @@ namespace Hatchit {
 
             component->VOnInit();
 
-            component->Enable();
+            if(m_enabled)
+                component->Enable();
 
             return true;
         }

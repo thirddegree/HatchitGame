@@ -83,7 +83,6 @@ namespace Hatchit {
                 // Try to parse the scene list
                 JSON sceneList = JSON::parse(contents);
 
-                // TODO - Change this when we finalize the scene
                 HT_DEBUG_PRINTF("Reading scene list...\n");
                 for (const std::string& scenePath : sceneList)
                 {

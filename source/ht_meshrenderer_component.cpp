@@ -74,6 +74,12 @@ namespace Hatchit {
             m_meshRenderer->VRender();
         }
 
+        Component* MeshRenderer::VClone(void) const
+        {
+            HT_DEBUG_PRINTF("Cloned MeshRenderer.\n");
+            return new MeshRenderer(*this);
+        }
+
         void MeshRenderer::VOnEnabled()
         {
             HT_DEBUG_PRINTF("Enabled MeshRenderer Component.\n");
@@ -86,7 +92,7 @@ namespace Hatchit {
 
         void MeshRenderer::VOnDestroy()
         {
-            HT_DEBUG_PRINTF("Destroyed Test Component.\n");
+            HT_DEBUG_PRINTF("Destroyed MeshRenderer Component.\n");
         }
 
     }

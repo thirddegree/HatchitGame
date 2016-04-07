@@ -50,11 +50,11 @@ namespace Hatchit {
 
             void VOnInit() override;
             void VOnUpdate() override;
-            void VOnDestroy() override;
 
         protected:
             void VOnEnabled() override;
             void VOnDisabled() override;
+            void VOnDestroy() override;
 
         private:
             Graphics::IMeshRenderer* m_meshRenderer;

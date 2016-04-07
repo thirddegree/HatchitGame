@@ -22,7 +22,7 @@ namespace Hatchit {
     namespace Game {
         GameObject::GameObject(void)
         {
-            m_destroy = 0;
+            m_destroyed = 0;
             m_parent = nullptr;
             m_components = std::vector<Component*>();
             m_children = std::vector<GameObject*>();
@@ -40,15 +40,13 @@ namespace Hatchit {
 
         GameObject::~GameObject(void)
         {
+            for (Component *component : m_components)
+            {
+                delete component;
+            }
             for (GameObject* child : m_children)
             {
                 delete child;
-            }
-            for (Component *component: m_components)
-            {
-                if (component->m_enabled)
-                    component->SetEnabled(false);
-                delete component;
             }
         }
 
@@ -103,7 +101,7 @@ namespace Hatchit {
             for (std::size_t i = 0; i < m_children.size(); i++)
             {
                 // if an object is marked to be destroyed, delete it and increase the shift size
-                if (m_children[i]->m_destroy)
+                if (m_children[i]->m_destroyed)
                 {
                     delete m_children[i];
                     shift++;
@@ -122,7 +120,22 @@ namespace Hatchit {
 
         void GameObject::MarkForDestroy(void)
         {
-            m_destroy = true;
+            //disable and "destroy" all components
+            for (Component *component : m_components)
+            {
+                if (component->m_enabled)
+                    component->SetEnabled(false);
+                component->VOnDestroy();
+            }
+            //disable and "destroy" all children
+            for (GameObject *child : m_children)
+            {
+                child->MarkForDestroy();
+            }
+            //disable this object
+            Disable();
+            //destroy this object
+            m_destroyed = true;
         }
 
         void GameObject::OnInit(void)

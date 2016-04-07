@@ -400,10 +400,27 @@ namespace Hatchit {
          */
         void Scene::Update()
         {
-            for (GameObject* obj : m_gameObjects)
+            // # of deleted objects so far this pass (number to shift elements back by)
+            std::size_t shift = 0;
+
+            for (std::size_t i = 0; i < m_gameObjects.size(); i++)
             {
-                obj->Update();
+                // if an object is marked to be destroyed, delete it and increase the shift size
+                if (m_gameObjects[i]->m_destroy)
+                {
+                    delete m_gameObjects[i];
+                    shift++;
+                }
+                //if the object is fine to update, update it and then shift it back
+                else
+                {
+                    m_gameObjects[i]->Update();
+                    m_gameObjects[i - shift] = m_gameObjects[i];
+                }
             }
+
+            //shrink the vector by the number of deleted objects
+            m_gameObjects.resize(m_gameObjects.size() - shift);
         }
         
         /**
@@ -411,10 +428,6 @@ namespace Hatchit {
          */
         void Scene::Unload()
         {
-            for (GameObject* gameObject : m_gameObjects)
-            {
-                gameObject->Destroy();
-            }
             for (GameObject* gameObject : m_gameObjects)
             {
                 delete gameObject;

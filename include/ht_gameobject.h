@@ -54,13 +54,6 @@ namespace Hatchit {
 
 
             /**
-            * \brief The destructor for GameObject.
-            *
-            * Responsible for deleting all currently attached components.
-            */
-            ~GameObject(void);
-
-            /**
             * \brief Retrieve this GameObject's Guid.
             */
             const Core::Guid& GetGuid(void) const;
@@ -152,13 +145,13 @@ namespace Hatchit {
             */
             void Update(void);
 
+
             /**
-            * \brief Destroys the GameObject.
+            * \brief Marks the GameObject to be destroyed the next time it would be updated.
             *
-            * Objects are always disabled before destroyed.
-            * When a scene is destroyed, all gameobjects are disabled before any are destroyed.
             */
-            void Destroy(void);
+            void MarkForDestroy(void);
+
 
             /**
             * \brief Attempts to attach a Component of type T.
@@ -297,6 +290,17 @@ namespace Hatchit {
             */
             GameObject(const Core::Guid& guid, const std::string& name, Transform& t, bool enabled);
 
+
+
+            /**
+            * \brief The destructor for GameObject.
+            *
+            * Responsible for deleting all currently attached components.
+            */
+            ~GameObject(void);
+
+
+
             /**
             * \brief Called when the gameobject is enabled.
             */
@@ -307,13 +311,6 @@ namespace Hatchit {
             */
             void OnDisabled(void);
 
-            /**
-            * \brief Called when the gameobject is destroyed/deleted.
-            *
-            * Objects are always disabled before destroyed.
-            * When a scene is destroyed, all gameobjects are disabled before any are destroyed.
-            */
-            void OnDestroy(void);
 
             /**
             * \brief Attempts to attach a Component of type T.
@@ -330,6 +327,7 @@ namespace Hatchit {
             bool AddUninitializedComponent(Args&&... args);
 
             bool m_enabled; /**< bool indicating if this GameObject is enabled. */
+            bool m_destroy;//* < bool indicating that this object is to be destroyed on the next update call*/
             std::string m_name; /**< The name associated with this GameObject. */
             Core::Guid m_guid; /**< The Guid associated with this GameObject. */
             Transform m_transform; /**< The Transform representing the position/orientation of this GameObject. */

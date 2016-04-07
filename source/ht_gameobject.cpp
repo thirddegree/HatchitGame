@@ -22,6 +22,7 @@ namespace Hatchit {
     namespace Game {
         GameObject::GameObject(void)
         {
+            m_destroy = 0;
             m_parent = nullptr;
             m_components = std::vector<Component*>();
             m_children = std::vector<GameObject*>();
@@ -45,6 +46,8 @@ namespace Hatchit {
             }
             for (Component *component: m_components)
             {
+                if (component->m_enabled)
+                    component->SetEnabled(false);
                 delete component;
             }
         }
@@ -92,12 +95,34 @@ namespace Hatchit {
                         component->VOnUpdate();
             }
 
-            for (std::size_t i = 0; i < m_children.size(); ++i)
+            //exactly the same as in the scene
+
+            // # of deleted objects so far this pass (number to shift elements back by)
+            std::size_t shift = 0;
+
+            for (std::size_t i = 0; i < m_children.size(); i++)
             {
-                GameObject *child = m_children[i];
-                if (child->GetEnabled())
-                    child->Update();
+                // if an object is marked to be destroyed, delete it and increase the shift size
+                if (m_children[i]->m_destroy)
+                {
+                    delete m_children[i];
+                    shift++;
+                }
+                //if the object is fine to update, update it and then shift it back
+                else
+                {
+                    m_children[i]->Update();
+                    m_children[i - shift] = m_children[i];
+                }
             }
+
+            //shrink the vector by the number of deleted objects
+            m_children.resize(m_children.size() - shift);
+        }
+
+        void GameObject::MarkForDestroy(void)
+        {
+            m_destroy = true;
         }
 
         void GameObject::OnInit(void)
@@ -116,30 +141,6 @@ namespace Hatchit {
         void GameObject::OnDisabled(void)
         {
             HT_DEBUG_PRINTF("GameObject OnDisable. (not implemented)\n");
-        }
-
-        void GameObject::Destroy(void)
-        {
-            OnDestroy();
-        }
-
-        void GameObject::OnDestroy(void)
-        {
-            Disable();
-
-            for (Component *component : m_components)
-            {
-                if (component->GetEnabled())
-                    component->SetEnabled(false);
-                component->VOnDestroy();
-            }
-
-            for (std::size_t i = 0; i < m_children.size(); ++i)
-            {
-                GameObject *child = m_children[i];
-                if (child)
-                    child->OnDestroy();
-            }
         }
 
         GameObject* GameObject::GetChildAtIndex(std::size_t index)

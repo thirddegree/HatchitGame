@@ -95,12 +95,29 @@ namespace Hatchit {
                         component->VOnUpdate();
             }
 
-            for (std::size_t i = 0; i < m_children.size(); ++i)
+            //exactly the same as in the scene
+
+            // # of deleted objects so far this pass (number to shift elements back by)
+            std::size_t shift = 0;
+
+            for (std::size_t i = 0; i < m_children.size(); i++)
             {
-                GameObject *child = m_children[i];
-                if (child->GetEnabled())
-                    child->Update();
+                // if an object is marked to be destroyed, delete it and increase the shift size
+                if (m_children[i]->m_destroy)
+                {
+                    delete m_children[i];
+                    shift++;
+                }
+                //if the object is fine to update, update it and then shift it back
+                else
+                {
+                    m_children[i]->Update();
+                    m_children[i - shift] = m_children[i];
+                }
             }
+
+            //shrink the vector by the number of deleted objects
+            m_children.resize(m_children.size() - shift);
         }
 
         void GameObject::MarkForDestroy(void)

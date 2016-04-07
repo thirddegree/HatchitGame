@@ -10,7 +10,7 @@ namespace Hatchit {
          */
         TweenRotation::TweenRotation()
         {
-            Math::Float3 empty;
+            Math::Float3 empty = {0, 0, 0};
 
             SetStartRotation(empty);
             SetEndRotation(empty);

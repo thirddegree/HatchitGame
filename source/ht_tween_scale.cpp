@@ -10,7 +10,7 @@ namespace Hatchit {
          */
         TweenScale::TweenScale()
         {
-            Math::Float3 empty;
+            Math::Float3 empty = {0, 0, 0};
 
             SetStartScale(empty);
             SetEndScale(empty);

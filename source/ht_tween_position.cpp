@@ -10,7 +10,7 @@ namespace Hatchit {
          */
         TweenPosition::TweenPosition()
         {
-            Math::Float3 empty;
+            Math::Float3 empty = {0, 0, 0};
 
             SetStartPosition(empty);
             SetEndPosition(empty);

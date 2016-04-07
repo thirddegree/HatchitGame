@@ -92,6 +92,7 @@ namespace Hatchit {
         void TweenValue::SetValue(float value)
         {
             m_values = Math::Float4(value, 0, 0, 0);
+            m_valueType = TweenValueType::Float;
         }
 
         /**
@@ -102,6 +103,7 @@ namespace Hatchit {
         void TweenValue::SetValue(const Math::Float2& value)
         {
             m_values = Math::Float4(value.x, value.y, 0, 0);
+            m_valueType = TweenValueType::Float2;
         }
 
         /**
@@ -112,6 +114,7 @@ namespace Hatchit {
         void TweenValue::SetValue(const Math::Float3& value)
         {
             m_values = Math::Float4(value.x, value.y, value.z, 0);
+            m_valueType = TweenValueType::Float3;
         }
 
         /**
@@ -122,6 +125,7 @@ namespace Hatchit {
         void TweenValue::SetValue(const Math::Float4& value)
         {
             m_values = value;
+            m_valueType = TweenValueType::Float4;
         }
 
         /**

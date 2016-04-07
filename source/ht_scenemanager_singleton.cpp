@@ -12,7 +12,7 @@
 **
 **/
 
-#include <ht_scenemanager.h>
+#include <ht_scenemanager_singleton.h>
 #include <ht_path_singleton.h>
 #include <ht_debug.h>
 #include <ht_os.h>

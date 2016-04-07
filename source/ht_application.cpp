@@ -19,7 +19,7 @@
 #include <ht_renderer_singleton.h>
 #include <ht_time_singleton.h>
 #include <ht_input_singleton.h>
-#include <ht_scenemanager.h>
+#include <ht_scenemanager_singleton.h>
 
 namespace Hatchit {
 

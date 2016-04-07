@@ -7,7 +7,7 @@ namespace Hatchit {
         /**
          * \brief Defines a tween component that can be used to tween an object's rotation.
          */
-        class TweenRotation : public TweenComponent
+        class HT_API TweenRotation : public TweenComponent
         {
         public:
             /**

@@ -7,7 +7,7 @@ namespace Hatchit {
         /**
          * \brief Defines a tween component that can be used to tween an object's position.
          */
-        class TweenPosition : public TweenComponent
+        class HT_API TweenPosition : public TweenComponent
         {
         public:
             /**

@@ -7,7 +7,7 @@ namespace Hatchit {
         /**
          * \brief Defines a tween component that can be used to tween an object's scale.
          */
-        class TweenScale : public TweenComponent
+        class HT_API TweenScale : public TweenComponent
         {
         public:
             /**

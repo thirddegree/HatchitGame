@@ -90,10 +90,8 @@ namespace Hatchit {
 
             /**
              * \brief Creates a new tween component.
-             *
-             * \param owner The owner game object.
              */
-            TweenComponent(GameObject* owner);
+            TweenComponent();
 
             /**
              * \brief Destroys this tween component.
@@ -190,7 +188,7 @@ namespace Hatchit {
              *
              * Updates all components first, then all child gameobjects.
              */
-            void VOnUpdate() override;
+            virtual void VOnUpdate() override;
 
             /**
              * \brief Called when the GameObject is destroyed/deleted.

@@ -9,9 +9,8 @@ namespace Hatchit {
         /**
          * \brief Creates a new tween component.
          */
-        TweenComponent::TweenComponent(GameObject* owner)
-            : Component(/* owner */)
-            , m_targetValue(0.0f)
+        TweenComponent::TweenComponent()
+            : m_targetValue(0.0f)
             , m_startValue(0.0f)
             , m_endValue(0.0f)
             , m_tweenFunction(nullptr)

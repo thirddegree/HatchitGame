@@ -158,9 +158,8 @@ namespace Hatchit {
 
         GameObject* GameObject::GetChildAtIndex(std::size_t index)
         {
-            if (index >= m_children.size())
+            if (index >= m_children.size() || m_children[index]->m_destroyed)
                 return nullptr;
-
             return m_children[index];
         }
 

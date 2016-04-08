@@ -5,12 +5,13 @@
 import cog
 from os import listdir
 from os.path import isfile, join
-files = [f for f in listdir('include/') if isfile(join('include/', f))]
+
+files = [f for f in listdir('../../../../HatchitGame/include/') if isfile(join('../../../../HatchitGame/include/', f))]
 
 ComponentFiles = []
 
 for filename in files:
-    with open("include/" + filename, 'r') as f:
+    with open("../../../../HatchitGame/include/" + filename, 'r') as f:
         for line in f:
             if ": public Component" in line or ": Component" in line:
                 words = line.strip().split(' ')
@@ -31,21 +32,20 @@ namespace Hatchit {
         {
             /*[[[cog
                 import cog
-
                 from os import listdir
                 from os.path import isfile, join
-                files = [f for f in listdir('include/') if isfile(join('include/', f))]
 
+                files = [f for f in listdir('../../../../HatchitGame/include/') if isfile(join('../../../../HatchitGame/include/', f))]
+                
                 ComponentTypes = []
-
+                
                 for filename in files:
-                    with open("include/" + filename, 'r') as f:
+                    with open("../../../../HatchitGame/include/" + filename, 'r') as f:
                         for line in f:
                             if ": public Component" in line or ": Component" in line:
                                 words = line.strip().split(' ')
-                                ComponentFiles.append(words[1])
-
-                ComponentTypes = ['MeshRenderer', 'TestComponent']
+                                ComponentTypes.append(words[1])
+                
                 for t in ComponentTypes:
                     cog.outl("""if (type == "%s") return new %s();""" % (t, t));
             
@@ -53,6 +53,7 @@ namespace Hatchit {
             if (type == "MeshRenderer") return new MeshRenderer();
             if (type == "TestComponent") return new TestComponent();
             //[[[end]]]
+            return nullptr;
         }
     }
 }

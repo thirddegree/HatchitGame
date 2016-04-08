@@ -15,30 +15,15 @@
 #include <ht_scenemanager_singleton.h>
 #include <ht_path_singleton.h>
 #include <ht_debug.h>
-#include <ht_os.h>
 
 namespace Hatchit {
 
     namespace Game {
         using namespace Core;
-
+        using namespace Resource;
         using JSON = nlohmann::json;
 
-        /**
-         * \brief Creates the scene manager.
-         */
-        SceneManager::SceneManager()
-            : m_currentScene(nullptr)
-        {
-        }
-
-        /**
-         * \brief Destroys the scene manager.
-         */
-        SceneManager::~SceneManager()
-        {
-            m_currentScene = nullptr;
-        }
+        std::string SceneManager::SCENE_LIST = "scenelist.json";
 
         /**
          * \brief De-initializes the scene manager.
@@ -57,63 +42,30 @@ namespace Hatchit {
         {
             SceneManager& _instance = SceneManager::instance();
 
-            
-            const std::string sceneListFile = "scenelist.json";
-            bool loaded = false;
-            try
+            // Validate that we were able to acquire a handle to the JSON scene list.
+            SceneHandle sceneListHandle = Resource::Scene::GetHandleFromFileName(SceneManager::SCENE_LIST);
+            if (!sceneListHandle.IsValid())
             {
-                // Open the file
-                File file;
-                file.Open(Core::Path::Value(Core::Path::Directory::Scenes) + sceneListFile, FileMode::ReadText);
-
-                // Prepare to read the file
-                size_t fileSize = file.SizeBytes();
-                if (fileSize == 0)
-                {
-                    HT_DEBUG_PRINTF("WARNING: Scene list file is empty!\n");
-                    return true;
-                }
-                std::string contents;
-                contents.resize(fileSize);
-
-                // Read the file
-                file.Read(reinterpret_cast<BYTE*>(&contents[0]), contents.length());
-                file.Close();
-
-                // Try to parse the scene list
-                JSON sceneList = JSON::parse(contents);
-
-                // TODO - Change this when we finalize the scene
-                HT_DEBUG_PRINTF("Reading scene list...\n");
-                for (const std::string& scenePath : sceneList)
-                {
-                    HT_DEBUG_PRINTF("** Loading '%s'...\n", scenePath);
-
-                    File sceneFile;
-                    sceneFile.Open(Core::Path::Value(Core::Path::Directory::Scenes) + scenePath, FileMode::ReadText);
-
-                    _instance.m_scenes.emplace_back();
-                    if (_instance.m_scenes.back().LoadFromFile(sceneFile))
-                    {
-                        HT_DEBUG_PRINTF("Done!\n");
-                    }
-                    else
-                    {
-                        HT_DEBUG_PRINTF("Failed!\n");
-                    }
-
-                    sceneFile.Close();
-                }
-
-                loaded = true;
-            }
-            catch (std::exception& e)
-            {
-				HT_DEBUG_PRINTF("%s\n", e.what())
-                HT_DEBUG_PRINTF("Failed to load scene list!\n");
+                HT_DEBUG_PRINTF("Failed to acquire handle scene list located in %s!\n", SceneManager::SCENE_LIST);
+                return false;
             }
 
-            return loaded;
+            // Iterate through every JSON scene file listed.
+            const JSON& sceneDescription = sceneListHandle->GetSceneDescription();
+            for (const std::string& sceneFile : sceneDescription)
+            {
+                // Validate that we were able to acquire a handle to the JSON scene file.
+                SceneHandle sceneHandle = Resource::Scene::GetHandleFromFileName(sceneFile);
+                if (!sceneHandle.IsValid())
+                {
+                    HT_DEBUG_PRINTF("Failed to acquire handle to scene located in %s!\n", sceneFile);
+                    continue;
+                }
+
+                _instance.m_sceneHandles.insert(std::make_pair(sceneFile, sceneHandle));
+            }
+
+            return true;
         }
 
         /**
@@ -133,27 +85,33 @@ namespace Hatchit {
                 _instance.m_currentScene = nullptr;
             }
 
-            // Scan for the scene with the given name
-            for (Scene& scene : _instance.m_scenes)
+            // Locate the handle to the next scene.
+            auto sceneIterator = _instance.m_sceneHandles.find(sceneName);
+            if (sceneIterator == _instance.m_sceneHandles.cend())
             {
-                if (scene.Name() == sceneName)
-                {
-                    _instance.m_currentScene = &scene;
-                    break;
-                }
-            }
-
-            // If we've found the scene, load it from the cache
-            if (_instance.m_currentScene)
-            {
-                if (_instance.m_currentScene->LoadFromCache())
-                {
-                    _instance.m_currentScene->Init();
-                    return true;
-                }
+                HT_DEBUG_PRINTF("Failed to locate requested Scene: %s!\n", sceneName);
                 return false;
             }
-            return false;
+
+            // Validate the handle to the next Scene.
+            SceneHandle sceneHandle = sceneIterator->second;
+            if (!sceneHandle.IsValid())
+            {
+                HT_DEBUG_PRINTF("Invalid Scene handle: %s!\n", sceneName);
+                return false;
+            }
+
+            Scene s;
+            if (!s.LoadFromHandle(sceneHandle))
+            {
+                HT_DEBUG_PRINTF("Failed to load Scene from handle: %s!\n", sceneName);
+                return false;
+            }
+
+            // TODO: Set SceneManager::m_currentScene;
+            // TODO: Scene::Init();
+            
+            return true;
         }
         
         /**

@@ -17,7 +17,9 @@
 #include <ht_platform.h>
 #include <ht_singleton.h>
 #include <ht_scene.h>
+#include <ht_scene_resource.h>
 #include <ht_file.h>
+
 #include <vector>
 #include <unordered_map>
 
@@ -31,16 +33,6 @@ namespace Hatchit {
         class HT_API SceneManager : public Core::Singleton<SceneManager>
         {
         public:
-            /**
-             * \brief Creates the scene manager.
-             */
-            SceneManager();
-
-            /**
-             * \brief Destroys the scene manager.
-             */
-            virtual ~SceneManager();
-
             /**
              * \brief De-initializes the scene manager.
              */
@@ -64,10 +56,14 @@ namespace Hatchit {
              */
             static void Update();
 
+            SceneManager(void) = default;
+            virtual ~SceneManager(void) = default;
+
         private:
-            // TODO - Use something better than a vector
-            std::vector<Scene> m_scenes;
-            Scene* m_currentScene;
+            static std::string SCENE_LIST; /**< Name of the file containing the master scene list. */
+
+            std::unordered_map<std::string, Resource::SceneHandle> m_sceneHandles; /**< Map of filenames to Scene JSON handles. */
+            Scene* m_currentScene; /**< The currently loaded scene. */
         };
     }
 }

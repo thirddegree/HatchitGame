@@ -20,6 +20,7 @@
 #include <ht_file.h>
 #include <ht_test_component.h>
 #include <ht_meshrenderer_component.h>
+#include <ht_scene_resource.h>
 
 #include <json.hpp>
 
@@ -62,32 +63,9 @@ namespace Hatchit {
             const Core::Guid& GUID() const;
 
             /**
-             * \brief Checks to see if this scene is cached.
-             */
-            bool IsCached() const;
-            
-            /**
-             * \brief Attempts to load this scene from the cache.
-             * This method steps through the JSON file creating all the GameObjects in the scene.
-             * \sa ParseChildGameObjects(), ParseGameObject(), ParseTransform(), ParseComponent()
-             */
-            bool LoadFromCache(void);
-
-            /**
-             * \brief Attempts to load scene data from a file.
-             *
-             * \param file The file to load from.
-             * \return True if loading was successful, false if not.
-             */
-            bool LoadFromFile(Core::File& file);
-
-            /**
-             * \brief Attempts to load scene data from memory.
-             *
-             * \param json The JSON-encoded scene data.
-             * \return True if loading was successful, false if not.
-             */
-            bool LoadFromMemory(const std::string& json);
+            * \brief TODO
+            */
+            bool LoadFromHandle(Resource::SceneHandle sceneHandle);
 
             /**
              * \brief Renders this scene.
@@ -117,6 +95,20 @@ namespace Hatchit {
             void Init();
 
             /**
+            * \brief TODO
+            */
+            bool ParseScene(const nlohmann::json& obj);
+
+            /**
+            * \brief Attempts to parse a GameObject from the provided JSON.
+            * \param obj    The JSON object to parse.
+            * \return true if the GameObject was parsed successfully.
+            *
+            * \sa ParseChildGameObjects(), ParseTransform(), ParseComponent(), LoadFromCache(), GameObject()
+            */
+            bool ParseGameObject(const nlohmann::json& obj, GameObject& out);
+
+            /**
             * \brief Recursively establishes the parent/child relationship of the GameObject linked to the provided Guid.
             * \param id                 The Guid of the GameObject to setup.
             * \param guid_to_obj        Mapping of Guids to GameObject pointers.
@@ -127,15 +119,6 @@ namespace Hatchit {
             * \sa ParseGameObject(), ParseTransform(), ParseComponent, LoadFromCache(), GameObject()
             */
             void ParseChildGameObjects(const Core::Guid& id, std::unordered_map<Core::Guid, GameObject*>& guid_to_obj, std::unordered_map<Core::Guid, nlohmann::json>& guid_to_json);
-
-            /**
-            * \brief Attempts to parse a GameObject from the provided JSON.
-            * \param obj    The JSON object to parse.
-            * \return true if the GameObject was parsed successfully.
-            *
-            * \sa ParseChildGameObjects(), ParseTransform(), ParseComponent(), LoadFromCache(), GameObject()
-            */
-            bool ParseGameObject(const nlohmann::json& obj, GameObject& out);
 
             /**
             * \brief Attempts to parse a Transform from the provided JSON.
@@ -161,7 +144,6 @@ namespace Hatchit {
 
             std::string m_name; /**< The name associated with this scene. */
             Core::Guid m_guid; /**< The Guid associated with this scene. */
-            nlohmann::json m_description; /**< The JSON description of the scene. */
             std::vector<GameObject*> m_gameObjects; /**< std::vector of GameObjects present in the scene. */
         };
     }

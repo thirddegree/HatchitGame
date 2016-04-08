@@ -60,15 +60,6 @@ namespace Hatchit {
             static bool LoadScene(const std::string& sceneName);
 
             /**
-             * \brief Loads a scene asynchronously.
-             *
-             * Begins loading the specified scene while the current scene continues to run.
-             * When the scene is finished loading, unloads the current scene.
-             * If the scene does not exist in the list of scenes, an error is thrown.
-             */
-            static void LoadSceneAsync(const std::string& sceneName);
-
-            /**
              * \brief Updates the scene manager.
              */
             static void Update();

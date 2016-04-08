@@ -155,18 +155,6 @@ namespace Hatchit {
             }
             return false;
         }
-
-        /**
-         * \brief Loads a scene asynchronously.
-         *
-         * Begins loading the specified scene while the current scene continues to run.
-         * When the scene is finished loading, unloads the current scene.
-         * If the scene does not exist in the list of scenes, an error is thrown.
-         */
-        void SceneManager::LoadSceneAsync(const std::string& sceneName)
-        {
-            HT_DEBUG_PRINTF("TODO - SceneManager::LoadSceneAsync (add callback params)\n");
-        }
         
         /**
          * \brief Updates the scene manager.

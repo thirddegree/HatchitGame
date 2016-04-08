@@ -45,7 +45,7 @@ namespace Hatchit {
             MeshRenderer(void);
 
             void SetRenderable(Graphics::IMesh* mesh, 
-                Graphics::IMaterial* material, 
+                Graphics::IMaterialHandle material, 
                 Graphics::IRenderPass* renderPass);
 
             void VOnInit() override;

@@ -24,11 +24,10 @@ namespace Hatchit {
 
         MeshRenderer::MeshRenderer()
         {
-
         }
 
         void MeshRenderer::SetRenderable(Graphics::IMesh * mesh,
-            Graphics::IMaterial * material,
+            Graphics::IMaterialHandle material,
             Graphics::IRenderPass* renderPass)
         {
             m_meshRenderer->VSetMesh(mesh);

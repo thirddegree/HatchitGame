@@ -47,8 +47,6 @@ namespace Hatchit {
             template <typename T>
             static Core::Guid GetComponentId(void);
 
-            virtual ~Component(void) = default;
-
             /**
             * \brief Getter which returns the GameObject to which this Component is attached.
             * \return Pointer to the GameObject.
@@ -75,6 +73,7 @@ namespace Hatchit {
                 SetEnabled(true);
             }
 
+
             /**
             * \brief inline for SetEnabled(false);
             */
@@ -94,12 +93,14 @@ namespace Hatchit {
             */
             virtual void VOnUpdate() = 0;
 
+            
             /**
             * \brief Called when the GameObject is destroyed/deleted.
             * Objects are always disabled before destroyed.
             * When a scene is destroyed, all gameobjects are disabled before any are destroyed.
             */
             virtual void VOnDestroy() = 0;
+
 
         protected:
             /**
@@ -115,6 +116,7 @@ namespace Hatchit {
             */
             virtual void VOnDisabled() = 0;
 
+
             /**
             * \brief Setter that sets which GameObject this Component is attached to.
             * \param owner  The GameObject to which this Component is attached.
@@ -123,6 +125,11 @@ namespace Hatchit {
 
             bool m_enabled{false}; /**< bool indicating if this Component is enabled. */
             GameObject *m_owner; /**< The GameObject to which this Component is attached. */
+
+
+            virtual ~Component(void) = default;
+
+
 
             friend GameObject;
         };

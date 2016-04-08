@@ -406,7 +406,7 @@ namespace Hatchit {
             for (std::size_t i = 0; i < m_gameObjects.size(); i++)
             {
                 // if an object is marked to be destroyed, delete it and increase the shift size
-                if (m_gameObjects[i]->m_destroy)
+                if (m_gameObjects[i]->m_destroyed)
                 {
                     delete m_gameObjects[i];
                     shift++;

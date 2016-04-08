@@ -123,7 +123,7 @@ namespace Hatchit {
             //disable and "destroy" all components
             for (Component *component : m_components)
             {
-                if (component->m_enabled)
+                if (component->GetEnabled())
                     component->SetEnabled(false);
                 component->VOnDestroy();
             }

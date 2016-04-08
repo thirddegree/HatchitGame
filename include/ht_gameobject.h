@@ -30,8 +30,8 @@
 #include <tuple>
 #include <utility>
 
-#include <ht_platform.h>
 #include <ht_component.h>
+#include <ht_platform.h>
 #include <ht_transform.h>
 #include <ht_guid.h>
 
@@ -43,6 +43,8 @@ namespace Hatchit {
 
     namespace Game {
         class Scene;
+        class Component;
+
         class HT_API GameObject
         {
         friend class Scene;

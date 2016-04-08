@@ -26,15 +26,13 @@
 
 #include <cstdint>
 #include <type_traits>
-
-#include <ht_platform.h>
+#include <ht_transform.h>
+#include <ht_gameobject.h>
 #include <ht_guid.h>
 
 namespace Hatchit {
 
     namespace Game {
-
-        class GameObject; /**< Forward declaration to avoid circular dependency. */
 
         class HT_API Component
         {
@@ -57,7 +55,7 @@ namespace Hatchit {
             * \brief Getter that returns that value of m_enabled.
             * \return true if this Component is enabled.
             */
-            bool GetEnabled(void) const;
+            bool GetEnabled(void);
 
             /**
             * \brief Setter that sets the value of m_enabled.
@@ -65,22 +63,6 @@ namespace Hatchit {
             */
             void SetEnabled(bool value);
 
-            /**
-            * \brief inline for SetEnabled(true);
-            */
-            inline void Enable(void)
-            {
-                SetEnabled(true);
-            }
-
-
-            /**
-            * \brief inline for SetEnabled(false);
-            */
-            inline void Disable(void)
-            {
-                SetEnabled(false);
-            }
 
             /**
             * \brief Called when the GameObject is created to initialize all values
@@ -102,6 +84,15 @@ namespace Hatchit {
             virtual void VOnDestroy() = 0;
 
 
+            /**
+            * \brief Setter that sets which GameObject this Component is attached to.
+            * \param owner  The GameObject to which this Component is attached.
+            */
+            void SetOwner(GameObject *owner);
+
+            virtual ~Component(void) = default;
+
+
         protected:
             /**
             * \brief Called when the Component is enabled.
@@ -116,22 +107,8 @@ namespace Hatchit {
             */
             virtual void VOnDisabled() = 0;
 
-
-            /**
-            * \brief Setter that sets which GameObject this Component is attached to.
-            * \param owner  The GameObject to which this Component is attached.
-            */
-            void SetOwner(GameObject *owner);
-
             bool m_enabled{false}; /**< bool indicating if this Component is enabled. */
             GameObject *m_owner; /**< The GameObject to which this Component is attached. */
-
-
-            virtual ~Component(void) = default;
-
-
-
-            friend GameObject;
         };
 
         template <typename T>

@@ -17,7 +17,8 @@
 #include <ht_platform.h>
 #include <ht_singleton.h>
 #include <ht_scene.h>
-#include <ht_file.h>
+#include <ht_scene_resource.h>
+
 #include <vector>
 #include <unordered_map>
 
@@ -32,27 +33,21 @@ namespace Hatchit {
         {
         public:
             /**
-             * \brief Creates the scene manager.
-             */
-            SceneManager();
-
-            /**
-             * \brief Destroys the scene manager.
-             */
-            virtual ~SceneManager();
-
-            /**
              * \brief De-initializes the scene manager.
              */
             static void Deinitialize();
 
             /**
              * \brief Initializes the scene manager.
+             * \return true if the SceneManager could be initialized, false otherwise.
              */
             static bool Initialize();
 
             /**
              * \brief Loads the given scene.
+             * \param sceneName         The name of the next Scene to load.
+             * \return true if the Scene was successfully loaded, false otherwise.
+             * \sa Scene(), Scene::LoadFromHandle()
              *
              * Unloads the current scene and loads in the specified scene.
              * If the scene does not exist in the list of scenes, an error is thrown.
@@ -60,23 +55,18 @@ namespace Hatchit {
             static bool LoadScene(const std::string& sceneName);
 
             /**
-             * \brief Loads a scene asynchronously.
-             *
-             * Begins loading the specified scene while the current scene continues to run.
-             * When the scene is finished loading, unloads the current scene.
-             * If the scene does not exist in the list of scenes, an error is thrown.
-             */
-            static void LoadSceneAsync(const std::string& sceneName);
-
-            /**
              * \brief Updates the scene manager.
              */
             static void Update();
 
+            SceneManager(void) = default;
+            virtual ~SceneManager(void) = default;
+
         private:
-            // TODO - Use something better than a vector
-            std::vector<Scene> m_scenes;
-            Scene* m_currentScene;
+            static std::string SCENE_LIST; /**< Name of the file containing the master scene list. */
+
+            std::unordered_map<std::string, Resource::SceneHandle> m_sceneHandles; /**< Map of filenames to Scene JSON handles. */
+            Scene* m_currentScene; /**< The currently loaded scene. */
         };
     }
 }

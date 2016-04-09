@@ -144,6 +144,11 @@ namespace Hatchit {
             {
                 component->VOnInit();
             }
+
+            for (GameObject* obj : m_children)
+            {
+                obj->OnInit();
+            }
         }
 
         void GameObject::OnEnabled(void)

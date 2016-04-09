@@ -85,7 +85,7 @@ namespace Hatchit {
 
         void MeshRenderer::VOnDestroy()
         {
-            HT_DEBUG_PRINTF("Destroyed Test Component.\n");
+            HT_DEBUG_PRINTF("Destroyed MeshRenderer Component.\n");
         }
 
     }

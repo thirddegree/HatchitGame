@@ -18,7 +18,6 @@
 #include <ht_singleton.h>
 #include <ht_scene.h>
 #include <ht_scene_resource.h>
-#include <ht_file.h>
 
 #include <vector>
 #include <unordered_map>
@@ -40,11 +39,15 @@ namespace Hatchit {
 
             /**
              * \brief Initializes the scene manager.
+             * \return true if the SceneManager could be initialized, false otherwise.
              */
             static bool Initialize();
 
             /**
              * \brief Loads the given scene.
+             * \param sceneName         The name of the next Scene to load.
+             * \return true if the Scene was successfully loaded, false otherwise.
+             * \sa Scene(), Scene::LoadFromHandle()
              *
              * Unloads the current scene and loads in the specified scene.
              * If the scene does not exist in the list of scenes, an error is thrown.

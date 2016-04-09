@@ -15,11 +15,9 @@
 #pragma once
 
 #include <ht_platform.h>
-#include <ht_gameobject.h>
+#include <ht_noncopy.h>
 #include <ht_guid.h>
-#include <ht_file.h>
-#include <ht_test_component.h>
-#include <ht_meshrenderer_component.h>
+#include <ht_gameobject.h>
 #include <ht_scene_resource.h>
 
 #include <json.hpp>
@@ -39,16 +37,12 @@ namespace Hatchit {
         /**
         * \brief Defines a scene.
         */
-        class HT_API Scene
+        class HT_API Scene : public Core::INonCopy
         {
         friend class SceneManager;
         public:
-            Scene(void) = default;
-            ~Scene(void) = default;
-            Scene(const Scene& rhs) = default;
-            Scene(Scene&& rhs) = default;
-            Scene& operator=(const Scene& rhs) = default;
-            Scene& operator=(Scene&& rhs) = default;
+            Scene(Scene&& rhs);
+            Scene& operator=(Scene&& rhs);
 
             /**
             * \brief Gets this scene's name.
@@ -63,7 +57,10 @@ namespace Hatchit {
             const Core::Guid& GUID() const;
 
             /**
-            * \brief TODO
+            * \brief Attempts to load the Scene using the provided handle.
+            * \param sceneHandle        A handle a resource containing the JSON representing this Scene.
+            * \return true if the Scene could be loaded successfully, false otherwise.
+            * \sa SceneHandle(), SceneManager::LoadScene()
             */
             bool LoadFromHandle(Resource::SceneHandle sceneHandle);
 
@@ -82,20 +79,20 @@ namespace Hatchit {
              */
             void Unload(void);
 
-            /**
-             * \brief Creates GameObject and adds it to the scene.
-             */
-            GameObject* CreateGameObject();
-
         private:
+            Scene(void) = default;
+            virtual ~Scene(void) = default;
 
             /**
             * \brief Initializes GameObjects in scene
             */
-            void Init();
+            void Init(void);
 
             /**
-            * \brief TODO
+            * \brief Steps through the JSON representation of the Scene, and attempts to parse it.
+            * \param obj            The JSON representation of the Scene.
+            * \return true if the Scene could be parsed successfully, false otherwise,
+            * \sa LoadFromHandle(), ParseGameObject(), ParseChildGameObjects(), ParseComponent(), ParseTransform()
             */
             bool ParseScene(const nlohmann::json& obj);
 

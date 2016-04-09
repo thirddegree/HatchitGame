@@ -31,8 +31,12 @@ namespace Hatchit {
         void SceneManager::Deinitialize()
         {
             SceneManager& _instance = SceneManager::instance();
-            if (_instance.m_currentScene != nullptr)
+
+            if (_instance.m_currentScene)
+            {
                 _instance.m_currentScene->Unload();
+                delete _instance.m_currentScene;
+            }
         }
 
         /**
@@ -82,7 +86,7 @@ namespace Hatchit {
             if (_instance.m_currentScene)
             {
                 _instance.m_currentScene->Unload();
-                _instance.m_currentScene = nullptr;
+                delete _instance.m_currentScene;
             }
 
             // Locate the handle to the next scene.
@@ -101,15 +105,16 @@ namespace Hatchit {
                 return false;
             }
 
-            Scene s;
-            if (!s.LoadFromHandle(sceneHandle))
+            // Load the Scene from the provided SceneHandle.
+            _instance.m_currentScene = new Scene();
+            if (!_instance.m_currentScene->LoadFromHandle(sceneHandle))
             {
                 HT_DEBUG_PRINTF("Failed to load Scene from handle: %s!\n", sceneName);
                 return false;
             }
 
-            // TODO: Set SceneManager::m_currentScene;
-            // TODO: Scene::Init();
+            // Initialize the Scene.
+            _instance.m_currentScene->Init();
             
             return true;
         }

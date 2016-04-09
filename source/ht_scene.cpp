@@ -15,6 +15,8 @@
 #include <ht_scene.h>
 #include <ht_jsonhelper.h>
 #include <ht_debug.h>
+#include <ht_test_component.h>
+#include <ht_meshrenderer_component.h>
 
 #include <stdexcept>
 
@@ -45,6 +47,19 @@ namespace Hatchit {
             value = iter->get<Container>();
 
             return true;
+        }
+
+        Scene::Scene(Scene&& rhs)
+            : m_name(std::move(rhs.m_name)), m_guid(std::move(rhs.m_guid)), m_gameObjects(std::move(rhs.m_gameObjects))
+        {
+        }
+
+        Scene& Scene::operator=(Scene&& rhs)
+        {
+            this->m_name = std::move(rhs.m_name);
+            this->m_guid = std::move(rhs.m_guid);
+            this->m_gameObjects = std::move(rhs.m_gameObjects);
+            return *this;
         }
 
         /**
@@ -78,6 +93,11 @@ namespace Hatchit {
             try
             {
                 wasLoadedSuccessfully = ParseScene(sceneDescription);
+            }
+            catch (std::out_of_range e)
+            {
+                HT_DEBUG_PRINTF("Failed to correctly parse JSON Scene file!\n" "Error: %s!\n", e.what());
+                wasLoadedSuccessfully = false;
             }
             catch (std::domain_error e)
             {
@@ -338,6 +358,7 @@ namespace Hatchit {
             {
                 gameObject->OnInit();
             }
+
             for (GameObject* gameObject : m_gameObjects)
             {
                 if (gameObject->GetEnabled())
@@ -392,15 +413,10 @@ namespace Hatchit {
         {
             for (GameObject* gameObject : m_gameObjects)
             {
+                gameObject->MarkForDestroy();
                 delete gameObject;
             }
             m_gameObjects.clear();
-        }
-
-        GameObject* Scene::CreateGameObject()
-        {
-            m_gameObjects.emplace_back(nullptr);
-            return (GameObject*)&m_gameObjects.back();
         }
     }
 }

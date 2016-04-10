@@ -45,16 +45,17 @@ namespace Hatchit {
             MeshRenderer(void);
 
             void SetRenderable(Graphics::IMesh* mesh, 
-                Graphics::IMaterial* material, 
+                Graphics::IMaterialHandle material, 
                 Graphics::IRenderPass* renderPass);
 
             void VOnInit() override;
             void VOnUpdate() override;
-            void VOnDestroy() override;
             Component* VClone() const override;
+
         protected:
             void VOnEnabled() override;
             void VOnDisabled() override;
+            void VOnDestroy() override;
 
         private:
             Graphics::IMeshRenderer* m_meshRenderer;

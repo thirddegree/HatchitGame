@@ -1,6 +1,6 @@
 /**
 **    Hatchit Engine
-**    Copyright(c) 2015 Third-Degree
+**    Copyright(c) 2015-2016 Third-Degree
 **
 **    GNU Lesser General Public License
 **    This file may be used under the terms of the GNU Lesser
@@ -12,28 +12,39 @@
 **
 **/
 
-#pragma once
-
+#include <ht_math.h>
 #include <ht_component.h>
+#include <ht_camera.h>
 
 namespace Hatchit {
+
     namespace Game {
-        class TestComponent : public Component
+
+        class Camera : public Component
         {
         public:
-            TestComponent(void) = default;
+            Camera();
 
             void VOnInit() override;
             void VOnUpdate() override;
+            void VOnDestroy() override;
             Component* VClone(void) const override;
+
         protected:
             void VOnEnabled() override;
             void VOnDisabled() override;
-            void VOnDestroy() override;
 
         private:
-            GameObject* testObject;
+            bool m_useWindowScale;
+            float m_height;
+            float m_width;
 
+            float m_fov;
+            float m_near;
+            float m_far;
+            Graphics::Camera m_camera;
         };
+
     }
+
 }

@@ -22,8 +22,10 @@ for t in ComponentFiles:
     cog.outl("#include <%s>" % t);
 
 ]]]*/
+#include <ht_camera_component.h>
 #include <ht_meshrenderer_component.h>
 #include <ht_test_component.h>
+#include <ht_tween_component.h>
 //[[[end]]]
 
 namespace Hatchit {
@@ -44,14 +46,19 @@ namespace Hatchit {
                         for line in f:
                             if ": public Component" in line or ": Component" in line:
                                 words = line.strip().split(' ')
-                                ComponentTypes.append(words[1])
+                                if words[1] == "HT_API":
+                                    ComponentTypes.append(words[2])
+                                else:
+                                    ComponentTypes.append(words[1])
                 
                 for t in ComponentTypes:
                     cog.outl("""if (type == "%s") return new %s();""" % (t, t));
             
             ]]]*/
+            if (type == "Camera") return new Camera();
             if (type == "MeshRenderer") return new MeshRenderer();
             if (type == "TestComponent") return new TestComponent();
+            if (type == "TweenComponent") return new TweenComponent();
             //[[[end]]]
             return nullptr;
         }

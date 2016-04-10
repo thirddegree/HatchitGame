@@ -170,6 +170,7 @@ namespace Hatchit {
 
             _instance.m_renderer->VResizeBuffers(width, height);
         }
+        
 
         RendererType Renderer::GetRendererType()
         {

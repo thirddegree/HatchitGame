@@ -21,7 +21,6 @@ namespace Hatchit {
         void TestComponent::VOnInit()
         {
             HT_DEBUG_PRINTF("Initialized Test Component.\n");
-            testObject = Scene::CreateGameObject(*GetOwner());
         }
 
         void TestComponent::VOnUpdate()

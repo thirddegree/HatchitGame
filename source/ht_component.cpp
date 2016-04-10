@@ -28,7 +28,7 @@ namespace Hatchit {
             m_owner = owner;
         }
 
-        bool Component::GetEnabled(void) const
+        bool Component::GetEnabled(void)
         {
             return m_enabled;
         }

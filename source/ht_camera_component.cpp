@@ -15,6 +15,8 @@
 #include <ht_camera_component.h>
 #include <ht_renderer_singleton.h>
 
+#include <ht_gameobject.h>
+
 namespace Hatchit {
 
     namespace Game {

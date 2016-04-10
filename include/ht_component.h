@@ -27,12 +27,13 @@
 #include <cstdint>
 #include <type_traits>
 #include <ht_transform.h>
-#include <ht_gameobject.h>
 #include <ht_guid.h>
 
 namespace Hatchit {
 
     namespace Game {
+
+	class GameObject;
 
         class HT_API Component
         {

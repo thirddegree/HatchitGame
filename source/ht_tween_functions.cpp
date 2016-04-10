@@ -20,11 +20,11 @@
 
 // Registers a tween function
 #define RegisterTweenFunction(name) \
-    s_tweenFunctions[static_cast<size_t>(TweenMethod::##name)] = name##Tween
+    s_tweenFunctions[static_cast<size_t>(TweenMethod::name)] = name##Tween
 
 // Registers a mixed tween function
 #define RegisterMixedFunction(mixed, name1, name2) \
-    s_tweenFunctions[static_cast<size_t>(TweenMethod::##mixed)] = \
+    s_tweenFunctions[static_cast<size_t>(TweenMethod::mixed)] = \
     MixTweenFunctions<name1##Tween, name2##Tween>
 
 namespace Hatchit {

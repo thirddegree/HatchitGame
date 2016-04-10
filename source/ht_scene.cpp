@@ -14,6 +14,7 @@
 
 #include <ht_scene.h>
 #include <ht_jsonhelper.h>
+#include <ht_component_factory.h>
 #include <ht_debug.h>
 
 namespace Hatchit {
@@ -333,22 +334,16 @@ namespace Hatchit {
                 return false;
             }
 
-            if (component_type == "TestComponent")
-            {
-                out.AddUninitializedComponent<TestComponent>();
-            }
+            Component* comp = ComponentFactory::MakeComponent(component_type);
 
-            else if (component_type == "MeshRenderer")
-            {
-                out.AddUninitializedComponent<MeshRenderer>();
-            }
-
-            // TODO: Add cases for each Component type here.
-
-            else
+            if (comp == nullptr)
             {
                 HT_DEBUG_PRINTF("Unknown Component type %s in scene description!\n", component_type);
                 return false;
+            }
+            else
+            {
+                out.AddUninitializedComponent(comp);
             }
 
             return true;

@@ -5,10 +5,10 @@
 
 namespace Hatchit {
     namespace Game {
-        class CFactory
+        class ComponentFactory
         {
         public:
-            Component* MakeComponent(std::string type);
+            static Component* MakeComponent(std::string type);
         };
     }
 }

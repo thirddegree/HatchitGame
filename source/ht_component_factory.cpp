@@ -1,5 +1,5 @@
 
-#include "ht_cfactory.h"
+#include "ht_component_factory.h"
 
 /*[[[cog
 import cog
@@ -28,7 +28,7 @@ for t in ComponentFiles:
 
 namespace Hatchit {
     namespace Game {
-        Component* CFactory::MakeComponent(std::string type)
+        Component* ComponentFactory::MakeComponent(std::string type)
         {
             /*[[[cog
                 import cog

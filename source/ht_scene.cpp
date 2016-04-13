@@ -202,45 +202,40 @@ namespace Hatchit {
             return true;
         }
 
-        void Scene::ParseChildGameObjects(const Guid& id, std::unordered_map<Guid, GameObject*>& guid_to_obj, std::unordered_map<Guid, JSON>& guid_to_json)
+        void Scene::ParseChildGameObjects(const Guid& childGuid, std::unordered_map<Guid, GameObject*>& guidToObj, std::unordered_map<Guid, JSON>& guidToJson)
         {
-            std::unordered_map<Guid, GameObject*>::const_iterator obj_iter = guid_to_obj.find(id);
-            std::unordered_map<Guid, JSON>::const_iterator json_iter = guid_to_json.find(id);
-            if ((obj_iter == guid_to_obj.cend()) || (json_iter == guid_to_json.cend()))
-                return;
-
-            const JSON& json_obj = json_iter->second;
-            GameObject* obj = obj_iter->second;
-
-            std::vector<std::string> string_guids{};
-            if (!ExtractContainerFromJSON(json_obj, "Children", string_guids))
-                return;
-
-            std::unordered_set<Guid> child_guids{};
-            for (const std::string& string_guid : string_guids)
+            // Locate the child GameObject/JSON.
+            auto childObjIter = guidToObj.find(childGuid);
+            auto childJsonIter = guidToJson.find(childGuid);
+            if ((childObjIter == guidToObj.cend()) || (childJsonIter == guidToJson.cend()))
             {
-                Guid id;
-                if (!Guid::Parse(string_guid, id))
-                    continue;
-
-                child_guids.insert(id);
+                return;
             }
 
-            for (const Guid& child_guid : child_guids)
+            const JSON& childJsonObj = childJsonIter->second;
+            GameObject* childObj = childObjIter->second;
+
+            // Check if this GameObject has a parent.
+            Guid parentGuid;
+            if (!JsonExtractGuid(childJsonObj, "Parent", parentGuid))
             {
-                std::unordered_map<Guid, GameObject*>::const_iterator child_obj_iter = guid_to_obj.find(child_guid);
-                std::unordered_map<Guid, JSON>::const_iterator child_json_iter = guid_to_json.find(child_guid);
-                if ((child_obj_iter == guid_to_obj.cend()) || (child_json_iter == guid_to_json.cend()))
-                    continue;
-
-                ParseChildGameObjects(child_guid, guid_to_obj, guid_to_json);
-
-                GameObject* child_obj = child_obj_iter->second;
-                obj->AddChild(child_obj);
-
-                guid_to_obj.erase(child_guid);
-                guid_to_json.erase(child_guid);
+                return;
             }
+
+            // Search for the parent GameObject using the parsed Guid.
+            auto parentObjIter = guidToObj.find(parentGuid);
+            if (parentObjIter == guidToObj.cend())
+            {
+                return;
+            }
+
+            // Parent the child GameObject to the newly located parent.
+            GameObject* parentObj = parentObjIter->second;
+            parentObj->AddChild(childObj);
+
+            // Remove the child GameObject/JSON from the std::unordered_maps.
+            guidToObj.erase(childGuid);
+            guidToJson.erase(childGuid);
         }
 
         bool Scene::ParseGameObject(const JSON& obj, GameObject& out)

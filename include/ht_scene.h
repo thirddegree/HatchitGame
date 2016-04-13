@@ -106,13 +106,10 @@ namespace Hatchit {
             bool ParseGameObject(const nlohmann::json& obj, GameObject& out);
 
             /**
-            * \brief Recursively establishes the parent/child relationship of the GameObject linked to the provided Guid.
-            * \param id                 The Guid of the GameObject to setup.
+            * \brief Establishes the (optional) parent of the GameObject with the provided Guid.
+            * \param id                 Guid of the potential child GameObject.
             * \param guid_to_obj        Mapping of Guids to GameObject pointers.
             * \param guid_to_json       Mapping of Guids to JSON objects.
-            *
-            * This method is recursively invoked on all the children of the GameObject listed in the JSON file.
-            *
             * \sa ParseGameObject(), ParseTransform(), ParseComponent, LoadFromCache(), GameObject()
             */
             void ParseChildGameObjects(const Core::Guid& id, std::unordered_map<Core::Guid, GameObject*>& guid_to_obj, std::unordered_map<Core::Guid, nlohmann::json>& guid_to_json);

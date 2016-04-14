@@ -69,8 +69,8 @@ namespace Hatchit {
 
         bool Application::Initialize()
         {
-			/*Initialize path manager*/
-			Core::Path::Initialize(m_settings);
+            /*Initialize path manager*/
+            Core::Path::Initialize(m_settings);
 
             /*Initialize Window with values from settings file*/
             WindowParams wparams;
@@ -86,7 +86,7 @@ namespace Hatchit {
             /*Initialize Renderer with values from settings file*/
             RendererParams rparams;
 
-        std::string renderer = m_settings->GetValue("RENDERER", "sRenderer", std::string("DIRECTX"));
+            std::string renderer = m_settings->GetValue("RENDERER", "sRenderer", std::string("DIRECTX"));
 
 #ifdef HT_SYS_LINUX
             if(renderer == "OPENGL")
@@ -108,7 +108,7 @@ namespace Hatchit {
             if (!Window::Initialize(wparams))
                 return false;
 
-
+            rparams.validate = m_settings->GetValue("RENDERER", "bValidate", false);
             rparams.window = Window::NativeWindowHandle();
             rparams.viewportWidth = wparams.width;
             rparams.viewportHeight = wparams.height;
@@ -137,7 +137,7 @@ namespace Hatchit {
             Input::DeInitialize();
             Renderer::DeInitialize();
             Window::DeInitialize();
-			Core::Path::DeInitialize();
+            Core::Path::DeInitialize();
         }
   }
 

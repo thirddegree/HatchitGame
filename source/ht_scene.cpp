@@ -14,7 +14,12 @@
 
 #include <ht_scene.h>
 #include <ht_jsonhelper.h>
+#include <ht_component_factory.h>
 #include <ht_debug.h>
+#include <ht_test_component.h>
+#include <ht_meshrenderer_component.h>
+
+#include <stdexcept>
 
 namespace Hatchit {
 
@@ -27,6 +32,7 @@ namespace Hatchit {
 #endif
 
         Scene* Scene::instance;
+
 
         /**
         * \brief Attempts to extract a std::vector from a JSON object.
@@ -50,6 +56,19 @@ namespace Hatchit {
             return true;
         }
 
+        Scene::Scene(Scene&& rhs)
+            : m_name(std::move(rhs.m_name)), m_guid(std::move(rhs.m_guid)), m_gameObjects(std::move(rhs.m_gameObjects))
+        {
+        }
+
+        Scene& Scene::operator=(Scene&& rhs)
+        {
+            this->m_name = std::move(rhs.m_name);
+            this->m_guid = std::move(rhs.m_guid);
+            this->m_gameObjects = std::move(rhs.m_gameObjects);
+            return *this;
+        }
+
         /**
         * \brief Gets this scene's name.
         */
@@ -68,36 +87,52 @@ namespace Hatchit {
             return m_guid;
         }
 
-        /**
-         * \brief Checks to see if this scene is cached.
-         */
-        bool Scene::IsCached() const
+        bool Scene::LoadFromHandle(Resource::SceneHandle sceneHandle)
         {
-            static const JSON s_DefaultObject = JSON::object();
 
-            return m_description != s_DefaultObject;
-        }
-
-        /**
-         * \brief Attempts to load this scene from the cache.
-         */
-        bool Scene::LoadFromCache()
-        {
-            // If we're not cached, then we can't load from the cache
-            if (!IsCached())
+            if (!sceneHandle.IsValid())
             {
+                HT_DEBUG_PRINTF("Scene::LoadFromHandle passed invalid Resource::SceneHandle!\n");
                 return false;
             }
 
+            bool wasLoadedSuccessfully = true;
+            const JSON& sceneDescription = sceneHandle->GetSceneDescription();
+            try
+            {
+                wasLoadedSuccessfully = ParseScene(sceneDescription);
+            }
+            catch (std::out_of_range e)
+            {
+                HT_DEBUG_PRINTF("Failed to correctly parse JSON Scene file!\n" "Error: %s!\n", e.what());
+                wasLoadedSuccessfully = false;
+            }
+            catch (std::domain_error e)
+            {
+                HT_DEBUG_PRINTF("Failed to correctly parse JSON Scene file!\n" "Error: %s\n", e.what());
+                wasLoadedSuccessfully = false;
+            }
+
+            return wasLoadedSuccessfully;
+        }
+
+        /**
+        * \brief Attempts to load scene data from memory.
+        *
+        * \param jsonText The JSON-encoded scene data.
+        * \return True if loading was successful, false if not.
+        */
+        bool Scene::ParseScene(const nlohmann::json& obj)
+        {
             // Get this scene's name
-            if (!JsonExtractString(m_description, "Name", m_name))
+            if (!JsonExtractString(obj, "Name", m_name))
             {
                 HT_DEBUG_PRINTF("Failed to find property 'Name' in scene description!\n");
                 return false;
             }
 
             // Get this scene's Guid
-            if (!JsonExtractGuid(m_description, "GUID", m_guid))
+            if (!JsonExtractGuid(obj, "GUID", m_guid))
             {
                 HT_DEBUG_PRINTF("Failed to find property 'GUID' in scene description!\n");
                 return false;
@@ -105,7 +140,7 @@ namespace Hatchit {
 
             // Get the Guids for every GameObject in the scene.
             std::vector<std::string> string_guids{};
-            if (!ExtractContainerFromJSON(m_description, "GUIDs", string_guids))
+            if (!ExtractContainerFromJSON(obj, "GUIDs", string_guids))
             {
                 HT_DEBUG_PRINTF("Failed to find property 'GUIDs' in scene description!\n");
                 return false;
@@ -127,7 +162,7 @@ namespace Hatchit {
 
             // Get an array of all the JSON GameObjects in the scene.
             std::vector<JSON> json_gameobjs{};
-            if (!ExtractContainerFromJSON(m_description, "GameObjects", json_gameobjs))
+            if (!ExtractContainerFromJSON(obj, "GameObjects", json_gameobjs))
             {
                 HT_DEBUG_PRINTF("Failed to find property 'GameObjects' in scene description!\n");
                 return false;
@@ -174,10 +209,9 @@ namespace Hatchit {
 
             // Get an array of all the JSON Prefabs.
             std::vector<JSON> json_prefabs{};
-            if (!ExtractContainerFromJSON(m_description, "Prefabs", json_prefabs))
+            if (!ExtractContainerFromJSON(obj, "Prefabs", json_prefabs))
             {
                 HT_DEBUG_PRINTF("Failed to find property 'Prefabs' in scene description!\n");
-                //return false;
             }
 
             for (const JSON& json_obj : json_prefabs)
@@ -335,74 +369,19 @@ namespace Hatchit {
                 return false;
             }
 
-            if (component_type == "TestComponent")
-            {
-                out.AddUninitializedComponent<TestComponent>();
-            }
+            Component* comp = ComponentFactory::MakeComponent(component_type);
 
-            else if (component_type == "MeshRenderer")
-            {
-                out.AddUninitializedComponent<MeshRenderer>();
-            }
-
-            // TODO: Add cases for each Component type here.
-
-            else
+            if (comp == nullptr)
             {
                 HT_DEBUG_PRINTF("Unknown Component type %s in scene description!\n", component_type);
                 return false;
             }
+            else
+            {
+                out.AddUninitializedComponent(comp);
+            }
 
             return true;
-        }
-
-        /**
-         * \brief Attempts to load scene data from a file.
-         *
-         * \param file The file to load from.
-         * \return True if loading was successful, false if not.
-         */
-        bool Scene::LoadFromFile(Core::File& file)
-        {
-            // Reserve enough memory to read the file
-            std::string contents;
-            contents.resize(file.SizeBytes());
-            
-            // Read the file
-            file.Read(reinterpret_cast<BYTE*>(&contents[0]), contents.length());
-
-            // Now parse the contents from memory
-            return LoadFromMemory(contents);
-        }
-
-        /**
-         * \brief Attempts to load scene data from memory.
-         *
-         * \param jsonText The JSON-encoded scene data.
-         * \return True if loading was successful, false if not.
-         */
-        bool Scene::LoadFromMemory(const std::string& jsonText)
-        {
-            JSON data;
-            bool loaded = false;
-
-            try
-            {
-                // Attempt to parse the JSON
-                data = JSON::parse(jsonText);
-
-                // If we get here, then the JSON parsed successfully
-                m_description = data;
-                loaded = LoadFromCache(); // Loads from m_description
-            }
-            catch (...)
-            {
-                HT_DEBUG_PRINTF("Failed to parse scene JSON!\n");
-                data = JSON::object();
-                loaded = false;
-            }
-
-            return loaded;
         }
 
         void Scene::Init()
@@ -411,6 +390,7 @@ namespace Hatchit {
             {
                 gameObject->OnInit();
             }
+
             for (GameObject* gameObject : m_gameObjects)
             {
                 if (gameObject->GetEnabled())
@@ -435,10 +415,27 @@ namespace Hatchit {
          */
         void Scene::Update()
         {
-            for (GameObject* obj : m_gameObjects)
+            // # of deleted objects so far this pass (number to shift elements back by)
+            std::size_t shift = 0;
+
+            for (std::size_t i = 0; i < m_gameObjects.size(); i++)
             {
-                obj->Update();
+                // if an object is marked to be destroyed, delete it and increase the shift size
+                if (m_gameObjects[i]->m_destroyed)
+                {
+                    delete m_gameObjects[i];
+                    shift++;
+                }
+                //if the object is fine to update, update it and then shift it back
+                else
+                {
+                    m_gameObjects[i]->Update();
+                    m_gameObjects[i - shift] = m_gameObjects[i];
+                }
             }
+
+            //shrink the vector by the number of deleted objects
+            m_gameObjects.resize(m_gameObjects.size() - shift);
         }
         
         /**
@@ -448,10 +445,7 @@ namespace Hatchit {
         {
             for (GameObject* gameObject : m_gameObjects)
             {
-                gameObject->Destroy();
-            }
-            for (GameObject* gameObject : m_gameObjects)
-            {
+                gameObject->MarkForDestroy();
                 delete gameObject;
             }
             m_gameObjects.clear();
@@ -474,9 +468,9 @@ namespace Hatchit {
             GameObject* gameObject = CreateGameObject();
             gameObject->m_transform = prefab.GetTransform();
             auto components = prefab.GetComponents();
-            for (const Game::Component* component : prefab.m_components)
+            for (const Game::Component* const component : prefab.m_components)
             {
-                gameObject->AddUninitializedComponent(component);
+                gameObject->AddUninitializedComponent(component->VClone());
             }
             for (Game::Component* component : gameObject->m_components)
             {
@@ -484,9 +478,10 @@ namespace Hatchit {
             }
             for (Game::Component* component : gameObject->m_components)
             {
-                component->Enable();
+                component->SetEnabled(true);
             }
             return gameObject;
         }
+
     }
 }

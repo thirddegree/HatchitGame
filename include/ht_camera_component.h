@@ -12,53 +12,37 @@
 **
 **/
 
-#pragma once
-
-#include <ht_meshrenderer.h>
-
-#ifdef HT_SYS_WINDOWS
-#ifdef DX11_SUPPORT
-#include <ht_d3d11meshrenderer.h>
-#endif
-#ifdef DX12_SUPPORT
-#include <ht_d3d12meshrenderer.h>
-#endif
-#endif
-
-#ifdef GL_SUPPORT
-//#include <ht_glmeshrenderer.h>
-#endif
-
-#ifdef VK_SUPPORT
-#include <ht_vkmeshrenderer.h>
-#endif
-
+#include <ht_math.h>
 #include <ht_component.h>
+#include <ht_camera.h>
 
 namespace Hatchit {
 
     namespace Game {
 
-        class MeshRenderer : public Component
+        class Camera : public Component
         {
         public:
-            MeshRenderer(void);
-
-            void SetRenderable(Graphics::IMesh* mesh, 
-                Graphics::IMaterialHandle material, 
-                Graphics::IRenderPass* renderPass);
+            Camera();
 
             void VOnInit() override;
             void VOnUpdate() override;
-            Component* VClone() const override;
+            void VOnDestroy() override;
+            Component* VClone(void) const override;
 
         protected:
             void VOnEnabled() override;
             void VOnDisabled() override;
-            void VOnDestroy() override;
 
         private:
-            Graphics::IMeshRenderer* m_meshRenderer;
+            bool m_useWindowScale;
+            float m_height;
+            float m_width;
+
+            float m_fov;
+            float m_near;
+            float m_far;
+            Graphics::Camera m_camera;
         };
 
     }

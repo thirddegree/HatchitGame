@@ -14,10 +14,7 @@
 
 #include <ht_meshrenderer_component.h>
 #include <ht_renderer_singleton.h>
-
-#ifdef _DEBUG
 #include <ht_debug.h>
-#endif
 
 namespace Hatchit {
 
@@ -27,11 +24,10 @@ namespace Hatchit {
 
         MeshRenderer::MeshRenderer()
         {
-
         }
 
         void MeshRenderer::SetRenderable(Graphics::IMesh * mesh,
-            Graphics::IMaterial * material,
+            Graphics::IMaterialHandle material,
             Graphics::IRenderPass* renderPass)
         {
             m_meshRenderer->VSetMesh(mesh);
@@ -52,7 +48,7 @@ namespace Hatchit {
 #endif
 #ifdef DX12_SUPPORT
             case Hatchit::Graphics::DIRECTX12:
-                //m_meshRenderer = new DX::DX12MeshRenderer();
+                m_meshRenderer = new DX::D3D12MeshRenderer();
                 break;
 #endif
 #endif
@@ -77,6 +73,12 @@ namespace Hatchit {
             m_meshRenderer->VRender();
         }
 
+        Component* MeshRenderer::VClone(void) const
+        {
+            HT_DEBUG_PRINTF("Cloned MeshRenderer.\n");
+            return new MeshRenderer(*this);
+        }
+
         void MeshRenderer::VOnEnabled()
         {
             HT_DEBUG_PRINTF("Enabled MeshRenderer Component.\n");
@@ -89,7 +91,7 @@ namespace Hatchit {
 
         void MeshRenderer::VOnDestroy()
         {
-            HT_DEBUG_PRINTF("Destroyed Test Component.\n");
+            HT_DEBUG_PRINTF("Destroyed MeshRenderer Component.\n");
         }
 
     }

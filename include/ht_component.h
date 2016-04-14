@@ -26,8 +26,7 @@
 
 #include <cstdint>
 #include <type_traits>
-
-#include <ht_platform.h>
+#include <ht_transform.h>
 #include <ht_guid.h>
 #include <ht_icloneable.h>
 
@@ -35,7 +34,7 @@ namespace Hatchit {
 
     namespace Game {
 
-        class GameObject; /**< Forward declaration to avoid circular dependency. */
+	class GameObject;
 
         class HT_API Component
         {
@@ -48,7 +47,12 @@ namespace Hatchit {
             template <typename T>
             static Core::Guid GetComponentId(void);
 
+            Component(void) = default;
             virtual ~Component(void) = default;
+            Component(const Component& rhs) = default;
+            Component(Component&& rhs) = default;
+            Component& operator=(const Component& rhs) = default;
+            Component& operator=(Component&& rhs) = default;
 
             /**
             * \brief Getter which returns the GameObject to which this Component is attached.
@@ -60,7 +64,7 @@ namespace Hatchit {
             * \brief Getter that returns that value of m_enabled.
             * \return true if this Component is enabled.
             */
-            bool GetEnabled(void) const;
+            bool GetEnabled(void);
 
             /**
             * \brief Setter that sets the value of m_enabled.
@@ -68,53 +72,31 @@ namespace Hatchit {
             */
             void SetEnabled(bool value);
 
-            /**
-            * \brief inline for SetEnabled(true);
-            */
-            inline void Enable(void)
-            {
-                SetEnabled(true);
-            }
-
-            /**
-            * \brief inline for SetEnabled(false);
-            */
-            inline void Disable(void)
-            {
-                SetEnabled(false);
-            }
 
             /**
             * \brief Called when the GameObject is created to initialize all values
             */
-            virtual void VOnInit() = 0;
+            virtual void VOnInit(void) = 0;
 
             /**
             * \brief Called once per frame while the GameObject is enabled.
             * Updates all components first, then all child gameobjects.
             */
-            virtual void VOnUpdate() = 0;
+            virtual void VOnUpdate(void) = 0;
 
+            
             /**
             * \brief Called when the GameObject is destroyed/deleted.
             * Objects are always disabled before destroyed.
             * When a scene is destroyed, all gameobjects are disabled before any are destroyed.
             */
-            virtual void VOnDestroy() = 0;
-
-        protected:
-            /**
-            * \brief Called when the Component is enabled.
-            * This happens when a scene has finished loading, or immediately after creation if the scene is already loaded.
-            */
-            virtual void VOnEnabled() = 0;
+            virtual void VOnDestroy(void) = 0;
 
             /**
-            * \brief Called when the Component is disabled.
-            * Components are always disabled before destroyed.
-            * When a scene is destroyed, all Components are disabled before any are destroyed.
+            * \brief Creates a copy of this Component.
+            * This is used by GameObject to create a copy of a class extending Component without knowledge of its underlying type.
             */
-            virtual void VOnDisabled() = 0;
+            virtual Component* VClone(void) const = 0;
 
             /**
             * \brief Setter that sets which GameObject this Component is attached to.
@@ -122,10 +104,22 @@ namespace Hatchit {
             */
             void SetOwner(GameObject *owner);
 
+        protected:
+            /**
+            * \brief Called when the Component is enabled.
+            * This happens when a scene has finished loading, or immediately after creation if the scene is already loaded.
+            */
+            virtual void VOnEnabled(void) = 0;
+
+            /**
+            * \brief Called when the Component is disabled.
+            * Components are always disabled before destroyed.
+            * When a scene is destroyed, all Components are disabled before any are destroyed.
+            */
+            virtual void VOnDisabled(void) = 0;
+
             bool m_enabled{false}; /**< bool indicating if this Component is enabled. */
             GameObject *m_owner; /**< The GameObject to which this Component is attached. */
-
-            friend GameObject;
         };
 
         template <typename T>

@@ -14,11 +14,12 @@
 
 #include <ht_application.h>
 #include <ht_debug.h>
+#include <ht_path_singleton.h>
 #include <ht_window_singleton.h>
 #include <ht_renderer_singleton.h>
 #include <ht_time_singleton.h>
 #include <ht_input_singleton.h>
-#include <ht_scenemanager.h>
+#include <ht_scenemanager_singleton.h>
 
 namespace Hatchit {
 
@@ -68,6 +69,9 @@ namespace Hatchit {
 
         bool Application::Initialize()
         {
+			/*Initialize path manager*/
+			Core::Path::Initialize(m_settings);
+
             /*Initialize Window with values from settings file*/
             WindowParams wparams;
             wparams.title = m_settings->GetValue("WINDOW", "sTitle", std::string("Hatchit Engine"));
@@ -82,13 +86,13 @@ namespace Hatchit {
             /*Initialize Renderer with values from settings file*/
             RendererParams rparams;
 
-	    std::string renderer = m_settings->GetValue("RENDERER", "sRenderer", std::string("DIRECTX"));
+        std::string renderer = m_settings->GetValue("RENDERER", "sRenderer", std::string("DIRECTX"));
 
 #ifdef HT_SYS_LINUX
-	        if(renderer == "OPENGL")
-            	rparams.renderer = RendererType::OPENGL;
-	        else if(renderer == "VULKAN")
-		        rparams.renderer = RendererType::VULKAN;
+            if(renderer == "OPENGL")
+                rparams.renderer = RendererType::OPENGL;
+            else if(renderer == "VULKAN")
+                rparams.renderer = RendererType::VULKAN;
 #else
             if (renderer == "DIRECTX11")
                 rparams.renderer = RendererType::DIRECTX11;
@@ -122,17 +126,18 @@ namespace Hatchit {
             if (!SceneManager::Initialize())
                 return false;
 
-            SceneManager::LoadScene("Test Scene");
+            SceneManager::LoadScene("testscene.json");
 
             return true;
         }
 
         void Application::DeInitialize()
         {
-			SceneManager::Deinitialize();
+            SceneManager::Deinitialize();
             Input::DeInitialize();
             Renderer::DeInitialize();
             Window::DeInitialize();
+			Core::Path::DeInitialize();
         }
   }
 

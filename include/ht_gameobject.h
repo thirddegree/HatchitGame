@@ -30,8 +30,8 @@
 #include <tuple>
 #include <utility>
 
-#include <ht_platform.h>
 #include <ht_component.h>
+#include <ht_platform.h>
 #include <ht_transform.h>
 #include <ht_guid.h>
 
@@ -43,6 +43,7 @@ namespace Hatchit {
 
     namespace Game {
         class Scene;
+        
         class HT_API GameObject
         {
         friend class Scene;
@@ -51,14 +52,6 @@ namespace Hatchit {
             GameObject(GameObject&& rhs) = default;
             GameObject& operator=(const GameObject& rhs) = default;
             GameObject& operator=(GameObject&& rhs) = default;
-
-
-            /**
-            * \brief The destructor for GameObject.
-            *
-            * Responsible for deleting all currently attached components.
-            */
-            ~GameObject(void);
 
             /**
             * \brief Retrieve this GameObject's Guid.
@@ -152,13 +145,13 @@ namespace Hatchit {
             */
             void Update(void);
 
+
             /**
-            * \brief Destroys the GameObject.
-            *
-            * Objects are always disabled before destroyed.
-            * When a scene is destroyed, all gameobjects are disabled before any are destroyed.
+            * \brief Marks the GameObject to be destroyed the next time it would be updated.
+            * this also calls VOnDestroy, as the GameObject is to be treated as if it doesn't exist after this point
             */
-            void Destroy(void);
+            void MarkForDestroy(void);
+
 
             /**
             * \brief Attempts to attach a Component of type T.
@@ -297,23 +290,25 @@ namespace Hatchit {
             */
             GameObject(const Core::Guid& guid, const std::string& name, Transform& t, bool enabled);
 
+
+            /**
+            * \brief The destructor for GameObject.
+            * Responsible for deleting all currently attached components.
+            */
+            ~GameObject(void);
+
+
             /**
             * \brief Called when the gameobject is enabled.
             */
             void OnEnabled(void);
+
 
             /**
             * \brief Called when the gameobject is disabled.
             */
             void OnDisabled(void);
 
-            /**
-            * \brief Called when the gameobject is destroyed/deleted.
-            *
-            * Objects are always disabled before destroyed.
-            * When a scene is destroyed, all gameobjects are disabled before any are destroyed.
-            */
-            void OnDestroy(void);
 
             /**
             * \brief Attempts to attach a Component of type T.
@@ -322,7 +317,7 @@ namespace Hatchit {
             * \return bool indicating if the component could be attached.
             * \sa AddComponent(Args&&... args)
             */
-            template <typename T>
+            template<typename T>
             bool AddUninitializedComponent(T *component);
 
             /**
@@ -340,12 +335,13 @@ namespace Hatchit {
             bool AddUninitializedComponent(Args&&... args);
 
             bool m_enabled; /**< bool indicating if this GameObject is enabled. */
+            bool m_destroyed;//* < bool indicating that this object is to be destroyed on the next update call*/
             std::string m_name; /**< The name associated with this GameObject. */
             Core::Guid m_guid; /**< The Guid associated with this GameObject. */
             Transform m_transform; /**< The Transform representing the position/orientation of this GameObject. */
             GameObject *m_parent; /**< The parent of this GameObject. */
             std::vector<GameObject*> m_children; /**< All the GameObjects which are children of this GameObject. */
-            std::vector<Component*> m_components; /**< std::vector of all attached Components. */
+            std::vector<Game::Component*> m_components; /**< std::vector of all attached Components. */
             std::unordered_map<Core::Guid, std::vector<Component*>::size_type> m_componentMap; /**< Unique mapping of Component to Guid. */
         };
 
@@ -354,7 +350,7 @@ namespace Hatchit {
         {
             static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
 
-            Core::Guid component_id = Component::GetComponentId<T>();
+            Core::Guid component_id = Game::Component::template GetComponentId<T>();
             std::unordered_map<Core::Guid, std::vector<Component*>::size_type>::const_iterator iter = m_componentMap.find(component_id);
             if (iter != m_componentMap.cend())
                 return false;
@@ -366,25 +362,8 @@ namespace Hatchit {
 
             component->VOnInit();
 
-            component->Enable();
-
-            return true;
-        }
-
-        template <typename T>
-        bool GameObject::AddUninitializedComponent(T *component)
-        {
-            static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
-
-            Core::Guid component_id = Component::GetComponentId<T>();
-            std::unordered_map<Core::Guid, std::vector<Component*>::size_type>::const_iterator iter = m_componentMap.find(component_id);
-            if (iter != m_componentMap.cend())
-                return false;
-
-            m_componentMap.insert(std::make_pair(component_id, m_components.size()));
-            m_components.push_back(component);
-
-            component->SetOwner(this);
+            if(m_enabled)
+                component->VOnEnable();
 
             return true;
         }
@@ -394,7 +373,7 @@ namespace Hatchit {
         {
             static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
 
-            Core::Guid component_id = Component::GetComponentId<T>();
+            Core::Guid component_id = Game::Component:: template GetComponentId<T>();
             std::unordered_map<Core::Guid, std::vector<Component*>::size_type>::const_iterator iter = m_componentMap.find(component_id);
             if (iter != m_componentMap.cend())
                 return false;
@@ -408,7 +387,7 @@ namespace Hatchit {
             component->VOnInit();
 
             if (m_enabled)
-                component->Enable();
+                component->VOnEnable();
 
             return true;
         }
@@ -418,7 +397,7 @@ namespace Hatchit {
         {
             static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
 
-            Core::Guid component_id = Component::GetComponentId<T>();
+            Core::Guid component_id = Game::Component:: template GetComponentId<T>();
             std::unordered_map<Core::Guid, std::vector<Component*>::size_type>::const_iterator iter = m_componentMap.find(component_id);
             if (iter == m_componentMap.cend())
                 return false;
@@ -426,7 +405,7 @@ namespace Hatchit {
             std::vector<Component*>::size_type index = m_componentMap[component_id];
             Component *component = m_components[index];
             if(component->GetEnabled())
-                component->Disable();
+                component->SetEnabled(false);
             component->VOnDestroy();
 
             m_components[index] = nullptr;
@@ -440,7 +419,7 @@ namespace Hatchit {
         bool GameObject::HasComponent(void) const
         {
             static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
-            Core::Guid component_id = Component::GetComponentId<T>();
+            Core::Guid component_id = Component:: template GetComponentId<T>();
             return (m_componentMap.find(component_id) != m_componentMap.cend());
         }
 
@@ -485,7 +464,7 @@ namespace Hatchit {
             if (component->GetEnabled())
                 return false;
 
-            component->Enable();
+            component->SetEnabled(true);
 
             return true;
         }
@@ -504,17 +483,35 @@ namespace Hatchit {
             if (!component->GetEnabled())
                 return false;
 
-            component->Disable();
+            component->SetEnabled(false);
+
+            return true;
+        }
+
+        template<typename T>
+        inline bool GameObject::AddUninitializedComponent(T* component)
+        {
+            static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
+
+            Core::Guid component_id = Component::GetComponentId<T>();
+            std::unordered_map<Core::Guid, std::vector<Component*>::size_type>::const_iterator iter = m_componentMap.find(component_id);
+            if (iter != m_componentMap.cend())
+                return false;
+
+            m_componentMap.insert(std::make_pair(component_id, m_components.size()));
+            m_components.push_back(component);
+
+            component->SetOwner(this);
 
             return true;
         }
 
         template<typename T, typename ...Args>
-        inline bool Hatchit::Game::GameObject::AddUninitializedComponent(Args && ...args)
+        inline bool GameObject::AddUninitializedComponent(Args && ...args)
         {
             static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
 
-            Core::Guid component_id = Component::GetComponentId<T>();
+            Core::Guid component_id = Game::Component:: template GetComponentId<T>();
             std::unordered_map<Core::Guid, std::vector<Component*>::size_type>::const_iterator iter = m_componentMap.find(component_id);
             if (iter != m_componentMap.cend())
                 return false;

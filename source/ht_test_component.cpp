@@ -14,26 +14,24 @@
 
 #include <ht_test_component.h>
 #include <ht_debug.h>
-#include <ht_scenemanager.h>
+#include <ht_scene.h>
 
 namespace Hatchit {
-
     namespace Game {
-
-        TestComponent::TestComponent()
-        {
-
-        }
-
         void TestComponent::VOnInit()
         {
             HT_DEBUG_PRINTF("Initialized Test Component.\n");
-            testObject = Scene::CreateGameObject(*GetOwner());
         }
 
         void TestComponent::VOnUpdate()
         {
             HT_DEBUG_PRINTF("Updated Test Component.\n");
+        }
+
+        Component* TestComponent::VClone(void) const
+        {
+            HT_DEBUG_PRINTF("Cloned Test Component.\n");
+            return new TestComponent(*this);
         }
 
         void TestComponent::VOnEnabled()
@@ -51,5 +49,4 @@ namespace Hatchit {
             HT_DEBUG_PRINTF("Destroyed Test Component.\n");
         }
     }
-
 }

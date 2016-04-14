@@ -17,32 +17,24 @@
 #include <ht_component.h>
 
 namespace Hatchit {
-
     namespace Game {
 
-
-        using JSONToComponentPtr = Component* (*)(nlohmann::json& obj);
-        using ComponentToJSONPtr = nlohmann::json(*)(Component*);
-
-        #define REGISTER_COMPONENT_MACRO(T, factory_function_ptr) ComponentFactory::RegisterComponentFunction<T>(factory_function_ptr);
-
-        class TestComponent : public Component, public ICloneable<TestComponent>
+        class TestComponent : public Component
         {
         public:
-            TestComponent(void);
+            TestComponent(void) = default;
 
             void VOnInit() override;
             void VOnUpdate() override;
-            void VOnDestroy() override;
-
+            Component* VClone(void) const override;
         protected:
             void VOnEnabled() override;
             void VOnDisabled() override;
+            void VOnDestroy() override;
 
         private:
             GameObject* testObject;
+
         };
-
     }
-
 }

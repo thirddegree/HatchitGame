@@ -20,49 +20,24 @@ namespace Hatchit {
 
     namespace Game {
 
-        using namespace Graphics;
-
+     
         MeshRenderer::MeshRenderer()
         {
         }
 
-        void MeshRenderer::SetRenderable(Graphics::IMesh * mesh,
+        void MeshRenderer::SetRenderable(Graphics::IMeshHandle mesh,
             Graphics::IMaterialHandle material,
-            Graphics::IRenderPass* renderPass)
+            Graphics::IRenderPassHandle renderPass)
         {
-            m_meshRenderer->VSetMesh(mesh);
-            m_meshRenderer->VSetMaterial(material);
-            m_meshRenderer->VSetRenderPass(renderPass);
+            m_meshRenderer->SetMesh(mesh);
+            m_meshRenderer->SetMaterial(material);
+            m_meshRenderer->SetRenderPass(renderPass);
         }
 
         void MeshRenderer::VOnInit()
         {
-            RendererType rendererType = Renderer::GetRendererType();
-            switch (rendererType)
-            {
-#ifdef HT_SYS_WINDOWS
-#ifdef DX11_SUPPORT
-            case Hatchit::Graphics::DIRECTX11:
-                m_meshRenderer = new DX::DX11MeshRenderer();
-                break;
-#endif
-#ifdef DX12_SUPPORT
-            case Hatchit::Graphics::DIRECTX12:
-                m_meshRenderer = new DX::D3D12MeshRenderer();
-                break;
-#endif
-#endif
-#ifdef GL_SUPPORT
-            case Hatchit::Graphics::OPENGL:
-//                m_meshRenderer = new GL::GLMeshRenderer();
-                break;
-#endif
-#ifdef VK_SUPPORT
-            case Hatchit::Graphics::VULKAN:
-                m_meshRenderer = new Vulkan::VKMeshRenderer();
-                break;
-#endif
-            }
+            Graphics::RendererType rendererType = Renderer::GetRendererType();
+            m_meshRenderer = new Graphics::MeshRenderer();
 
             HT_DEBUG_PRINTF("Initialized Mesh Renderer Component.\n");
         }
@@ -70,7 +45,7 @@ namespace Hatchit {
         void MeshRenderer::VOnUpdate()
         {
             HT_DEBUG_PRINTF("Updated MeshRenderer Component.\n");
-            m_meshRenderer->VRender();
+            m_meshRenderer->Render();
         }
 
         Component* MeshRenderer::VClone(void) const

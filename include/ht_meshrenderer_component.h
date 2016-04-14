@@ -15,24 +15,6 @@
 #pragma once
 
 #include <ht_meshrenderer.h>
-
-#ifdef HT_SYS_WINDOWS
-#ifdef DX11_SUPPORT
-#include <ht_d3d11meshrenderer.h>
-#endif
-#ifdef DX12_SUPPORT
-#include <ht_d3d12meshrenderer.h>
-#endif
-#endif
-
-#ifdef GL_SUPPORT
-//#include <ht_glmeshrenderer.h>
-#endif
-
-#ifdef VK_SUPPORT
-#include <ht_vkmeshrenderer.h>
-#endif
-
 #include <ht_component.h>
 
 namespace Hatchit {
@@ -44,9 +26,9 @@ namespace Hatchit {
         public:
             MeshRenderer(void);
 
-            void SetRenderable(Graphics::IMesh* mesh, 
+            void SetRenderable(Graphics::IMeshHandle mesh, 
                 Graphics::IMaterialHandle material, 
-                Graphics::IRenderPass* renderPass);
+                Graphics::IRenderPassHandle renderPass);
 
             void VOnInit() override;
             void VOnUpdate() override;
@@ -58,7 +40,7 @@ namespace Hatchit {
             void VOnDestroy() override;
 
         private:
-            Graphics::IMeshRenderer* m_meshRenderer;
+            Graphics::MeshRenderer* m_meshRenderer;
         };
 
     }

@@ -35,7 +35,7 @@ namespace Hatchit {
             void VOnDisabled() override;
 
         private:
-            bool m_useWindowScale;
+            bool  m_useWindowScale;
             float m_height;
             float m_width;
 

@@ -45,6 +45,16 @@ namespace Hatchit
             return m_y;
         }
 
+        int SDLMouse::VPreviousMouseX()
+        {
+            return m_prevX;
+        }
+
+        int SDLMouse::VPreviousMouseY()
+        {
+            return m_prevY;
+        }
+
         int SDLMouse::VMouseWheelX()
         {
             return m_wx;

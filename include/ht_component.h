@@ -28,6 +28,7 @@
 #include <type_traits>
 #include <ht_transform.h>
 #include <ht_guid.h>
+#include <ht_jsonhelper.h>
 
 namespace Hatchit {
 
@@ -52,6 +53,10 @@ namespace Hatchit {
             Component(Component&& rhs) = default;
             Component& operator=(const Component& rhs) = default;
             Component& operator=(Component&& rhs) = default;
+
+            virtual nlohmann::json VSerialize(void) = 0;
+            virtual bool VDeserialize(nlohmann::json jsonObject) = 0;
+
 
             /**
             * \brief Getter which returns the GameObject to which this Component is attached.

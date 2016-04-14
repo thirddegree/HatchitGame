@@ -25,6 +25,9 @@ namespace Hatchit {
         public:
             Camera();
 
+            virtual nlohmann::json VSerialize(void) override;
+            virtual bool VDeserialize(nlohmann::json jsonObject) override;
+
             void VOnInit() override;
             void VOnUpdate() override;
             void VOnDestroy() override;

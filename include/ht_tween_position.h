@@ -34,6 +34,9 @@ namespace Hatchit {
              */
             ~TweenPosition();
 
+            virtual nlohmann::json VSerialize(void) override;
+            virtual bool VDeserialize(nlohmann::json jsonObject) override;
+
             /**
              * \brief Gets the start tween position.
              */

@@ -37,6 +37,16 @@ namespace Hatchit {
         {
         }
 
+        nlohmann::json TweenRotation::VSerialize(void)
+        {
+            return nlohmann::json();
+        }
+
+        bool TweenRotation::VDeserialize(nlohmann::json jsonObject)
+        {
+            return false;
+        }
+
         /**
          * \brief Gets the start tween rotation.
          */

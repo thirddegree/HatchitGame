@@ -24,6 +24,9 @@ namespace Hatchit {
         public:
             TestComponent(void) = default;
 
+            virtual nlohmann::json VSerialize(void) override;
+            virtual bool VDeserialize(nlohmann::json jsonObject) override;
+
             void VOnInit() override;
             void VOnUpdate() override;
             Component* VClone(void) const override;

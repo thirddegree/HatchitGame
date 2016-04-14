@@ -49,6 +49,16 @@ namespace Hatchit {
             m_isPlaying     = 0;
         }
 
+         nlohmann::json TweenComponent::VSerialize(void)
+         {
+             return nlohmann::json();
+         }
+
+         bool TweenComponent::VDeserialize(nlohmann::json jsonObject)
+         {
+             return false;
+         }
+
         /**
          * \brief Checks to see if the start and end values are compatible.
          */

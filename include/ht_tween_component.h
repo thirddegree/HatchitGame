@@ -112,6 +112,9 @@ namespace Hatchit {
              */
             virtual ~TweenComponent();
 
+            virtual nlohmann::json VSerialize(void) override;
+            virtual bool VDeserialize(nlohmann::json jsonObject) override;
+
             /**
              * \brief Gets the duration of the tween.
              */

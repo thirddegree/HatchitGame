@@ -37,6 +37,16 @@ namespace Hatchit {
         {
         }
 
+        nlohmann::json TweenScale::VSerialize(void)
+        {
+            return nlohmann::json();
+        }
+
+        bool TweenScale::VDeserialize(nlohmann::json jsonObject)
+        {
+            return false;
+        }
+
         /**
          * \brief Gets the start tween scale.
          */

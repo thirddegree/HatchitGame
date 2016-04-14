@@ -25,6 +25,16 @@ namespace Hatchit {
         {
         }
 
+        nlohmann::json MeshRenderer::VSerialize(void)
+        {
+            return nlohmann::json();
+        }
+
+        bool MeshRenderer::VDeserialize(nlohmann::json jsonObject)
+        {
+            return false;
+        }
+
         void MeshRenderer::SetRenderable(Graphics::IMeshHandle mesh,
             Graphics::IMaterialHandle material,
             Graphics::IRenderPassHandle renderPass)

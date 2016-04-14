@@ -26,6 +26,16 @@ namespace Hatchit {
             m_camera = Graphics::Camera(Math::Matrix4(), Math::MMMatrixPerspProj(60, 1280, 720, 1, 100));
         }
 
+        nlohmann::json Camera::VSerialize(void)
+        {
+            return nlohmann::json();
+        }
+
+        bool Camera::VDeserialize(nlohmann::json jsonObject)
+        {
+            return false;
+        }
+
         void Camera::VOnInit()
         {
 

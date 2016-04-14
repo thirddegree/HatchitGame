@@ -37,6 +37,16 @@ namespace Hatchit {
         {
         }
 
+        nlohmann::json TweenPosition::VSerialize(void)
+        {
+            return nlohmann::json();
+        }
+
+        bool TweenPosition::VDeserialize(nlohmann::json jsonObject)
+        {
+            return false;
+        }
+
         /**
          * \brief Gets the start tween position.
          */

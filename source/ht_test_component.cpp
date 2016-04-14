@@ -18,6 +18,14 @@
 
 namespace Hatchit {
     namespace Game {
+        nlohmann::json TestComponent::VSerialize(void)
+        {
+            return nlohmann::json();
+        }
+        bool TestComponent::VDeserialize(nlohmann::json jsonObject)
+        {
+            return false;
+        }
         void TestComponent::VOnInit()
         {
             HT_DEBUG_PRINTF("Initialized Test Component.\n");

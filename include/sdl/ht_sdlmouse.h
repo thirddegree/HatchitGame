@@ -37,6 +37,8 @@ namespace Hatchit
 
             int VMouseX()           override;
             int VMouseY()           override;
+            int VPreviousMouseX()   override;
+            int VPreviousMouseY()   override;
             int VMouseWheelX()      override;
             int VMouseWheelY()      override;
             int VDeltaX(int val)    override;

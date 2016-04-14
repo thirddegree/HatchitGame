@@ -83,6 +83,20 @@ namespace Hatchit
             return _instance.m_mouse->VMouseY();
         }
 
+        int Input::PreviousMouseX()
+        {
+            Input& _instance = Input::instance();
+
+            return _instance.m_mouse->VPreviousMouseX();
+        }
+
+        int Input::PreviousMouseY()
+        {
+            Input& _instance = Input::instance();
+
+            return _instance.m_mouse->VPreviousMouseY();
+        }
+
         int Input::DeltaX(int val)
         {
             Input& _instance = Input::instance();

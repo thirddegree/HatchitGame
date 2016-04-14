@@ -38,6 +38,8 @@ namespace Hatchit
             /*Mouse*/
             static int  MouseX();
             static int  MouseY();
+            static int  PreviousMouseX();
+            static int  PreviousMouseY();
             static int  DeltaX(int val);
             static int  DeltaY(int val);
             static bool MouseButtonPress(MouseButton button);

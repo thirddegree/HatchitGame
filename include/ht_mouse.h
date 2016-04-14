@@ -34,6 +34,8 @@ namespace Hatchit
 
             virtual int     VMouseX() = 0;
             virtual int     VMouseY() = 0;
+            virtual int     VPreviousMouseX() = 0;
+            virtual int     VPreviousMouseY() = 0;
             virtual int     VMouseWheelX() = 0;
             virtual int     VMouseWheelY() = 0;
             virtual int     VDeltaX(int val) = 0;

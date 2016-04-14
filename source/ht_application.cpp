@@ -126,7 +126,7 @@ namespace Hatchit {
             if (!SceneManager::Initialize())
                 return false;
 
-            SceneManager::LoadScene("testscene.json");
+            //SceneManager::LoadScene("testscene.json");
 
             return true;
         }

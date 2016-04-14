@@ -28,7 +28,6 @@
 #include <type_traits>
 #include <ht_transform.h>
 #include <ht_guid.h>
-#include <ht_icloneable.h>
 
 namespace Hatchit {
 
@@ -118,7 +117,7 @@ namespace Hatchit {
             */
             virtual void VOnDisabled(void) = 0;
 
-            bool m_enabled{false}; /**< bool indicating if this Component is enabled. */
+            bool m_enabled{true}; /**< bool indicating if this Component is enabled. */
             GameObject *m_owner; /**< The GameObject to which this Component is attached. */
         };
 

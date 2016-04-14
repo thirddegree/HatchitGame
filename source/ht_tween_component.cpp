@@ -357,6 +357,12 @@ namespace Hatchit {
             Stop();
         }
 
+        Component* TweenComponent::VClone(void) const
+        {
+            HT_DEBUG_PRINTF("Cloned Test Component.\n");
+            return new TweenComponent(*this);
+        }
+
     }
 
 }

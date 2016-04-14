@@ -14,6 +14,7 @@
 
 #include <ht_scene.h>
 #include <ht_jsonhelper.h>
+#include <ht_component_factory.h>
 #include <ht_debug.h>
 #include <ht_test_component.h>
 #include <ht_meshrenderer_component.h>
@@ -26,6 +27,12 @@ namespace Hatchit {
 
         using JSON = nlohmann::json;
         using Core::Guid;
+#if defined(_DEBUG) || defined(DEBUG)
+        using Core::_JsonExtractValue;
+#endif
+
+        Scene* Scene::instance;
+
 
         /**
         * \brief Attempts to extract a std::vector from a JSON object.
@@ -82,6 +89,7 @@ namespace Hatchit {
 
         bool Scene::LoadFromHandle(Resource::SceneHandle sceneHandle)
         {
+
             if (!sceneHandle.IsValid())
             {
                 HT_DEBUG_PRINTF("Scene::LoadFromHandle passed invalid Resource::SceneHandle!\n");
@@ -197,6 +205,36 @@ namespace Hatchit {
             for (const std::pair<Guid, GameObject*>& guid_obj_pair : guid_to_obj)
             {
                 m_gameObjects.push_back(guid_obj_pair.second);
+            }
+
+            // Get an array of all the JSON Prefabs.
+            std::vector<JSON> json_prefabs{};
+            if (!ExtractContainerFromJSON(obj, "Prefabs", json_prefabs))
+            {
+                HT_DEBUG_PRINTF("Failed to find property 'Prefabs' in scene description!\n");
+            }
+
+            for (const JSON& json_obj : json_prefabs)
+            {
+                // Attempt to parse a GameObject from the provided JSON.
+                GameObject obj;
+                if (!ParseGameObject(json_obj, obj))
+                {
+                    HT_DEBUG_PRINTF("Failed to parse Prefab in scene description!\n");
+                    return false;
+                }
+
+                // Validate that the Guid for the parsed GameObject is present in the master list.
+                const Guid& id = obj.GetGuid();
+                std::unordered_set<Guid>::const_iterator iter = guids.find(id);
+                if (iter == guids.cend())
+                {
+                    HT_DEBUG_PRINTF("Failed to locate %s within 'GUIDs' array in scene description!\n", id.ToString());
+                    return false;
+                }
+
+                GameObject* allocated_obj = new GameObject(std::move(obj));
+                m_prefabs.push_back(allocated_obj);
             }
 
             return true;
@@ -326,22 +364,16 @@ namespace Hatchit {
                 return false;
             }
 
-            if (component_type == "TestComponent")
-            {
-                out.AddUninitializedComponent<TestComponent>();
-            }
+            Component* comp = ComponentFactory::MakeComponent(component_type);
 
-            else if (component_type == "MeshRenderer")
-            {
-                out.AddUninitializedComponent<MeshRenderer>();
-            }
-
-            // TODO: Add cases for each Component type here.
-
-            else
+            if (comp == nullptr)
             {
                 HT_DEBUG_PRINTF("Unknown Component type %s in scene description!\n", component_type);
                 return false;
+            }
+            else
+            {
+                out.AddUninitializedComponent(comp);
             }
 
             return true;
@@ -413,5 +445,38 @@ namespace Hatchit {
             }
             m_gameObjects.clear();
         }
+
+        /**
+         * \brief Creates empty GameObject and adds it to the scene.
+         */
+        GameObject* Scene::CreateGameObject()
+        {
+            instance->m_gameObjects.emplace_back(nullptr);
+            return (GameObject*)&instance->m_gameObjects.back();
+        }
+
+        /**
+         * \brief Creates GameObject from prefab and adds it to the scene.
+         */
+        GameObject* Scene::CreateGameObject(GameObject& prefab)
+        {
+            GameObject* gameObject = CreateGameObject();
+            gameObject->m_transform = prefab.GetTransform();
+            auto components = prefab.GetComponents();
+            for (const Game::Component* const component : prefab.m_components)
+            {
+                gameObject->AddUninitializedComponent(component->VClone());
+            }
+            for (Game::Component* component : gameObject->m_components)
+            {
+                component->VOnInit();
+            }
+            for (Game::Component* component : gameObject->m_components)
+            {
+                component->SetEnabled(true);
+            }
+            return gameObject;
+        }
+
     }
 }

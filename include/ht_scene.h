@@ -41,6 +41,9 @@ namespace Hatchit {
         {
         friend class SceneManager;
         public:
+            
+            Scene(const Scene& rhs) = default;
+            Scene& operator=(const Scene& rhs) = default;
             Scene(Scene&& rhs);
             Scene& operator=(Scene&& rhs);
 
@@ -78,6 +81,16 @@ namespace Hatchit {
              * \brief Unloads this scene and its game objects.
              */
             void Unload(void);
+
+            /**
+             * \brief Creates empty GameObject and adds it to the scene.
+             */
+            static GameObject* CreateGameObject();
+
+            /**
+            * \brief Creates GameObject from prefab and adds it to the scene.
+            */
+            static GameObject* CreateGameObject(GameObject& prefab);
 
         private:
             Scene(void) = default;
@@ -136,9 +149,11 @@ namespace Hatchit {
             */
             bool ParseComponent(const nlohmann::json& obj, GameObject& out);
 
+            static Scene* instance;
             std::string m_name; /**< The name associated with this scene. */
             Core::Guid m_guid; /**< The Guid associated with this scene. */
             std::vector<GameObject*> m_gameObjects; /**< std::vector of GameObjects present in the scene. */
+            std::vector<GameObject*> m_prefabs;
         };
     }
 }

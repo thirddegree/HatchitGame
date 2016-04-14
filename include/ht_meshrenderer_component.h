@@ -50,6 +50,7 @@ namespace Hatchit {
 
             void VOnInit() override;
             void VOnUpdate() override;
+            Component* VClone() const override;
 
         protected:
             void VOnEnabled() override;

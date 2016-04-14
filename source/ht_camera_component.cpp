@@ -54,6 +54,12 @@ namespace Hatchit {
 
         }
 
+        Component* Camera::VClone(void) const
+        {
+            HT_DEBUG_PRINTF("Cloned Test Component.\n");
+            return new Camera(*this);
+        }
+
     }
 
 }

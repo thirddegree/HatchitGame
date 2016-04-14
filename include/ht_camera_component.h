@@ -28,6 +28,7 @@ namespace Hatchit {
             void VOnInit() override;
             void VOnUpdate() override;
             void VOnDestroy() override;
+            Component* VClone(void) const override;
 
         protected:
             void VOnEnabled() override;

@@ -17,23 +17,24 @@
 #include <ht_component.h>
 
 namespace Hatchit {
-
     namespace Game {
 
         class TestComponent : public Component
         {
         public:
-            TestComponent(void);
+            TestComponent(void) = default;
 
             void VOnInit() override;
             void VOnUpdate() override;
-
+            Component* VClone(void) const override;
         protected:
             void VOnEnabled() override;
             void VOnDisabled() override;
             void VOnDestroy() override;
+
+        private:
+            GameObject* testObject;
+
         };
-
     }
-
 }

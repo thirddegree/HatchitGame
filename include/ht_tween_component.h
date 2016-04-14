@@ -212,6 +212,9 @@ namespace Hatchit {
              */
             void VOnDestroy() override;
 
+
+            Component* VClone(void) const override;
+
         protected:
             static std::vector<TweenFunction> s_tweenFunctions;
 

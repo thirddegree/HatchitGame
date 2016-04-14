@@ -66,6 +66,20 @@ namespace Hatchit {
             SetDirty();
         }
 
+        Transform::Transform(const Transform& transform)
+        {
+            m_position = transform.m_position;
+            m_rotation = transform.m_rotation;
+            m_scale = transform.m_scale;
+
+            m_forward = transform.m_forward;
+            m_up = transform.m_up;
+            m_right = transform.m_right;
+
+            m_parent = nullptr;
+            SetDirty();
+        }
+
         void Transform::SetDirty()
         {
             if (!m_worldDirty) {

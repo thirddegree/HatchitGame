@@ -53,7 +53,6 @@ namespace Hatchit {
             GameObject& operator=(const GameObject& rhs) = default;
             GameObject& operator=(GameObject&& rhs) = default;
 
-
             /**
             * \brief Retrieve this GameObject's Guid.
             */
@@ -313,6 +312,16 @@ namespace Hatchit {
 
             /**
             * \brief Attempts to attach a Component of type T.
+            * \param component  The new Component of type T to attach.
+            * \tparam T A sub-class of Component.
+            * \return bool indicating if the component could be attached.
+            * \sa AddComponent(Args&&... args)
+            */
+            template<typename T>
+            bool AddUninitializedComponent(T *component);
+
+            /**
+            * \brief Attempts to attach a Component of type T.
             * \param args   The arguments to pass to the constructor for T.
             * \tparam T A sub-class of Component.
             * \tparam Args... The arguments to provide to T's constructor.
@@ -479,8 +488,26 @@ namespace Hatchit {
             return true;
         }
 
+        template<typename T>
+        inline bool GameObject::AddUninitializedComponent(T* component)
+        {
+            static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
+
+            Core::Guid component_id = Component::GetComponentId<T>();
+            std::unordered_map<Core::Guid, std::vector<Component*>::size_type>::const_iterator iter = m_componentMap.find(component_id);
+            if (iter != m_componentMap.cend())
+                return false;
+
+            m_componentMap.insert(std::make_pair(component_id, m_components.size()));
+            m_components.push_back(component);
+
+            component->SetOwner(this);
+
+            return true;
+        }
+
         template<typename T, typename ...Args>
-        inline bool Hatchit::Game::GameObject::AddUninitializedComponent(Args && ...args)
+        inline bool GameObject::AddUninitializedComponent(Args && ...args)
         {
             static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
 

@@ -38,8 +38,8 @@ namespace Hatchit {
         {
             if (Input::MouseButtonPress(MouseButton::Left))
             {
-                float xOffset = Input::PreviousMouseX() - Input::MouseX();
-                float yOffset = Input::PreviousMouseY() - Input::MouseY();
+                float xOffset = static_cast<float>(Input::PreviousMouseX() - Input::MouseX());
+                float yOffset = static_cast<float>(Input::PreviousMouseY() - Input::MouseY());
                 float sensitivity = 0.1f;
 
                 xOffset *= sensitivity;

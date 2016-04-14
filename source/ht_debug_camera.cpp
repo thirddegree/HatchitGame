@@ -52,8 +52,8 @@ namespace Hatchit {
                 if (m_pitch < -89.9f)
                     m_pitch = -89.9f;
 
-                float yawRad = Math::DegreesToRadians(m_yaw);
-                float pitchRad = Math::DegreesToRadians(m_pitch);
+                float yawRad = Math::MMDegreesToRadians(m_yaw);
+                float pitchRad = Math::MMDegreesToRadians(m_pitch);
 
                 Math::Vector3 camFront = Math::Vector3();
                 camFront.x = cosf(yawRad) * cosf(pitchRad);

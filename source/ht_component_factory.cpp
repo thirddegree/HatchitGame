@@ -55,7 +55,9 @@ for t in components:
 //[[[end]]]
 
 namespace Hatchit {
+
     namespace Game {
+
         Component* ComponentFactory::MakeComponent(std::string type)
         {
             /*[[[cog

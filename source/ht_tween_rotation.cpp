@@ -87,6 +87,14 @@ namespace Hatchit {
             m_owner->GetTransform().SetRotation(rotation);
         }
 
+        /**
+        * \brief Creates a copy of this Component.
+        */
+        Component* TweenRotation::VClone(void) const
+        {
+            return new TweenRotation(*this);
+        }
+
     }
 
 }

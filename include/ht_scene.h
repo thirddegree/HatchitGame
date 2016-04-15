@@ -34,6 +34,8 @@ namespace Hatchit {
 
     namespace Game {
 
+        using JSON = Core::JSON;
+
         /**
         * \brief Defines a scene.
         */
@@ -107,7 +109,7 @@ namespace Hatchit {
             * \return true if the Scene could be parsed successfully, false otherwise,
             * \sa LoadFromHandle(), ParseGameObject(), ParseChildGameObjects(), ParseComponent(), ParseTransform()
             */
-            bool ParseScene(const nlohmann::json& obj);
+            bool ParseScene(const JSON& obj);
 
             /**
             * \brief Attempts to parse a GameObject from the provided JSON.
@@ -116,7 +118,7 @@ namespace Hatchit {
             *
             * \sa ParseChildGameObjects(), ParseTransform(), ParseComponent(), LoadFromCache(), GameObject()
             */
-            bool ParseGameObject(const nlohmann::json& obj, GameObject& out);
+            bool ParseGameObject(const JSON& obj, GameObject& out);
 
             /**
             * \brief Establishes the (optional) parent of the GameObject with the provided Guid.
@@ -125,7 +127,7 @@ namespace Hatchit {
             * \param guid_to_json       Mapping of Guids to JSON objects.
             * \sa ParseGameObject(), ParseTransform(), ParseComponent, LoadFromCache(), GameObject()
             */
-            void ParseChildGameObjects(const Core::Guid& id, std::unordered_map<Core::Guid, GameObject*>& guid_to_obj, std::unordered_map<Core::Guid, nlohmann::json>& guid_to_json);
+            void ParseChildGameObjects(const Core::Guid& id, std::unordered_map<Core::Guid, GameObject*>& guid_to_obj, std::unordered_map<Core::Guid, JSON>& guid_to_json);
 
             /**
             * \brief Attempts to parse a Transform from the provided JSON.
@@ -136,7 +138,7 @@ namespace Hatchit {
             *
             * \sa ParseChildGameObjects(), ParseGameObject(), ParseComponent(), LoadFromCache(), Transform()
             */
-            Transform ParseTransform(const nlohmann::json& obj);
+            Transform ParseTransform(const JSON& obj);
 
             /**
             * \brief Attempts to parse a Component from the provided JSON.
@@ -147,7 +149,7 @@ namespace Hatchit {
             *
             * \sa ParseChildGameObjects(), ParseGameObject(), ParseTransform(), LoadFromCache(), Component()
             */
-            bool ParseComponent(const nlohmann::json& obj, GameObject& out);
+            bool ParseComponent(const JSON& obj, GameObject& out);
 
             static Scene* instance;
             std::string m_name; /**< The name associated with this scene. */

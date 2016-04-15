@@ -18,11 +18,11 @@
 
 namespace Hatchit {
     namespace Game {
-        nlohmann::json TestComponent::VSerialize(void)
+        Core::JSON TestComponent::VSerialize(void)
         {
-            return nlohmann::json();
+            return nlohmann::json::object_t();
         }
-        bool TestComponent::VDeserialize(nlohmann::json jsonObject)
+        bool TestComponent::VDeserialize(Core::JSON& jsonObject)
         {
             return false;
         }

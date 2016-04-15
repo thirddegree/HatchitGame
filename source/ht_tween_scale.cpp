@@ -37,12 +37,12 @@ namespace Hatchit {
         {
         }
 
-        nlohmann::json TweenScale::VSerialize(void)
+        JSON TweenScale::VSerialize(void)
         {
-            return nlohmann::json();
+            return Core::JSON();
         }
 
-        bool TweenScale::VDeserialize(nlohmann::json jsonObject)
+        bool TweenScale::VDeserialize(JSON& jsonObject)
         {
             return false;
         }

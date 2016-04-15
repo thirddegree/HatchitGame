@@ -34,7 +34,8 @@ namespace Hatchit {
 
     namespace Game {
 
-	class GameObject;
+        using JSON = Core::JSON;
+	    class GameObject;
 
         class HT_API Component
         {
@@ -54,8 +55,8 @@ namespace Hatchit {
             Component& operator=(const Component& rhs) = default;
             Component& operator=(Component&& rhs) = default;
 
-            virtual nlohmann::json VSerialize(void) = 0;
-            virtual bool VDeserialize(nlohmann::json jsonObject) = 0;
+            virtual Core::JSON VSerialize(void) = 0;
+            virtual bool VDeserialize(Core::JSON& jsonObject) = 0;
 
 
             /**

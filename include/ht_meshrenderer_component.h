@@ -26,8 +26,8 @@ namespace Hatchit {
         public:
             MeshRenderer(void);
 
-            virtual nlohmann::json VSerialize(void) override;
-            virtual bool VDeserialize(nlohmann::json jsonObject) override;
+            virtual Core::JSON VSerialize(void) override;
+            virtual bool VDeserialize(Core::JSON& jsonObject) override;
 
             void SetRenderable(Graphics::IMeshHandle mesh, 
                 Graphics::IMaterialHandle material, 

@@ -14,7 +14,7 @@
 
 #include <ht_camera_component.h>
 #include <ht_renderer_singleton.h>
-
+#include <ht_jsonhelper.h>
 #include <ht_gameobject.h>
 
 namespace Hatchit {
@@ -26,12 +26,12 @@ namespace Hatchit {
             m_camera = Graphics::Camera(Math::Matrix4(), Math::MMMatrixPerspProj(60, 1280, 720, 1, 100));
         }
 
-        nlohmann::json Camera::VSerialize(void)
+        Core::JSON Camera::VSerialize(void)
         {
-            return nlohmann::json();
+            return Core::JSON();
         }
 
-        bool Camera::VDeserialize(nlohmann::json jsonObject)
+        bool Camera::VDeserialize(Core::JSON& jsonObject)
         {
             return false;
         }

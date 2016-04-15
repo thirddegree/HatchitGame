@@ -49,12 +49,12 @@ namespace Hatchit {
             m_isPlaying     = 0;
         }
 
-         nlohmann::json TweenComponent::VSerialize(void)
+        Core::JSON TweenComponent::VSerialize(void)
          {
-             return nlohmann::json();
+             return Core::JSON();
          }
 
-         bool TweenComponent::VDeserialize(nlohmann::json jsonObject)
+         bool TweenComponent::VDeserialize(Core::JSON& jsonObject)
          {
              return false;
          }

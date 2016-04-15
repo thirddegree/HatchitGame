@@ -25,13 +25,17 @@ namespace Hatchit {
         {
         }
 
-        nlohmann::json MeshRenderer::VSerialize(void)
+        Core::JSON MeshRenderer::VSerialize(void)
         {
-            return nlohmann::json();
+            return Core::JSON();
         }
 
-        bool MeshRenderer::VDeserialize(nlohmann::json jsonObject)
+        bool MeshRenderer::VDeserialize(Core::JSON& jsonObject)
         {
+            std::string material;
+            /*if (JsonExtractString(jsonObject, "Material", material)) 
+            {
+            }*/
             return false;
         }
 

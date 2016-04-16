@@ -125,14 +125,14 @@ namespace Hatchit {
         bool Scene::ParseScene(const nlohmann::json& obj)
         {
             // Get this scene's name
-            if (!JsonExtractString(obj, "Name", m_name))
+            if (!Core::JsonExtract<std::string>(obj, "Name", m_name))
             {
                 HT_DEBUG_PRINTF("Failed to find property 'Name' in scene description!\n");
                 return false;
             }
 
             // Get this scene's Guid
-            if (!JsonExtractGuid(obj, "GUID", m_guid))
+            if (!Core::JsonExtract<Core::Guid>(obj, "GUID", m_guid))
             {
                 HT_DEBUG_PRINTF("Failed to find property 'GUID' in scene description!\n");
                 return false;
@@ -255,7 +255,7 @@ namespace Hatchit {
 
             // Check if this GameObject has a parent.
             Guid parentGuid;
-            if (!JsonExtractGuid(childJsonObj, "Parent", parentGuid))
+            if (!Core::JsonExtract<Core::Guid>(childJsonObj, "Parent", parentGuid))
             {
                 return;
             }
@@ -280,7 +280,7 @@ namespace Hatchit {
         {
             // Extract the GameObject's GUID.
             Guid id;
-            if (!JsonExtractGuid(obj, "GUID", id))
+            if (!Core::JsonExtract<Core::Guid>(obj, "GUID", id))
             {
                 HT_DEBUG_PRINTF("Failed to find property 'GUID' on GameObject in scene description!\n");
                 return false;
@@ -288,7 +288,7 @@ namespace Hatchit {
 
             // Extract the GameObject's Name.
             std::string name;
-            if (!JsonExtractString(obj, "Name", name))
+            if (!Core::JsonExtract<std::string>(obj, "Name", name))
             {
                 HT_DEBUG_PRINTF("Failed to find property 'Name' on GameObject %s in scene description!\n", id.ToString());
                 return false;
@@ -358,7 +358,7 @@ namespace Hatchit {
         bool Scene::ParseComponent(const JSON& obj, GameObject& out)
         {
             std::string component_type;
-            if (!JsonExtractString(obj, "Name", component_type))
+            if (!Core::JsonExtract<std::string>(obj, "Name", component_type))
             {
                 HT_DEBUG_PRINTF("Failed to locate property 'Name' on Component in scene description!\n");
                 return false;

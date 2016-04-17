@@ -23,10 +23,10 @@ classes = []
 componentList = []
 components = []
 
-files = [f for f in listdir('../../../HatchitGame/include/') if isfile(join('../../../HatchitGame/include/', f))]
+files = [f for f in listdir('../../../../HatchitGame/include/') if isfile(join('../../../../HatchitGame/include/', f))]
 
 for filename in files:
-    with open("../../../HatchitGame/include/" + filename, 'r') as f:
+    with open("../../../../HatchitGame/include/" + filename, 'r') as f:
         for line in f:
             if "class" in line and " : " in line and not ("enum" in line):
                 words = line.strip().split(" : ")
@@ -64,7 +64,7 @@ namespace Hatchit {
                 from os import listdir
                 from os.path import isfile, join
 
-                files = [f for f in listdir('../../../HatchitGame/include/') if isfile(join('../../../HatchitGame/include/', f))]
+                files = [f for f in listdir('../../../../HatchitGame/include/') if isfile(join('../../../../HatchitGame/include/', f))]
                 
                 class Node():
                     def __init__(self, filename, className, superName):
@@ -86,7 +86,7 @@ namespace Hatchit {
                 components = []
 
                 for filename in files:
-                    with open("../../../HatchitGame/include/" + filename, 'r') as f:
+                    with open("../../../../HatchitGame/include/" + filename, 'r') as f:
                         for line in f:
                             if "class" in line and " : " in line and not ("enum" in line):
                                 words = line.strip().split(" : ")

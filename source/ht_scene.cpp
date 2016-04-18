@@ -102,14 +102,14 @@ namespace Hatchit {
         bool Scene::ParseScene(const JSON& obj)
         {
             // Get this scene's name
-            if (!JsonExtractString(obj, "Name", m_name))
+            if (!Core::JsonExtract<std::string>(obj, "Name", m_name))
             {
                 HT_DEBUG_PRINTF("Failed to find property 'Name' in scene description!\n");
                 return false;
             }
 
             // Get this scene's Guid
-            if (!JsonExtractGuid(obj, "GUID", m_guid))
+            if (!Core::JsonExtract<Core::Guid>(obj, "GUID", m_guid))
             {
                 HT_DEBUG_PRINTF("Failed to find property 'GUID' in scene description!\n");
                 return false;
@@ -117,7 +117,7 @@ namespace Hatchit {
 
             // Get the Guids for every GameObject in the scene.
             std::vector<std::string> string_guids{};
-            if (!JsonExtractContainer(obj, "GUIDs", string_guids))
+            if (!Core::JsonExtractContainer(obj, "GUIDs", string_guids))
             {
                 HT_DEBUG_PRINTF("Failed to find property 'GUIDs' in scene description!\n");
                 return false;
@@ -139,7 +139,7 @@ namespace Hatchit {
 
             // Get an array of all the JSON GameObjects in the scene.
             std::vector<JSON> json_gameobjs{};
-            if (!JsonExtractContainer(obj, "GameObjects", json_gameobjs))
+            if (!Core::JsonExtractContainer(obj, "GameObjects", json_gameobjs))
             {
                 HT_DEBUG_PRINTF("Failed to find property 'GameObjects' in scene description!\n");
                 return false;
@@ -186,7 +186,7 @@ namespace Hatchit {
 
             // Get an array of all the JSON Prefabs.
             std::vector<JSON> json_prefabs{};
-            if (!JsonExtractContainer(obj, "Prefabs", json_prefabs))
+            if (!Core::JsonExtractContainer(obj, "Prefabs", json_prefabs))
             {
                 HT_DEBUG_PRINTF("Failed to find property 'Prefabs' in scene description!\n");
             }
@@ -232,7 +232,7 @@ namespace Hatchit {
 
             // Check if this GameObject has a parent.
             Guid parentGuid;
-            if (!JsonExtractGuid(childJsonObj, "Parent", parentGuid))
+            if (!Core::JsonExtract<Core::Guid>(childJsonObj, "Parent", parentGuid))
             {
                 return;
             }
@@ -257,7 +257,7 @@ namespace Hatchit {
         {
             // Extract the GameObject's GUID.
             Guid id;
-            if (!JsonExtractGuid(obj, "GUID", id))
+            if (!Core::JsonExtract<Core::Guid>(obj, "GUID", id))
             {
                 HT_DEBUG_PRINTF("Failed to find property 'GUID' on GameObject in scene description!\n");
                 return false;
@@ -265,7 +265,7 @@ namespace Hatchit {
 
             // Extract the GameObject's Name.
             std::string name;
-            if (!JsonExtractString(obj, "Name", name))
+            if (!Core::JsonExtract<std::string>(obj, "Name", name))
             {
                 HT_DEBUG_PRINTF("Failed to find property 'Name' on GameObject %s in scene description!\n", id.ToString());
                 return false;
@@ -283,7 +283,7 @@ namespace Hatchit {
 
             // Attempt to extract a std::vector of Component JSON objects.
             std::vector<Core::JSON> components;
-            if (JsonExtractContainer(obj, "Components", components))
+            if (Core::JsonExtractContainer(obj, "Components", components))
             {
                 for (const Core::JSON& json_component : components)
                 {
@@ -309,21 +309,21 @@ namespace Hatchit {
             JSON json_transform = *iter;
 
             std::vector<float> position;
-            if (!JsonExtractContainer(json_transform, "Position", position) || (position.size() != 3))
+            if (!Core::JsonExtractContainer(json_transform, "Position", position) || (position.size() != 3))
             {
                 HT_DEBUG_PRINTF("Failed to parse property 'Position' on Transform, defaulting to {0.0f, 0.0f, 0.0f}\n");
                 position = {0.0f, 0.0f, 0.0f};
             }
 
             std::vector<float> rotation;
-            if (!JsonExtractContainer(json_transform, "Rotation", rotation) || (rotation.size() != 3))
+            if (!Core::JsonExtractContainer(json_transform, "Rotation", rotation) || (rotation.size() != 3))
             {
                 HT_DEBUG_PRINTF("Failed to parse property 'Rotation' on Transform, defaulting to {0.0f, 0.0f, 0.0f}\n");
                 rotation = {0.0f, 0.0f, 0.0f};
             }
 
             std::vector<float> scale;
-            if (!JsonExtractContainer(json_transform, "Scale", scale) || (scale.size() != 3))
+            if (!Core::JsonExtractContainer(json_transform, "Scale", scale) || (scale.size() != 3))
             {
                 HT_DEBUG_PRINTF("Failed to parse property 'Scale' on Transform, defaulting to {1.0f, 1.0f, 1.0f}\n");
                 scale = {1.0f, 1.0f, 1.0f};
@@ -336,12 +336,12 @@ namespace Hatchit {
         {
             std::string component_type;
             JSON::object_t component_data;
-            if (!JsonExtractString(obj, "Type", component_type))
+            if (!Core::JsonExtract<std::string>(obj, "Type", component_type))
             {
                 HT_DEBUG_PRINTF("Failed to locate property 'Name' on Component in scene description!\n");
                 return false;
             }
-            if (!JsonExtractObject(obj, "Data", component_data))
+            if (!Core::JsonExtract<JSON::object_t>(obj, "Data", component_data))
             {
                 HT_DEBUG_PRINTF("Failed to locate property 'Data' on Component in scene description!\n");
                 return false;

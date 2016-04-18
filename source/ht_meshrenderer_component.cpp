@@ -48,8 +48,8 @@ namespace Hatchit {
             std::string materialFile;
             std::string meshFile;
             //attempt to read all data from json object, if it fails, return false
-            if (!( JsonExtractString(jsonObject, "Material", materialFile)
-                && JsonExtractString(jsonObject, "Mesh", meshFile)))
+            if (!(Core::JsonExtract<std::string>(jsonObject, "Material", materialFile)
+                && Core::JsonExtract<std::string>(jsonObject, "Mesh", meshFile)))
             {
                 return false;
             }
@@ -117,7 +117,6 @@ namespace Hatchit {
 
         void MeshRenderer::VOnUpdate()
         {
-            HT_DEBUG_PRINTF("Updated MeshRenderer Component.\n");
             m_meshRenderer->Render();
         }
 

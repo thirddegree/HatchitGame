@@ -47,18 +47,18 @@ namespace Hatchit {
 
 #ifdef HT_SYS_LINUX
             if (params.renderer == RendererType::OPENGL)
-	    {            
+        {            
 #ifdef GL_SUPPORT
-    		_instance.m_renderer = new OpenGL::GLRenderer;
+            _instance.m_renderer = new OpenGL::GLRenderer;
 #endif
-	    }
-	    else if (params.renderer == RendererType::VULKAN)
-	    {
+        }
+        else if (params.renderer == RendererType::VULKAN)
+        {
 #ifdef VK_SUPPORT
                 _instance.m_renderer = new Vulkan::VKRenderer;
 #endif
-	    }
-	    else
+        }
+        else
                 _instance.m_renderer = nullptr;
 #else
             if (params.renderer == RendererType::DIRECTX11)
@@ -129,8 +129,8 @@ namespace Hatchit {
         void Renderer::SetClearColor(const Color& color)
         {
             Renderer& _instance = Renderer::instance();
-			if (!_instance.m_initialized)
-				return;
+            if (!_instance.m_initialized)
+                return;
 
             _instance.m_renderer->VSetClearColor(color);
         }
@@ -138,8 +138,8 @@ namespace Hatchit {
         void Renderer::Render()
         {
             Renderer& _instance = Renderer::instance();
-			if (!_instance.m_initialized)
-				return;
+            if (!_instance.m_initialized)
+                return;
 
             _instance.m_renderer->VRender(Time::DeltaTime());
         }
@@ -147,8 +147,8 @@ namespace Hatchit {
         void Renderer::Present()
         {
             Renderer& _instance = Renderer::instance();
-			if (!_instance.m_initialized)
-				return;
+            if (!_instance.m_initialized)
+                return;
 
             _instance.m_renderer->VPresent();
         }
@@ -156,8 +156,8 @@ namespace Hatchit {
         void Renderer::ClearBuffer(ClearArgs args)
         {
             Renderer& _instance = Renderer::instance();
-			if (!_instance.m_initialized)
-				return;
+            if (!_instance.m_initialized)
+                return;
 
             _instance.m_renderer->VClearBuffer(args);
         }
@@ -165,8 +165,8 @@ namespace Hatchit {
         void Renderer::ResizeBuffers(uint32_t width, uint32_t height)
         {
             Renderer& _instance = Renderer::instance();
-			if (!_instance.m_initialized)
-				return;
+            if (!_instance.m_initialized)
+                return;
 
             _instance.m_renderer->VResizeBuffers(width, height);
         }

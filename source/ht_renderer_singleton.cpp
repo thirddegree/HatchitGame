@@ -94,7 +94,7 @@ namespace Hatchit {
 #ifdef VK_SUPPORT
                 _instance.m_renderer = new Vulkan::VKRenderer;
 #else
-                Core::DebugPrintF("Vulkan Renderer requested when engine not compiled with Vulkan support!\n");
+                HT_ERROR_PRINTF("Vulkan Renderer requested when engine not compiled with Vulkan support!\n");
                 return false;
 #endif
             }

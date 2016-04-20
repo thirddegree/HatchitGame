@@ -70,7 +70,7 @@ namespace Hatchit {
         bool Application::Initialize()
         {
             /*Initialize path manager*/
-            Core::Path::Initialize(m_settings);
+            Core::Path::Initialize(*m_settings);
 
             /*Initialize Window with values from settings file*/
             WindowParams wparams;

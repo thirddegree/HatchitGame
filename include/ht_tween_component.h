@@ -212,7 +212,9 @@ namespace Hatchit {
              */
             void VOnDestroy() override;
 
-
+            /**
+            * \brief Creates a copy of this Component.
+            */
             Component* VClone(void) const override;
 
         protected:

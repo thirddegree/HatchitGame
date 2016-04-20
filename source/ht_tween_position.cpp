@@ -87,6 +87,14 @@ namespace Hatchit {
             m_owner->GetTransform().SetPosition(position);
         }
 
+        /**
+        * \brief Creates a copy of this Component.
+        */
+        Component* TweenPosition::VClone(void) const
+        {
+            return new TweenPosition(*this);
+        }
+
     }
 
 }

@@ -64,6 +64,11 @@ namespace Hatchit {
              * Updates all components first, then all child gameobjects.
              */
             void VOnUpdate() final override;
+
+            /**
+            * \brief Creates a copy of this Component.
+            */
+            Component* VClone(void) const override;
         };
 
     }

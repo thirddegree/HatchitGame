@@ -83,7 +83,7 @@ namespace Hatchit {
             */
             virtual void VOnUpdate(void) = 0;
 
-            
+
             /**
             * \brief Called when the GameObject is destroyed/deleted.
             * Objects are always disabled before destroyed.

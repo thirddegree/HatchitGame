@@ -66,7 +66,7 @@ namespace Hatchit {
 #ifdef DX11_SUPPORT
                 _instance.m_renderer = new DirectX::D3D11Renderer;
 #else
-                Core::DebugPrintF("DirectX11 Renderer requested when engine not compiled with DirectX11 support!\n");
+                HT_ERROR_PRINTF("DirectX11 Renderer requested when engine not compiled with DirectX11 support!\n");
                 return false;
 #endif
             }
@@ -76,7 +76,7 @@ namespace Hatchit {
 #ifdef DX12_SUPPORT
                 _instance.m_renderer = new DX::D3D12Renderer;
 #else
-                Core::DebugPrintF("DirectX12 Renderer requested when engine not compiled with DirectX12 support!\n");
+                HT_ERROR_PRINTF("DirectX12 Renderer requested when engine not compiled with DirectX12 support!\n");
                 return false;
 #endif
             }
@@ -85,7 +85,7 @@ namespace Hatchit {
 #ifdef GL_SUPPORT
                 _instance.m_renderer = new OpenGL::GLRenderer;
 #else
-                Core::DebugPrintF("OpenGL Renderer requested when engine not compiled with OpenGL support!\n");
+                HT_ERROR_PRINTF("OpenGL Renderer requested when engine not compiled with OpenGL support!\n");
                 return false;
 #endif
             }
@@ -94,7 +94,7 @@ namespace Hatchit {
 #ifdef VK_SUPPORT
                 _instance.m_renderer = new Vulkan::VKRenderer;
 #else
-                Core::DebugPrintF("Vulkan Renderer requested when engine not compiled with Vulkan support!\n");
+                HT_ERROR_PRINTF("Vulkan Renderer requested when engine not compiled with Vulkan support!\n");
                 return false;
 #endif
             }

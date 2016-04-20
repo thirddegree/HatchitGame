@@ -66,6 +66,7 @@ namespace Hatchit {
 
         void MeshRenderer::VOnDestroy()
         {
+            delete m_meshRenderer;
             HT_DEBUG_PRINTF("Destroyed MeshRenderer Component.\n");
         }
 

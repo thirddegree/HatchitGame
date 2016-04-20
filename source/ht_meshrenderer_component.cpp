@@ -16,7 +16,7 @@
 #include <ht_vkmaterial.h>
 #include <ht_vkmesh.h>
 #else
-#include <ht_d3d12material.h>
+//#include <ht_d3d12material.h>
 #include <ht_vkmaterial.h>
 #include <ht_vkmesh.h>
 #endif

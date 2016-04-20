@@ -341,11 +341,6 @@ namespace Hatchit {
                 HT_DEBUG_PRINTF("Failed to locate property 'Name' on Component in scene description!\n");
                 return false;
             }
-            if (!Core::JsonExtract<JSON::object_t>(obj, "Data", component_data))
-            {
-                HT_DEBUG_PRINTF("Failed to locate property 'Data' on Component in scene description!\n");
-                return false;
-            }
 
             Component* comp = ComponentFactory::MakeComponent(component_type);
 
@@ -356,7 +351,7 @@ namespace Hatchit {
             }
             else
             {
-                if (!comp->VDeserialize((JSON)component_data))
+                if (!comp->VDeserialize((JSON)obj))
                 {
                     HT_DEBUG_PRINTF("Component Failed to Deserialize!\n", ((JSON)component_data).dump());
                 }

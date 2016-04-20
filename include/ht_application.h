@@ -15,7 +15,7 @@
 #pragma once
 
 #include <ht_platform.h>
-#include <ht_inireader.h>
+#include <ht_inisettings.h>
 
 namespace Hatchit {
 
@@ -24,7 +24,7 @@ namespace Hatchit {
         class HT_API Application
         {
         public:
-            Application(Core::INIReader* settings);
+            Application(Core::INISettings* settings);
 
             int Run();
             
@@ -33,7 +33,7 @@ namespace Hatchit {
 
             void DeInitialize();
         private:
-            Core::INIReader* m_settings;
+            Core::INISettings* m_settings;
         };
 
 

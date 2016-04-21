@@ -34,12 +34,18 @@ namespace Hatchit {
 
             static void ClearBuffer(Graphics::ClearArgs args);
 
+            static void Render();
+
             static void Present();
 
             static void ResizeBuffers(uint32_t width, uint32_t height);
 
+            static Graphics::RendererType GetRendererType();
+
         private:
-            Graphics::IRenderer* m_renderer;
+            Graphics::IRenderer*    m_renderer;
+            Graphics::RendererType  m_rendererType;
+            bool                    m_initialized;
         };
 
     }

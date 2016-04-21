@@ -14,9 +14,12 @@
 
 #include <ht_application.h>
 #include <ht_debug.h>
+#include <ht_path_singleton.h>
 #include <ht_window_singleton.h>
 #include <ht_renderer_singleton.h>
 #include <ht_time_singleton.h>
+#include <ht_input_singleton.h>
+#include <ht_scenemanager_singleton.h>
 
 namespace Hatchit {
 
@@ -24,7 +27,7 @@ namespace Hatchit {
 
         using namespace Graphics;
 
-        Application::Application(Core::INIReader* settings)
+        Application::Application(Core::INISettings* settings)
         {
             m_settings = settings;
         }
@@ -44,13 +47,19 @@ namespace Hatchit {
 
                 Window::PollEvents();
 
+                SceneManager::Update();
+
                 Renderer::ClearBuffer(ClearArgs::ColorDepthStencil);
+
+                Renderer::Render();
 
                 Renderer::Present();
 
                 Window::SwapBuffers();
 
                 Time::CalculateFPS();
+
+                Input::Update();
             }
 
             DeInitialize();
@@ -60,6 +69,9 @@ namespace Hatchit {
 
         bool Application::Initialize()
         {
+            /*Initialize path manager*/
+            Core::Path::Initialize(*m_settings);
+
             /*Initialize Window with values from settings file*/
             WindowParams wparams;
             wparams.title = m_settings->GetValue("WINDOW", "sTitle", std::string("Hatchit Engine"));
@@ -68,23 +80,39 @@ namespace Hatchit {
             wparams.width = m_settings->GetValue("WINDOW", "iWidth", 800);
             wparams.height = m_settings->GetValue("WINDOW", "iHeight", 600);
             wparams.displayFPS = m_settings->GetValue("WINDOW", "bFPS", false);
+            wparams.displayMouse = m_settings->GetValue("WINDOW", "bMouse", false);
             wparams.debugWindowEvents = m_settings->GetValue("WINDOW", "bDebugWindowEvents", false);
 
             /*Initialize Renderer with values from settings file*/
             RendererParams rparams;
-#ifdef HT_SYS_LINUX
-            rparams.renderer = RendererType::OPENGL;
-#else
+
             std::string renderer = m_settings->GetValue("RENDERER", "sRenderer", std::string("DIRECTX"));
-            rparams.renderer = (renderer == "DIRECTX") ? RendererType::DIRECTX : RendererType::OPENGL;
+
+#ifdef HT_SYS_LINUX
+            if(renderer == "OPENGL")
+                rparams.renderer = RendererType::OPENGL;
+            else if(renderer == "VULKAN")
+                rparams.renderer = RendererType::VULKAN;
+#else
+            if (renderer == "DIRECTX11")
+                rparams.renderer = RendererType::DIRECTX11;
+            else if (renderer == "DIRECTX12")
+                rparams.renderer = RendererType::DIRECTX12;
+            else if (renderer == "VULKAN")
+                rparams.renderer = RendererType::VULKAN;
+            else if (renderer == "OPENGL")
+                rparams.renderer = RendererType::OPENGL;
 #endif
             wparams.renderer = rparams.renderer;
 
             if (!Window::Initialize(wparams))
                 return false;
 
-
-            rparams.window = Window::NativeHandle();
+            rparams.validate = m_settings->GetValue("RENDERER", "bValidate", false);
+            rparams.window = Window::NativeWindowHandle();
+            rparams.viewportWidth = wparams.width;
+            rparams.viewportHeight = wparams.height;
+            rparams.display = Window::NativeDisplayHandle();
             rparams.clearColor = Color( m_settings->GetValue("RENDERER", "fClearR", 0.0f),
                                         m_settings->GetValue("RENDERER", "fClearG", 0.0f),
                                         m_settings->GetValue("RENDERER", "fClearB", 0.0f),
@@ -92,13 +120,24 @@ namespace Hatchit {
             if (!Renderer::Initialize(rparams))
                 return false;
 
+
+            Input::Initialize();
+
+            if (!SceneManager::Initialize())
+                return false;
+
+            SceneManager::LoadScene("testscene.json");
+
             return true;
         }
 
         void Application::DeInitialize()
         {
+            SceneManager::Deinitialize();
+            Input::DeInitialize();
             Renderer::DeInitialize();
             Window::DeInitialize();
+            Core::Path::DeInitialize();
         }
   }
 

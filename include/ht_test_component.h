@@ -14,37 +14,30 @@
 
 #pragma once
 
-#include <ht_platform.h>
-#include <ht_window.h>
-#include <ht_singleton.h>
+#include <ht_component.h>
 
 namespace Hatchit {
-
     namespace Game {
 
-        class HT_API Window : public Core::Singleton<Window>
+        class TestComponent : public Component
         {
         public:
-            static bool  Initialize(const WindowParams& params);
+            TestComponent(void) = default;
 
-            static void  DeInitialize();
+            virtual Core::JSON VSerialize(void) override;
+            virtual bool VDeserialize(Core::JSON& jsonObject) override;
 
-            static void  PollEvents();
-
-            static void  Close();
-
-            static bool  IsRunning();
-
-            static void  SwapBuffers();
-            
-            static void* NativeWindowHandle();
-
-            static void* NativeDisplayHandle();
+            void VOnInit() override;
+            void VOnUpdate() override;
+            Component* VClone(void) const override;
+        protected:
+            void VOnEnabled() override;
+            void VOnDisabled() override;
+            void VOnDestroy() override;
 
         private:
-            IWindow* m_window;
+            GameObject* testObject;
+
         };
-
     }
-
 }

@@ -18,12 +18,9 @@
 #include <ht_window.h>
 #include <ht_sdl.h>
 
-
 namespace Hatchit {
 
     namespace Game {
-
-        
 
         class HT_API SDLWindow : public IWindow
         {
@@ -32,25 +29,23 @@ namespace Hatchit {
 
             ~SDLWindow();
 
-            bool    VInitialize()       override;
+            bool    VInitialize()             override;
 
-            void*   VNativeHandle()     override;
+            void*   VNativeWindowHandle()     override;
 
-            bool    VIsRunning()        override;
+    	    void*   VNativeDisplayHandle()    override;            
 
-            void    VPollEvents()       override;
+	        bool    VIsRunning()              override;
 
-            void    VClose()            override;
+            void    VPollEvents()             override;
 
-            void    VSwapBuffers()      override;
+            void    VClose()                  override;
+
+            void    VSwapBuffers()            override;
 
         private:
             SDL_Window*         m_handle;
             SDL_GLContext       m_glcontext;
-            WindowParams        m_params;
-            void*               m_nativeHandle;
-            bool                m_running;
-
         };
 
     }

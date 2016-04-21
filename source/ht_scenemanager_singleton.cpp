@@ -21,7 +21,6 @@ namespace Hatchit {
     namespace Game {
         using namespace Core;
         using namespace Resource;
-        using JSON = nlohmann::json;
 
         std::string SceneManager::SCENE_LIST = "scenelist.json";
 

@@ -49,6 +49,16 @@ namespace Hatchit {
             m_isPlaying     = 0;
         }
 
+        Core::JSON TweenComponent::VSerialize(void)
+         {
+             return Core::JSON();
+         }
+
+         bool TweenComponent::VDeserialize(Core::JSON& jsonObject)
+         {
+             return false;
+         }
+
         /**
          * \brief Checks to see if the start and end values are compatible.
          */

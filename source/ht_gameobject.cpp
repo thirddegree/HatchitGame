@@ -14,7 +14,7 @@
 
 #include <ht_gameobject.h>
 #include <ht_debug.h>
-
+#include <ht_component.h>
 #include <algorithm>
 
 namespace Hatchit {
@@ -29,7 +29,7 @@ namespace Hatchit {
             m_componentMap = std::unordered_map<Core::Guid, std::vector<Component*>::size_type>();
         }
 
-        GameObject::GameObject(const Core::Guid& guid, const std::string& name, Transform& t, bool enabled)
+        GameObject::GameObject(const Core::Guid guid, const std::string name, Transform t, bool enabled)
             : GameObject()
         {
             m_guid = guid;

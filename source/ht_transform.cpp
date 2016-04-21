@@ -261,9 +261,9 @@ namespace Hatchit {
         Math::Matrix4* Transform::GetLocalMatrix()
         {
             if (m_localDirty) {
-                m_local = Math::MMMatrixScale(m_scale) *
+                m_local = Math::MMMatrixTranslation(m_position) *
                     Math::MMMatrixRotationXYZ(m_rotation) *
-                    Math::MMMatrixTranslation(m_position);
+                    Math::MMMatrixScale(m_scale);
                 m_localDirty = false;
             }
 

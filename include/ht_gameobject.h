@@ -30,7 +30,6 @@
 #include <tuple>
 #include <utility>
 
-#include <ht_component.h>
 #include <ht_platform.h>
 #include <ht_transform.h>
 #include <ht_guid.h>
@@ -43,6 +42,7 @@ namespace Hatchit {
 
     namespace Game {
         class Scene;
+        class Component;
         
         class HT_API GameObject
         {
@@ -288,7 +288,7 @@ namespace Hatchit {
             * \param enabled    Whether or not this GameObject is enabled
             * \sa Guid(), Transform()
             */
-            GameObject(const Core::Guid& guid, const std::string& name, Transform& t, bool enabled);
+            GameObject(const Core::Guid guid, const std::string name, Transform t, bool enabled);
 
 
             /**

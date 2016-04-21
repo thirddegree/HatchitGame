@@ -37,6 +37,16 @@ namespace Hatchit {
         {
         }
 
+        Core::JSON TweenPosition::VSerialize(void)
+        {
+            return Core::JSON();
+        }
+
+        bool TweenPosition::VDeserialize(Core::JSON& jsonObject)
+        {
+            return false;
+        }
+
         /**
          * \brief Gets the start tween position.
          */

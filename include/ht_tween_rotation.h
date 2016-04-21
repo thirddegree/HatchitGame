@@ -34,6 +34,9 @@ namespace Hatchit {
              */
             ~TweenRotation();
 
+            virtual Core::JSON VSerialize(void) override;
+            virtual bool VDeserialize(Core::JSON& jsonObject) override;
+
             /**
              * \brief Gets the start tween rotation.
              */

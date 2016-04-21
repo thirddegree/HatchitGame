@@ -37,6 +37,16 @@ namespace Hatchit {
         {
         }
 
+        Core::JSON TweenRotation::VSerialize(void)
+        {
+            return Core::JSON();
+        }
+
+        bool TweenRotation::VDeserialize(Core::JSON& jsonObject)
+        {
+            return false;
+        }
+
         /**
          * \brief Gets the start tween rotation.
          */

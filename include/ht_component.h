@@ -28,12 +28,14 @@
 #include <type_traits>
 #include <ht_transform.h>
 #include <ht_guid.h>
+#include <ht_jsonhelper.h>
+#include <ht_gameobject.h>
 
 namespace Hatchit {
 
     namespace Game {
 
-	class GameObject;
+        using JSON = Core::JSON;
 
         class HT_API Component
         {
@@ -52,6 +54,10 @@ namespace Hatchit {
             Component(Component&& rhs) = default;
             Component& operator=(const Component& rhs) = default;
             Component& operator=(Component&& rhs) = default;
+
+            virtual Core::JSON VSerialize(void) = 0;
+            virtual bool VDeserialize(Core::JSON& jsonObject) = 0;
+
 
             /**
             * \brief Getter which returns the GameObject to which this Component is attached.

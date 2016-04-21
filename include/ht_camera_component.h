@@ -28,6 +28,8 @@ namespace Hatchit {
             /**
             * \brief Called when the GameObject is created to initialize all values
             */
+            virtual Core::JSON VSerialize(void) override;
+            virtual bool VDeserialize(Core::JSON& jsonObject) override;
             void VOnInit() override;
 
             /**

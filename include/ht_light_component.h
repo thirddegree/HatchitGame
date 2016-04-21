@@ -12,18 +12,29 @@
 **
 **/
 
-#include <ht_math.h>
+#pragma once
+#include <ht_meshrenderer.h>
 #include <ht_component.h>
-#include <ht_camera.h>
+#include <ht_model.h>
+
 
 namespace Hatchit {
 
     namespace Game {
 
-        class Camera : public Component
+        enum LightType
+        {
+            POINT_LIGHT,
+            SPOT_LIGHT,
+            DIRECTIONAL_LIGHT
+        };
+
+        class LightComponent : public Component
         {
         public:
-            Camera();
+            LightComponent();
+
+            void SetType(LightType lightType);
 
             /**
             * \brief Called when the GameObject is created to initialize all values
@@ -37,16 +48,9 @@ namespace Hatchit {
             void VOnUpdate() override;
 
             /**
-            * \brief Called when the GameObject is destroyed/deleted.
-            * Objects are always disabled before destroyed.
-            * When a scene is destroyed, all gameobjects are disabled before any are destroyed.
-            */
-            void VOnDestroy() override;
-
-            /**
             * \brief Creates a copy of this Component.
             */
-            Component* VClone(void) const override;
+            Component* VClone() const override;
 
         protected:
 
@@ -56,6 +60,7 @@ namespace Hatchit {
             */
             void VOnEnabled() override;
 
+
             /**
             * \brief Called when the Component is disabled.
             * Components are always disabled before destroyed.
@@ -63,17 +68,19 @@ namespace Hatchit {
             */
             void VOnDisabled() override;
 
+            /**
+            * \brief Called when the GameObject is destroyed/deleted.
+            * Objects are always disabled before destroyed.
+            * When a scene is destroyed, all gameobjects are disabled before any are destroyed.
+            */
+            void VOnDestroy() override;
+
         private:
-            bool  m_useWindowScale;
-            float m_height;
-            float m_width;
 
-            float m_fov;
-            float m_near;
-            float m_far;
-            Graphics::Camera m_camera;
+            LightType m_lightType;
+            Hatchit::Resource::ModelHandle m_pointLightModel;
+            Graphics::MeshRenderer* m_meshRenderer;
+
         };
-
     }
-
 }

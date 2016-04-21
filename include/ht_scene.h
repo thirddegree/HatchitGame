@@ -48,6 +48,16 @@ namespace Hatchit {
             Scene& operator=(Scene&& rhs);
 
             /**
+            * \brief Creates empty GameObject and adds it to the scene.
+            */
+            static GameObject* CreateGameObject();
+
+            /**
+            * \brief Creates GameObject from prefab and adds it to the scene.
+            */
+            static GameObject* CreateGameObject(GameObject& prefab);
+
+            /**
             * \brief Gets this scene's name.
             */
             std::string Name() const;
@@ -82,17 +92,10 @@ namespace Hatchit {
              */
             void Unload(void);
 
-            /**
-             * \brief Creates empty GameObject and adds it to the scene.
-             */
-            static GameObject* CreateGameObject();
-
-            /**
-            * \brief Creates GameObject from prefab and adds it to the scene.
-            */
-            static GameObject* CreateGameObject(GameObject& prefab);
-
         private:
+
+            static Scene* instance;
+
             Scene(void) = default;
             virtual ~Scene(void) = default;
 
@@ -149,7 +152,6 @@ namespace Hatchit {
             */
             bool ParseComponent(const nlohmann::json& obj, GameObject& out);
 
-            static Scene* instance;
             std::string m_name; /**< The name associated with this scene. */
             Core::Guid m_guid; /**< The Guid associated with this scene. */
             std::vector<GameObject*> m_gameObjects; /**< std::vector of GameObjects present in the scene. */

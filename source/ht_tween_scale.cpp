@@ -87,6 +87,14 @@ namespace Hatchit {
             m_owner->GetTransform().SetScale(scale);
         }
 
+        /**
+        * \brief Creates a copy of this Component.
+        */
+        Component* TweenScale::VClone(void) const
+        {
+            return new TweenScale(*this);
+        }
+
     }
 
 }

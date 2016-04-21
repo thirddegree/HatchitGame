@@ -27,7 +27,7 @@ namespace Hatchit {
 
         using namespace Graphics;
 
-        Application::Application(Core::INIReader* settings)
+        Application::Application(Core::INISettings* settings)
         {
             m_settings = settings;
         }

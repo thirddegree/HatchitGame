@@ -26,6 +26,16 @@ namespace Hatchit {
 
         }
 
+        Core::JSON LightComponent::VSerialize(void)
+        {
+            return Core::JSON();
+        }
+
+        bool LightComponent::VDeserialize(Core::JSON& jsonObject)
+        {
+            return false;
+        }
+
         void LightComponent::SetType(LightType lightType)
         {
             m_lightType = lightType;

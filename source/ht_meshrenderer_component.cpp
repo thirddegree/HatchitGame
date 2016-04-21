@@ -140,7 +140,6 @@ namespace Hatchit {
         {
             delete m_meshRenderer;
             HT_DEBUG_PRINTF("Destroyed MeshRenderer Component.\n");
-            delete m_meshRenderer;
         }
 
     }

@@ -34,6 +34,7 @@ namespace Hatchit {
         MeshRenderer::MeshRenderer()
         {
             m_meshRenderer = new Graphics::MeshRenderer();
+            m_worldMatrix = new Resource::Matrix4Variable();
         }
 
         Core::JSON MeshRenderer::VSerialize(void)
@@ -58,7 +59,7 @@ namespace Hatchit {
             //get appropriate resource handles
             Graphics::IMeshHandle mesh;
             Graphics::IMaterialHandle mat;
-            Graphics::IRenderPassHandle pass;
+
 #ifdef HT_SYS_LINUX
             if (renderer == "OPENGL")
                 return false;
@@ -78,20 +79,14 @@ namespace Hatchit {
 
                 mat = Graphics::Vulkan::VKMaterial::GetHandle(materialFile, materialFile).StaticCastHandle<Graphics::IMaterial>();
 
-                //pass = mat->GetPipeline()->
+                
             }
             else if (Renderer::GetRendererType() == Graphics::OPENGL)
                 return false;
 #endif
-            //SetRenderable(mesh, mat, );
-            //set the pass and mesh
-
-
-
-
+            SetRenderable(mesh, mat);
 
             return true;
-
         }
 
 
@@ -99,24 +94,29 @@ namespace Hatchit {
 
 
         void MeshRenderer::SetRenderable(Graphics::IMeshHandle mesh,
-            Graphics::IMaterialHandle material,
-            Graphics::IRenderPassHandle renderPass)
+            Graphics::IMaterialHandle material)
         {
             m_meshRenderer->SetMesh(mesh);
             m_meshRenderer->SetMaterial(material);
-            m_meshRenderer->SetRenderPass(renderPass);
         }
 
         void MeshRenderer::VOnInit()
         {
-            Graphics::RendererType rendererType = Renderer::GetRendererType();
-            m_meshRenderer = new Graphics::MeshRenderer();
+            //Graphics::RendererType rendererType = Renderer::GetRendererType();
+            //m_meshRenderer = new Graphics::MeshRenderer();
 
             HT_DEBUG_PRINTF("Initialized Mesh Renderer Component.\n");
         }
 
         void MeshRenderer::VOnUpdate()
         {
+            //TODO: send actual transform data
+            m_worldMatrix->SetData(Hatchit::Math::MMMatrixTranspose(*m_owner->GetTransform().GetWorldMatrix()));
+
+            std::vector<Resource::ShaderVariable*> data;
+            data.push_back(m_worldMatrix);
+
+            m_meshRenderer->SetInstanceData(data);
             m_meshRenderer->Render();
         }
 

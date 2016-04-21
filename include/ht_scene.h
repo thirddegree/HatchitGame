@@ -118,7 +118,7 @@ namespace Hatchit {
             *
             * \sa ParseChildGameObjects(), ParseTransform(), ParseComponent(), LoadFromCache(), GameObject()
             */
-            bool ParseGameObject(const JSON& obj, GameObject& out);
+            bool ParseGameObject(const JSON& obj, GameObject*& out);
 
             /**
             * \brief Establishes the (optional) parent of the GameObject with the provided Guid.

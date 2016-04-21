@@ -151,7 +151,8 @@ namespace Hatchit {
             for (const JSON& json_obj : json_gameobjs)
             {
                 // Attempt to parse a GameObject from the provided JSON.
-                GameObject obj;
+                GameObject* obj;
+                //parseGameObject allocates the object
                 if (!ParseGameObject(json_obj, obj))
                 {
                     HT_DEBUG_PRINTF("Failed to parse GameObject in scene description!\n");
@@ -159,7 +160,7 @@ namespace Hatchit {
                 }
 
                 // Validate that the Guid for the parsed GameObject is present in the master list.
-                const Guid& id = obj.GetGuid();
+                const Guid& id = obj->GetGuid();
                 std::unordered_set<Guid>::const_iterator iter = guids.find(id);
                 if (iter == guids.cend())
                 {
@@ -167,8 +168,7 @@ namespace Hatchit {
                     return false;
                 }
 
-                GameObject* allocated_obj = new GameObject(std::move(obj));
-                guid_to_obj.insert(std::make_pair(id, allocated_obj));
+                guid_to_obj.insert(std::make_pair(id, obj));
                 guid_to_json.insert(std::make_pair(id, json_obj));
             }
 
@@ -194,7 +194,7 @@ namespace Hatchit {
             for (const Core::JSON& json_obj : json_prefabs)
             {
                 // Attempt to parse a GameObject from the provided JSON.
-                GameObject obj;
+                GameObject* obj;
                 if (!ParseGameObject(json_obj, obj))
                 {
                     HT_DEBUG_PRINTF("Failed to parse Prefab in scene description!\n");
@@ -202,7 +202,7 @@ namespace Hatchit {
                 }
 
                 // Validate that the Guid for the parsed GameObject is present in the master list.
-                const Guid& id = obj.GetGuid();
+                const Guid& id = obj->GetGuid();
                 std::unordered_set<Guid>::const_iterator iter = guids.find(id);
                 if (iter == guids.cend())
                 {
@@ -210,8 +210,7 @@ namespace Hatchit {
                     return false;
                 }
 
-                GameObject* allocated_obj = new GameObject(std::move(obj));
-                m_prefabs.push_back(allocated_obj);
+                m_prefabs.push_back(obj);
             }
 
             return true;
@@ -253,7 +252,7 @@ namespace Hatchit {
             guidToJson.erase(childGuid);
         }
 
-        bool Scene::ParseGameObject(const Core::JSON& obj, GameObject& out)
+        bool Scene::ParseGameObject(const Core::JSON& obj, GameObject*& out)
         {
             // Extract the GameObject's GUID.
             Guid id;
@@ -279,7 +278,7 @@ namespace Hatchit {
             Transform t = ParseTransform(obj);
 
             // Construct the GameObject using the GUID, Name, and Transform extracted from JSON.
-            out = GameObject{id, name, t, enabled};
+            out = new GameObject(id, name, t, enabled);
 
             // Attempt to extract a std::vector of Component JSON objects.
             std::vector<Core::JSON> components;
@@ -287,14 +286,14 @@ namespace Hatchit {
             {
                 for (const Core::JSON& json_component : components)
                 {
-                    if (!ParseComponent(json_component, out))
+                    if (!ParseComponent(json_component, *out))
                     {
                         HT_DEBUG_PRINTF("Failed to parse Component %s on GameObject %s in the scene description!\n", json_component.dump(), id.ToString());
                     }
                 }
             }
 
-            return true;
+            //return true;
         }
 
         Transform Scene::ParseTransform(const JSON& obj)

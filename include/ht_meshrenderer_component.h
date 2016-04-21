@@ -30,8 +30,7 @@ namespace Hatchit {
             virtual bool VDeserialize(Core::JSON& jsonObject) override;
 
             void SetRenderable(Graphics::IMeshHandle mesh, 
-                Graphics::IMaterialHandle material, 
-                Graphics::IRenderPassHandle renderPass);
+                Graphics::IMaterialHandle material);
 
             void VOnInit() override;
             void VOnUpdate() override;
@@ -44,6 +43,7 @@ namespace Hatchit {
 
         private:
             Graphics::MeshRenderer* m_meshRenderer;
+            Resource::Matrix4Variable* m_worldMatrix;
         };
 
     }

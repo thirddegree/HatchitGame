@@ -29,13 +29,13 @@
 #include <ht_transform.h>
 #include <ht_guid.h>
 #include <ht_jsonhelper.h>
+#include <ht_gameobject.h>
 
 namespace Hatchit {
 
     namespace Game {
 
         using JSON = Core::JSON;
-	    class GameObject;
 
         class HT_API Component
         {

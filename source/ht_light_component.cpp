@@ -12,8 +12,16 @@
 **
 **/
 
-#include <ht_light_component.h>
+#ifdef HT_SYS_LINUX
+#include <ht_vkmaterial.h>
+#include <ht_vkmesh.h>
+#else
+//#include <ht_d3d12material.h>
+#include <ht_vkmaterial.h>
+#include <ht_vkmesh.h>
+#endif
 
+#include <ht_light_component.h>
 #include <ht_renderer_singleton.h>
 #include <ht_debug.h>
 
@@ -33,7 +41,23 @@ namespace Hatchit {
 
         bool LightComponent::VDeserialize(Core::JSON& jsonObject)
         {
-            return false;
+            int lightType;
+            if (Core::JsonExtract<int32_t>(jsonObject, "LightType", lightType)) 
+            {
+                if (lightType == LightType::POINT_LIGHT)
+                {
+                    std::vector<float> attenuation;
+                    std::vector<float> color;
+                    if (!Core::JsonExtract<float>(jsonObject, "Radius", m_radius) 
+                        || !Core::JsonExtractContainer(jsonObject, "Attenuation", attenuation)
+                        || !Core::JsonExtractContainer(jsonObject, "Color", color))
+                        return false;
+                    m_attenuation = { attenuation[0], attenuation[1], attenuation[2] };
+                    m_color = { color[0], color[1], color[2] };
+                }
+                m_lightType = LightType(lightType);
+            }
+            return true;
         }
 
         void LightComponent::SetType(LightType lightType)
@@ -41,23 +65,21 @@ namespace Hatchit {
             m_lightType = lightType;
             switch (lightType)
             {
-                case LightType::SPOT_LIGHT:
+                case LightType::POINT_LIGHT:
                 {
-                    //m_meshRenderer->SetMesh(mesh);
-                    //m_meshRenderer->SetMaterial(material);
-                    //m_meshRenderer->SetRenderPass(renderPass);
+                    SetMeshAndMaterial("Icosphere.dae", "PointLightMaterial.json");
                     break;
                 }
             }
+            m_meshRenderer->SetMesh(m_mesh);
+            m_meshRenderer->SetMaterial(m_material);
         }
 
         void LightComponent::VOnInit()
         {
-
-            m_pointLightModel = Resource::Model::GetHandleFromFileName("IcoSphere.dae");
-
-            Graphics::RendererType rendererType = Renderer::GetRendererType();
             m_meshRenderer = new Graphics::MeshRenderer();
+
+            SetType(m_lightType);
             
             HT_DEBUG_PRINTF("Initialized Light Component.\n");
         }
@@ -65,6 +87,13 @@ namespace Hatchit {
         void LightComponent::VOnUpdate()
         {
             HT_DEBUG_PRINTF("Updated Light Component.\n");
+            std::vector<Resource::ShaderVariable*> data;
+            data.push_back(new Resource::Matrix4Variable(*GetOwner()->GetTransform().GetWorldMatrix()));
+            data.push_back(new Resource::Float4Variable(m_color));
+            data.push_back(new Resource::FloatVariable(m_radius));
+            data.push_back(new Resource::Float3Variable(m_attenuation));
+
+            m_meshRenderer->SetInstanceData(data);
             m_meshRenderer->Render();
         }
 
@@ -88,6 +117,33 @@ namespace Hatchit {
         {
             delete m_meshRenderer;
             HT_DEBUG_PRINTF("Destroyed LightComponent Component.\n");
+        }
+
+        bool LightComponent::SetMeshAndMaterial(std::string meshFile, std::string materialFile)
+        {
+#ifdef HT_SYS_LINUX
+            if (renderer == "OPENGL")
+                return false;
+            else if (renderer == "VULKAN")
+                mat = Graphics::Vulkan::VKMaterial::GetHandle(materialFile, materialFile).StaticCastHandle<Graphics::IMaterial>();
+#else
+            if (Renderer::GetRendererType() == Graphics::DIRECTX11)
+                return false;
+            else if (Renderer::GetRendererType() == Graphics::DIRECTX12)
+                //mat = Graphics::DX::D3D12Material::GetHandle(material);
+                return false;
+            else if (Renderer::GetRendererType() == Graphics::VULKAN)
+            {
+                Resource::ModelHandle model = Resource::Model::GetHandleFromFileName(meshFile);
+                std::vector<Resource::Mesh*> meshes = model->GetMeshes();
+                m_mesh = Graphics::Vulkan::VKMesh::GetHandle(meshFile, meshes[0]).StaticCastHandle<Graphics::IMesh>();
+
+                m_material = Graphics::Vulkan::VKMaterial::GetHandle(materialFile, materialFile).StaticCastHandle<Graphics::IMaterial>();
+            }
+            else if (Renderer::GetRendererType() == Graphics::OPENGL)
+                return false;
+#endif      
+            return true;
         }
     }
 }

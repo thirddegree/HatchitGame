@@ -38,12 +38,13 @@
     #include <cstdlib>
 #endif
 
+#include <ht_component.h>
+
 namespace Hatchit {
 
     namespace Game {
         class Scene;
-        class Component;
-        
+
         class HT_API GameObject
         {
         friend class Scene;
@@ -344,6 +345,7 @@ namespace Hatchit {
             std::vector<Game::Component*> m_components; /**< std::vector of all attached Components. */
             std::unordered_map<Core::Guid, std::vector<Component*>::size_type> m_componentMap; /**< Unique mapping of Component to Guid. */
         };
+
 
         template <typename T>
         bool GameObject::AddComponent(T *component)

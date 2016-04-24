@@ -18,7 +18,7 @@
 #include <ht_debug.h>
 #include <ht_test_component.h>
 #include <ht_meshrenderer_component.h>
-
+#include <ht_gameobject.h>
 #include <stdexcept>
 
 namespace Hatchit {
@@ -350,7 +350,7 @@ namespace Hatchit {
             }
             else
             {
-                if (!comp->VDeserialize((JSON)obj))
+                if (!comp->VDeserialize(obj))
                 {
                     HT_DEBUG_PRINTF("Component Failed to Deserialize!\n", ((JSON)component_data).dump());
                 }

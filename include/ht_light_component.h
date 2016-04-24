@@ -35,7 +35,7 @@ namespace Hatchit {
             LightComponent();
 
             virtual Core::JSON VSerialize(void) override;
-            virtual bool VDeserialize(Core::JSON& jsonObject) override;
+            virtual bool VDeserialize(const Core::JSON& jsonObject) override;
 
             void SetType(LightType lightType);
 

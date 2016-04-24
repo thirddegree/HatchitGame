@@ -25,7 +25,7 @@ namespace Hatchit {
             TestComponent(void) = default;
 
             virtual Core::JSON VSerialize(void) override;
-            virtual bool VDeserialize(Core::JSON& jsonObject) override;
+            virtual bool VDeserialize(const Core::JSON& jsonObject) override;
 
             void VOnInit() override;
             void VOnUpdate() override;

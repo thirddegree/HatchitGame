@@ -17,7 +17,6 @@
 #include <ht_platform.h>
 #include <ht_noncopy.h>
 #include <ht_guid.h>
-#include <ht_gameobject.h>
 #include <ht_scene_resource.h>
 
 #include <json.hpp>
@@ -35,6 +34,9 @@ namespace Hatchit {
     namespace Game {
 
         using JSON = Core::JSON;
+
+        class GameObject;
+        class Transform;
 
         /**
         * \brief Defines a scene.

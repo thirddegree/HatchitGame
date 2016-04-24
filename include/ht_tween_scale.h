@@ -36,7 +36,7 @@ namespace Hatchit {
 
 
             virtual JSON VSerialize(void) override;
-            virtual bool VDeserialize(JSON& jsonObject) override;
+            virtual bool VDeserialize(const JSON& jsonObject) override;
 
             /**
              * \brief Gets the start tween scale.

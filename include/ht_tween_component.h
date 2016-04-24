@@ -113,7 +113,7 @@ namespace Hatchit {
             virtual ~TweenComponent();
 
             virtual Core::JSON VSerialize(void) override;
-            virtual bool VDeserialize(Core::JSON& jsonObject) override;
+            virtual bool VDeserialize(const Core::JSON& jsonObject) override;
 
             /**
              * \brief Gets the duration of the tween.

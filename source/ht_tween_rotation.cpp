@@ -42,7 +42,7 @@ namespace Hatchit {
             return Core::JSON();
         }
 
-        bool TweenRotation::VDeserialize(Core::JSON& jsonObject)
+        bool TweenRotation::VDeserialize(const Core::JSON& jsonObject)
         {
             return false;
         }

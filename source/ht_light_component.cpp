@@ -31,7 +31,7 @@ namespace Hatchit {
             return Core::JSON();
         }
 
-        bool LightComponent::VDeserialize(Core::JSON& jsonObject)
+        bool LightComponent::VDeserialize(const Core::JSON& jsonObject)
         {
             return false;
         }

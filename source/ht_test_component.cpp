@@ -22,7 +22,7 @@ namespace Hatchit {
         {
             return nlohmann::json::object_t();
         }
-        bool TestComponent::VDeserialize(Core::JSON& jsonObject)
+        bool TestComponent::VDeserialize(const Core::JSON& jsonObject)
         {
             return false;
         }

@@ -54,7 +54,7 @@ namespace Hatchit {
              return Core::JSON();
          }
 
-         bool TweenComponent::VDeserialize(Core::JSON& jsonObject)
+         bool TweenComponent::VDeserialize(const Core::JSON& jsonObject)
          {
              return false;
          }

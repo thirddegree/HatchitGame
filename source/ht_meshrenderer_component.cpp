@@ -26,7 +26,6 @@
 #endif
 
 #include <ht_meshrenderer_component.h>
-#include <ht_model.h>
 #include <ht_renderer_singleton.h>
 #include <ht_debug.h>
 #include <ht_gameobject.h>

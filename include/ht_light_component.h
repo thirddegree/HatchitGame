@@ -29,7 +29,7 @@ namespace Hatchit {
             SPOT_LIGHT,
             DIRECTIONAL_LIGHT
         };
-        class GameObject;
+
         class LightComponent : public Component
         {
         public:

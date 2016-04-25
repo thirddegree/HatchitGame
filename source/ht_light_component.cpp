@@ -20,8 +20,8 @@
 #include <ht_vkmaterial.h>
 #include <ht_vkmesh.h>
 #endif
+
 #include <ht_gameobject.h>
-#include <ht_model.h>
 #include <ht_light_component.h>
 #include <ht_renderer_singleton.h>
 #include <ht_debug.h>
@@ -88,10 +88,7 @@ namespace Hatchit {
         void LightComponent::VOnUpdate()
         {
             std::vector<Resource::ShaderVariable*> data;
-
-            //this will need to use the Object's transform, but it currently does not read in correctly
-            data.push_back(new Resource::Matrix4Variable(Math::MMMatrixTranspose(Math::MMMatrixTranslation(Math::Vector3(-1, 5, 1)))));
-
+            data.push_back(new Resource::Matrix4Variable(Math::MMMatrixTranspose(*GetOwner()->GetTransform().GetWorldMatrix())));
             data.push_back(new Resource::Float4Variable(m_color));
             data.push_back(new Resource::FloatVariable(m_radius));
             data.push_back(new Resource::Float3Variable(m_attenuation));

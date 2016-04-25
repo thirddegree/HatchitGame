@@ -20,7 +20,8 @@
 #include <ht_vkmaterial.h>
 #include <ht_vkmesh.h>
 #endif
-
+#include <ht_gameobject.h>
+#include <ht_model.h>
 #include <ht_light_component.h>
 #include <ht_renderer_singleton.h>
 #include <ht_debug.h>
@@ -53,7 +54,7 @@ namespace Hatchit {
                         || !Core::JsonExtractContainer(jsonObject, "Color", color))
                         return false;
                     m_attenuation = { attenuation[0], attenuation[1], attenuation[2] };
-                    m_color = { color[0], color[1], color[2] };
+                    m_color = { color[0], color[1], color[2], color[3] };
                 }
                 m_lightType = LightType(lightType);
             }
@@ -86,9 +87,11 @@ namespace Hatchit {
 
         void LightComponent::VOnUpdate()
         {
-            HT_DEBUG_PRINTF("Updated Light Component.\n");
             std::vector<Resource::ShaderVariable*> data;
-            data.push_back(new Resource::Matrix4Variable(*GetOwner()->GetTransform().GetWorldMatrix()));
+
+            //this will need to use the Object's transform, but it currently does not read in correctly
+            data.push_back(new Resource::Matrix4Variable(Math::MMMatrixTranspose(Math::MMMatrixTranslation(Math::Vector3(-1, 5, 1)))));
+
             data.push_back(new Resource::Float4Variable(m_color));
             data.push_back(new Resource::FloatVariable(m_radius));
             data.push_back(new Resource::Float3Variable(m_attenuation));

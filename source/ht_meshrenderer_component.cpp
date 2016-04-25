@@ -19,6 +19,10 @@
 #include <ht_vkmaterial.h>
 #include <ht_vkmesh.h>
 #endif
+#else
+//#include <ht_d3d12material.h>
+#include <ht_vkmaterial.h>
+#include <ht_vkmesh.h>
 #endif
 
 #include <ht_meshrenderer_component.h>

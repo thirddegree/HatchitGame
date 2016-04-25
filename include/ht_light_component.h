@@ -13,6 +13,7 @@
 **/
 
 #pragma once
+
 #include <ht_meshrenderer.h>
 #include <ht_component.h>
 #include <ht_model.h>
@@ -80,9 +81,22 @@ namespace Hatchit {
 
         private:
 
+            /**
+            * \brief Sets the light mesh with the appropriate type for current renderer.
+            * \param meshFile File name of mesh to load
+            * \param meshFile File name of material to load
+            */
+            bool SetMeshAndMaterial(std::string meshFile, std::string materialFile);
+
             LightType m_lightType;
-            Hatchit::Resource::ModelHandle m_pointLightModel;
             Graphics::MeshRenderer* m_meshRenderer;
+            Graphics::IMeshHandle m_mesh;
+            Graphics::IMaterialHandle m_material;
+
+            /* Point Light Data */
+            float m_radius;
+            Math::Vector4 m_color;
+            Math::Vector3 m_attenuation;
 
         };
     }

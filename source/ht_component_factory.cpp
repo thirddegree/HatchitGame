@@ -47,6 +47,7 @@ for t in components:
 ]]]*/
 #include <ht_camera_component.h>
 #include <ht_meshrenderer_component.h>
+#include <ht_light_component.h>
 #include <ht_test_component.h>
 #include <ht_tween_component.h>
 #include <ht_tween_position.h>
@@ -109,6 +110,7 @@ namespace Hatchit {
             ]]]*/
             if (type == "Camera") return new Camera();
             if (type == "MeshRenderer") return new MeshRenderer();
+            if (type == "LightComponent") return new LightComponent();
             if (type == "TestComponent") return new TestComponent();
             if (type == "TweenComponent") return new TweenComponent();
             if (type == "TweenPosition") return new TweenPosition();

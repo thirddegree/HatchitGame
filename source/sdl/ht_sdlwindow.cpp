@@ -19,6 +19,7 @@
 #include <ht_sdlkeyboard.h>
 #include <ht_sdlmouse.h>
 #include <ht_renderer_singleton.h>
+#include <ht_os.h>
 
 namespace Hatchit {
 
@@ -216,7 +217,6 @@ namespace Hatchit {
                                                 + (m_params.displayMouse ? (" [" + std::to_string(Input::MouseX()) + "," +
                                                     std::to_string(Input::MouseY()) + "]") : "");
             SDL_SetWindowTitle(m_handle, title.c_str());
-            
         }
 
         void* SDLWindow::VNativeWindowHandle()

@@ -1,4 +1,6 @@
 #include <ht_debug_camera.h>
+#include <ht_time_singleton.h>
+#include <ht_input_singleton.h>
 
 namespace Hatchit {
 
@@ -16,6 +18,12 @@ namespace Hatchit {
         {
         }
 
+        /**
+        * \fn void Update()
+        * \brief Updates camera based on user input
+        *
+        *   Updates the debug camera's rotation and position based on user input
+        */
         void DebugCamera::Update()
         {
             Rotate();
@@ -24,16 +32,13 @@ namespace Hatchit {
             m_camera.SetView(Math::MMMatrixLookAt(m_position, m_position + m_forward, m_up));
         }
 
-        Math::Matrix4 DebugCamera::GetView()
-        {
-            return m_camera.GetView();
-        }
-
-        Math::Matrix4 DebugCamera::GetProjection()
-        {
-            return m_camera.GetProjection();
-        }
-
+        /**
+        * \fn void Rotate()
+        * \brief Rotates camera based off of user input
+        *
+        *   Rotates camera when left mouse button held
+        *
+        */
         void DebugCamera::Rotate()
         {
             if (Input::MouseButtonPress(MouseButton::Left))
@@ -65,6 +70,18 @@ namespace Hatchit {
             }
         }
 
+        /**
+        * \fn void Move()
+        * \brief Moves camera based off of user input
+        *
+        *   W -> forward
+        *   A -> right
+        *   S -> backward
+        *   D -> right
+        *   Q -> down
+        *   E -> up
+        *
+        */
         void DebugCamera::Move()
         {
             float dt = Time::DeltaTime();
@@ -81,6 +98,28 @@ namespace Hatchit {
                 m_position += m_up * -m_speed * dt;
             if (Input::KeyPressed(IKeyboard::Key::E))
                 m_position += m_up * m_speed * dt;
+        }
+
+        /**
+        * \fn const Math::Matrix4 GetView()
+        * \brief Returns cameras view matrix
+        *
+        * \return Cameras view matrix
+        */
+        const Math::Matrix4 DebugCamera::GetView()
+        {
+            return m_camera.GetView();
+        }
+
+        /**
+        * \fn const Math::Matrix4 GetProjection()
+        * \brief Returns cameras projection matrix
+        *
+        * \return Cameras projection matrix
+        */
+        const Math::Matrix4 DebugCamera::GetProjection()
+        {
+            return m_camera.GetProjection();
         }
     }
 }

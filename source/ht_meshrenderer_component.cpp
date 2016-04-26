@@ -12,13 +12,11 @@
 **
 **/
 
-#ifdef HT_SYS_LINUX
 #ifdef VK_SUPPORT
 #include <ht_vkmaterial.h>
 #include <ht_vkmesh.h>
 #include <ht_vkmaterial.h>
 #include <ht_vkmesh.h>
-#endif
 #endif
 
 #include <ht_meshrenderer_component.h>

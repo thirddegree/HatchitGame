@@ -35,11 +35,17 @@ namespace Hatchit {
 
         }
 
+        /**
+        * \brief Saves light as JSON.
+        */
         Core::JSON LightComponent::VSerialize(void)
         {
             return Core::JSON();
         }
 
+        /**
+        * \brief Constructs light from JSON.
+        */
         bool LightComponent::VDeserialize(const Core::JSON& jsonObject)
         {
             int lightType;
@@ -61,6 +67,10 @@ namespace Hatchit {
             return true;
         }
 
+        /**
+        * \brief Sets the light to the specified type with proper data.
+        * \param lightType enum value of light
+        */
         void LightComponent::SetType(LightType lightType)
         {
             m_lightType = lightType;
@@ -76,6 +86,9 @@ namespace Hatchit {
             m_meshRenderer->SetMaterial(m_material);
         }
 
+        /**
+        * \brief Called when the GameObject is created to initialize all values
+        */
         void LightComponent::VOnInit()
         {
             m_meshRenderer = new Graphics::MeshRenderer();
@@ -85,6 +98,10 @@ namespace Hatchit {
             HT_DEBUG_PRINTF("Initialized Light Component.\n");
         }
 
+        /**
+        * \brief Called once per frame while the GameObject is enabled.
+        * Updates all components first, then all child gameobjects.
+        */
         void LightComponent::VOnUpdate()
         {
             std::vector<Resource::ShaderVariable*> data;
@@ -97,28 +114,50 @@ namespace Hatchit {
             m_meshRenderer->Render();
         }
 
+        /**
+        * \brief Creates a copy of this Component.
+        */
         Component* LightComponent::VClone(void) const
         {
             HT_DEBUG_PRINTF("Cloned LightComponent.\n");
             return new LightComponent(*this);
         }
 
+        /**
+        * \brief Called when the Component is enabled.
+        * This happens when a scene has finished loading, or immediately after creation if the scene is already loaded.
+        */
         void LightComponent::VOnEnabled()
         {
             HT_DEBUG_PRINTF("Enabled LightComponent Component.\n");
         }
 
+        /**
+        * \brief Called when the Component is disabled.
+        * Components are always disabled before destroyed.
+        * When a scene is destroyed, all Components are disabled before any are destroyed.
+        */
         void LightComponent::VOnDisabled()
         {
             HT_DEBUG_PRINTF("Disabled LightComponent Component.\n");
         }
 
+        /**
+        * \brief Called when the GameObject is destroyed/deleted.
+        * Objects are always disabled before destroyed.
+        * When a scene is destroyed, all gameobjects are disabled before any are destroyed.
+        */
         void LightComponent::VOnDestroy()
         {
             delete m_meshRenderer;
             HT_DEBUG_PRINTF("Destroyed LightComponent Component.\n");
         }
 
+        /**
+        * \brief Sets the light mesh with the appropriate type for current renderer.
+        * \param meshFile File name of mesh to load
+        * \param meshFile File name of material to load
+        */
         bool LightComponent::SetMeshAndMaterial(std::string meshFile, std::string materialFile)
         {
 #ifdef HT_SYS_LINUX

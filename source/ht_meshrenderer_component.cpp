@@ -12,19 +12,20 @@
 **
 **/
 
-#ifdef HT_SYS_LINUX
+#ifdef VK_SUPPORT
+#include <ht_vkmaterial.h>
+#include <ht_vkmesh.h>
 #include <ht_vkmaterial.h>
 #include <ht_vkmesh.h>
 #else
 //#include <ht_d3d12material.h>
-#include <ht_vkmaterial.h>
-#include <ht_vkmesh.h>
 #endif
 
+
 #include <ht_meshrenderer_component.h>
-#include <ht_model.h>
 #include <ht_renderer_singleton.h>
 #include <ht_debug.h>
+#include <ht_gameobject.h>
 
 namespace Hatchit {
 
@@ -44,7 +45,7 @@ namespace Hatchit {
 
 
 
-        bool MeshRenderer::VDeserialize(Core::JSON& jsonObject)
+        bool MeshRenderer::VDeserialize(const Core::JSON& jsonObject)
         {
             std::string materialFile;
             std::string meshFile;
@@ -61,10 +62,12 @@ namespace Hatchit {
             Graphics::IMaterialHandle mat;
 
 #ifdef HT_SYS_LINUX
-            if (renderer == "OPENGL")
+            if (Renderer::GetRendererType() == Graphics::OPENGL)
                 return false;
-            else if (renderer == "VULKAN")
+#ifdef VK_SUPPORT
+            else if (Renderer::GetRendererType() == Graphics::VULKAN)
                 mat = Graphics::Vulkan::VKMaterial::GetHandle(materialFile, materialFile).StaticCastHandle<Graphics::IMaterial>();
+#endif
 #else
             if (Renderer::GetRendererType() == Graphics::DIRECTX11)
                 return false;
@@ -138,8 +141,8 @@ namespace Hatchit {
 
         void MeshRenderer::VOnDestroy()
         {
-            HT_DEBUG_PRINTF("Destroyed MeshRenderer Component.\n");
             delete m_meshRenderer;
+            HT_DEBUG_PRINTF("Destroyed MeshRenderer Component.\n");
         }
 
     }

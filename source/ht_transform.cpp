@@ -25,9 +25,6 @@ namespace Hatchit {
             m_forward = Math::Vector3(0.0f, 0.0f, 1.0f);
             m_up = Math::Vector3(0.0f, 1.0f, 0.0f);
             m_right = Math::Vector3(1.0f, 0.0f, 0.0f);
-
-
-
             m_parent = nullptr;
             SetDirty();
         }
@@ -43,39 +40,30 @@ namespace Hatchit {
             m_forward = Math::Vector3(0.0f, 0.0f, 1.0f);
             m_up = Math::Vector3(0.0f, 1.0f, 0.0f);
             m_right = Math::Vector3(1.0f, 0.0f, 0.0f);
-
-
-
             m_parent = nullptr;
             SetDirty();
         }
 
-        Transform::Transform(Math::Vector3 position, Math::Vector3 rotation, Math::Vector3 scale)
+        Transform::Transform(Math::Vector3 position, Math::Vector3 rotation, Math::Vector3 scale) :
+            m_position(position),
+            m_rotation(rotation),
+            m_scale(scale)
         {
-            m_position = position;
-            m_rotation = rotation;
-            m_scale = scale;
-
             m_forward = Math::Vector3(0.0f, 0.0f, 1.0f);
             m_up = Math::Vector3(0.0f, 1.0f, 0.0f);
             m_right = Math::Vector3(1.0f, 0.0f, 0.0f);
-
-
-
             m_parent = nullptr;
             SetDirty();
         }
 
-        Transform::Transform(const Transform& transform)
+        Transform::Transform(const Transform& transform) : 
+            m_position(transform.m_position),
+            m_rotation(transform.m_rotation),
+            m_scale(transform.m_scale),
+            m_forward(transform.m_forward),
+            m_up(transform.m_up),
+            m_right(transform.m_right)
         {
-            m_position = transform.m_position;
-            m_rotation = transform.m_rotation;
-            m_scale = transform.m_scale;
-
-            m_forward = transform.m_forward;
-            m_up = transform.m_up;
-            m_right = transform.m_right;
-
             m_parent = nullptr;
             SetDirty();
         }

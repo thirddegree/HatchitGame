@@ -42,7 +42,7 @@ namespace Hatchit {
             return Core::JSON();
         }
 
-        bool TweenRotation::VDeserialize(Core::JSON& jsonObject)
+        bool TweenRotation::VDeserialize(const Core::JSON& jsonObject)
         {
             return false;
         }
@@ -95,6 +95,14 @@ namespace Hatchit {
             Math::Float3 target = m_targetValue.GetFloat3();
             Math::Vector3 rotation(target.m_data);
             m_owner->GetTransform().SetRotation(rotation);
+        }
+
+        /**
+        * \brief Creates a copy of this Component.
+        */
+        Component* TweenRotation::VClone(void) const
+        {
+            return new TweenRotation(*this);
         }
 
     }

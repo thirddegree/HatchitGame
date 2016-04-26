@@ -35,7 +35,7 @@ namespace Hatchit {
             ~TweenRotation();
 
             virtual Core::JSON VSerialize(void) override;
-            virtual bool VDeserialize(Core::JSON& jsonObject) override;
+            virtual bool VDeserialize(const Core::JSON& jsonObject) override;
 
             /**
              * \brief Gets the start tween rotation.
@@ -67,6 +67,11 @@ namespace Hatchit {
              * Updates all components first, then all child gameobjects.
              */
             void VOnUpdate() final override;
+
+            /**
+            * \brief Creates a copy of this Component.
+            */
+            Component* VClone(void) const override;
         };
 
     }

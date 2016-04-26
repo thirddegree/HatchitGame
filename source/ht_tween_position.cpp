@@ -42,7 +42,7 @@ namespace Hatchit {
             return Core::JSON();
         }
 
-        bool TweenPosition::VDeserialize(Core::JSON& jsonObject)
+        bool TweenPosition::VDeserialize(const Core::JSON& jsonObject)
         {
             return false;
         }
@@ -95,6 +95,14 @@ namespace Hatchit {
             Math::Float3 target = m_targetValue.GetFloat3();
             Math::Vector3 position(target.m_data);
             m_owner->GetTransform().SetPosition(position);
+        }
+
+        /**
+        * \brief Creates a copy of this Component.
+        */
+        Component* TweenPosition::VClone(void) const
+        {
+            return new TweenPosition(*this);
         }
 
     }

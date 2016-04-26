@@ -15,7 +15,6 @@
 #include <ht_camera_component.h>
 #include <ht_renderer_singleton.h>
 #include <ht_jsonhelper.h>
-#include <ht_gameobject.h>
 
 namespace Hatchit {
 
@@ -31,7 +30,7 @@ namespace Hatchit {
             return Core::JSON();
         }
 
-        bool Camera::VDeserialize(Core::JSON& jsonObject)
+        bool Camera::VDeserialize(const Core::JSON& jsonObject)
         {
             return false;
         }
@@ -43,7 +42,7 @@ namespace Hatchit {
 
         void Camera::VOnUpdate()
         {
-            Transform t = m_owner->GetTransform();
+            Transform t; //m_owner->GetTransform();
             m_camera.SetView(Math::MMMatrixLookAt(t.GetPosition(), t.GetPosition() + t.GetForward(), t.GetUp()));
             m_camera.SetProjection(Math::MMMatrixPerspProj(m_fov, m_width, m_height, m_near, m_far));
             m_camera.RegisterCamera();
@@ -66,7 +65,7 @@ namespace Hatchit {
 
         Component* Camera::VClone(void) const
         {
-            HT_DEBUG_PRINTF("Cloned Test Component.\n");
+            HT_DEBUG_PRINTF("Cloned Camera Component.\n");
             return new Camera(*this);
         }
 

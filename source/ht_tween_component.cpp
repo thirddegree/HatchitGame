@@ -54,7 +54,7 @@ namespace Hatchit {
              return Core::JSON();
          }
 
-         bool TweenComponent::VDeserialize(Core::JSON& jsonObject)
+         bool TweenComponent::VDeserialize(const Core::JSON& jsonObject)
          {
              return false;
          }
@@ -367,9 +367,12 @@ namespace Hatchit {
             Stop();
         }
 
+        /**
+        * \brief Creates a copy of this Component.
+        */
         Component* TweenComponent::VClone(void) const
         {
-            HT_DEBUG_PRINTF("Cloned Test Component.\n");
+            HT_DEBUG_PRINTF("Cloned TweenComponent.\n");
             return new TweenComponent(*this);
         }
 

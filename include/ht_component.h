@@ -29,11 +29,13 @@
 #include <ht_transform.h>
 #include <ht_guid.h>
 #include <ht_jsonhelper.h>
-#include <ht_gameobject.h>
+
 
 namespace Hatchit {
 
     namespace Game {
+
+        class GameObject;
 
         using JSON = Core::JSON;
 
@@ -56,7 +58,7 @@ namespace Hatchit {
             Component& operator=(Component&& rhs) = default;
 
             virtual Core::JSON VSerialize(void) = 0;
-            virtual bool VDeserialize(Core::JSON& jsonObject) = 0;
+            virtual bool VDeserialize(const Core::JSON& jsonObject) = 0;
 
 
             /**
@@ -89,7 +91,7 @@ namespace Hatchit {
             */
             virtual void VOnUpdate(void) = 0;
 
-            
+
             /**
             * \brief Called when the GameObject is destroyed/deleted.
             * Objects are always disabled before destroyed.

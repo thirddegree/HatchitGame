@@ -42,7 +42,7 @@ namespace Hatchit {
             return Core::JSON();
         }
 
-        bool TweenScale::VDeserialize(JSON& jsonObject)
+        bool TweenScale::VDeserialize(const JSON& jsonObject)
         {
             return false;
         }
@@ -95,6 +95,14 @@ namespace Hatchit {
             Math::Float3 target = m_targetValue.GetFloat3();
             Math::Vector3 scale(target.m_data);
             m_owner->GetTransform().SetScale(scale);
+        }
+
+        /**
+        * \brief Creates a copy of this Component.
+        */
+        Component* TweenScale::VClone(void) const
+        {
+            return new TweenScale(*this);
         }
 
     }

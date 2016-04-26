@@ -16,8 +16,6 @@
 
 #include <ht_camera.h>
 #include <ht_math.h>
-#include <ht_time_singleton.h>
-#include <ht_input_singleton.h>
 
 namespace Hatchit {
 
@@ -31,8 +29,8 @@ namespace Hatchit {
 
            void Update();
 
-           Math::Matrix4 GetView();
-           Math::Matrix4 GetProjection();
+           const Math::Matrix4 GetView();
+           const Math::Matrix4 GetProjection();
 
         private:
             void Rotate();

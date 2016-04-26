@@ -1,6 +1,6 @@
 /**
 **    Hatchit Engine
-**    Copyright(c) 2015 Third-Degree
+**    Copyright(c) 2015-2016 Third-Degree
 **
 **    GNU Lesser General Public License
 **    This file may be used under the terms of the GNU Lesser
@@ -14,29 +14,59 @@
 
 #pragma once
 
+#include <ht_meshrenderer.h>
 #include <ht_component.h>
+#include <ht_model.h>
+
 
 namespace Hatchit {
+
     namespace Game {
 
-        class TestComponent : public Component
+        enum LightType
+        {
+            POINT_LIGHT,
+            SPOT_LIGHT,
+            DIRECTIONAL_LIGHT
+        };
+
+        class LightComponent : public Component
         {
         public:
-            TestComponent(void) = default;
+            LightComponent();
 
             virtual Core::JSON VSerialize(void) override;
             virtual bool VDeserialize(const Core::JSON& jsonObject) override;
 
+            void SetType(LightType lightType);
+
             void VOnInit() override;
+
             void VOnUpdate() override;
-            Component* VClone(void) const override;
+
+            Component* VClone() const override;
+
         protected:
+
             void VOnEnabled() override;
+
             void VOnDisabled() override;
+
             void VOnDestroy() override;
 
         private:
-            GameObject* testObject;
+
+            bool SetMeshAndMaterial(std::string meshFile, std::string materialFile);
+
+            LightType m_lightType;
+            Graphics::MeshRenderer* m_meshRenderer;
+            Graphics::IMeshHandle m_mesh;
+            Graphics::IMaterialHandle m_material;
+
+            /* Point Light Data */
+            float m_radius;
+            Math::Vector4 m_color;
+            Math::Vector3 m_attenuation;
 
         };
     }

@@ -293,7 +293,7 @@ namespace Hatchit {
                 }
             }
 
-            //return true;
+            return true;
         }
 
         Transform Scene::ParseTransform(const JSON& obj)

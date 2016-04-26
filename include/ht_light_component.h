@@ -13,6 +13,7 @@
 **/
 
 #pragma once
+
 #include <ht_meshrenderer.h>
 #include <ht_component.h>
 #include <ht_model.h>
@@ -39,50 +40,33 @@ namespace Hatchit {
 
             void SetType(LightType lightType);
 
-            /**
-            * \brief Called when the GameObject is created to initialize all values
-            */
             void VOnInit() override;
 
-            /**
-            * \brief Called once per frame while the GameObject is enabled.
-            * Updates all components first, then all child gameobjects.
-            */
             void VOnUpdate() override;
 
-            /**
-            * \brief Creates a copy of this Component.
-            */
             Component* VClone() const override;
 
         protected:
 
-            /**
-            * \brief Called when the Component is enabled.
-            * This happens when a scene has finished loading, or immediately after creation if the scene is already loaded.
-            */
             void VOnEnabled() override;
 
-
-            /**
-            * \brief Called when the Component is disabled.
-            * Components are always disabled before destroyed.
-            * When a scene is destroyed, all Components are disabled before any are destroyed.
-            */
             void VOnDisabled() override;
 
-            /**
-            * \brief Called when the GameObject is destroyed/deleted.
-            * Objects are always disabled before destroyed.
-            * When a scene is destroyed, all gameobjects are disabled before any are destroyed.
-            */
             void VOnDestroy() override;
 
         private:
 
+            bool SetMeshAndMaterial(std::string meshFile, std::string materialFile);
+
             LightType m_lightType;
-            Hatchit::Resource::ModelHandle m_pointLightModel;
             Graphics::MeshRenderer* m_meshRenderer;
+            Graphics::IMeshHandle m_mesh;
+            Graphics::IMaterialHandle m_material;
+
+            /* Point Light Data */
+            float m_radius;
+            Math::Vector4 m_color;
+            Math::Vector3 m_attenuation;
 
         };
     }

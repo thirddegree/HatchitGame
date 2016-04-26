@@ -17,10 +17,12 @@
 #include <ht_vkmesh.h>
 #include <ht_vkmaterial.h>
 #include <ht_vkmesh.h>
+#else
+//#include <ht_d3d12material.h>
 #endif
 
+
 #include <ht_meshrenderer_component.h>
-#include <ht_model.h>
 #include <ht_renderer_singleton.h>
 #include <ht_debug.h>
 #include <ht_gameobject.h>

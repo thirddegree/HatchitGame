@@ -74,19 +74,62 @@ namespace Hatchit {
 
             /*Initialize Window with values from settings file*/
             WindowParams wparams;
-            wparams.title = m_settings->GetValue("WINDOW", "sTitle", std::string("Hatchit Engine"));
-            wparams.x = m_settings->GetValue("WINDOW", "iX", -1);
-            wparams.y = m_settings->GetValue("WINDOW", "iY", -1);
-            wparams.width = m_settings->GetValue("WINDOW", "iWidth", 800);
-            wparams.height = m_settings->GetValue("WINDOW", "iHeight", 600);
-            wparams.displayFPS = m_settings->GetValue("WINDOW", "bFPS", false);
-            wparams.displayMouse = m_settings->GetValue("WINDOW", "bMouse", false);
-            wparams.debugWindowEvents = m_settings->GetValue("WINDOW", "bDebugWindowEvents", false);
+            try
+            {
+                wparams.title = m_settings->GetValue<std::string>("WINDOW", "sTitle");
+            }
+            catch (const std::invalid_argument& e)
+            {
+                HT_ERROR_PRINTF("Error loading INI File: %s\n", e.what());
+                wparams.title = "Hatchit Engine";
+            }
+
+            try
+            {
+                wparams.x = m_settings->GetValue<int>("WINDOW", "iX");
+                wparams.y = m_settings->GetValue<int>("WINDOW", "iY");
+                wparams.width = m_settings->GetValue<int>("WINDOW", "iWidth");
+                wparams.height = m_settings->GetValue<int>("WINDOW", "iHeight");
+            }
+            catch (const std::invalid_argument& e)
+            {
+                HT_ERROR_PRINTF("Error loading INI File: %s\n", e.what());
+                wparams.x = -1;
+                wparams.y = -1;
+                wparams.width = 800;
+                wparams.height = 600;
+            }
+
+            try
+            {
+                wparams.displayFPS = m_settings->GetValue<bool>("WINDOW", "bFPS");
+                wparams.displayMouse = m_settings->GetValue<bool>("WINDOW", "bMouse");
+                wparams.debugWindowEvents = m_settings->GetValue<bool>("WINDOW", "bDebugWindowEvents");
+            }
+            catch (const std::invalid_argument& e)
+            {
+                HT_ERROR_PRINTF("Error Loading INI File: %s\n", e.what());
+                
+                wparams.displayFPS = true;
+                wparams.displayMouse = true;
+                wparams.debugWindowEvents = false;
+            }
+
 
             /*Initialize Renderer with values from settings file*/
             RendererParams rparams;
+            
+            std::string renderer;
 
-            std::string renderer = m_settings->GetValue("RENDERER", "sRenderer", std::string("DIRECTX"));
+            try
+            {
+                renderer = m_settings->GetValue<std::string>("RENDERER", "sRenderer");
+            }
+            catch (const std::invalid_argument& e)
+            {
+                HT_ERROR_PRINTF("Error Loading INI File: %s\n", e.what());
+                renderer = "DIRECTX12";
+            }
 
 #ifdef HT_SYS_LINUX
             if(renderer == "OPENGL")
@@ -108,15 +151,34 @@ namespace Hatchit {
             if (!Window::Initialize(wparams))
                 return false;
 
-            rparams.validate = m_settings->GetValue("RENDERER", "bValidate", false);
+            try
+            {
+                rparams.validate = m_settings->GetValue<bool>("RENDERER", "bValidate");
+            }
+            catch (const std::invalid_argument& e)
+            {
+                HT_ERROR_PRINTF("Error loading INI File: %s\n", e.what());
+                rparams.validate = false;
+            }
+
             rparams.window = Window::NativeWindowHandle();
             rparams.viewportWidth = wparams.width;
             rparams.viewportHeight = wparams.height;
             rparams.display = Window::NativeDisplayHandle();
-            rparams.clearColor = Color( m_settings->GetValue("RENDERER", "fClearR", 0.0f),
-                                        m_settings->GetValue("RENDERER", "fClearG", 0.0f),
-                                        m_settings->GetValue("RENDERER", "fClearB", 0.0f),
-                                        m_settings->GetValue("RENDERER", "fClearA", 0.0f));
+
+            try
+            {
+                rparams.clearColor = Color(m_settings->GetValue<float>("RENDERER", "fClearR"),
+                    m_settings->GetValue<float>("RENDERER", "fClearG"),
+                    m_settings->GetValue<float>("RENDERER", "fClearB"),
+                    m_settings->GetValue<float>("RENDERER", "fClearA"));
+            }
+            catch (const std::invalid_argument& e)
+            {
+                HT_ERROR_PRINTF("Error loading INI file: %s\n", e.what());
+                rparams.clearColor = Color(0.0f, 0.0f, 0.0f, 0.0f);
+            }
+
             if (!Renderer::Initialize(rparams))
                 return false;
 

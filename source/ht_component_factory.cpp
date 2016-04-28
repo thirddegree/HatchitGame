@@ -23,10 +23,11 @@ classes = []
 componentList = []
 components = []
 
-files = [f for f in listdir('../../../HatchitGame/include/') if isfile(join('../../../HatchitGame/include/', f))]
+path = '../../../../HatchitGame/include/'
+files = [f for f in listdir(path) if isfile(join(path, f))]
 
 for filename in files:
-    with open("../../../HatchitGame/include/" + filename, 'r') as f:
+    with open(path + filename, 'r') as f:
         for line in f:
             if "class" in line and " : " in line and not ("enum" in line):
                 words = line.strip().split(" : ")
@@ -46,8 +47,8 @@ for t in components:
 
 ]]]*/
 #include <ht_camera_component.h>
-#include <ht_meshrenderer_component.h>
 #include <ht_light_component.h>
+#include <ht_meshrenderer_component.h>
 #include <ht_test_component.h>
 #include <ht_tween_component.h>
 #include <ht_tween_position.h>
@@ -67,7 +68,8 @@ namespace Hatchit {
                 from os import listdir
                 from os.path import isfile, join
 
-                files = [f for f in listdir('../../../HatchitGame/include/') if isfile(join('../../../HatchitGame/include/', f))]
+                path = '../../../../HatchitGame/include/'
+                files = [f for f in listdir(path) if isfile(join(path, f))]
                 
                 class Node():
                     def __init__(self, filename, className, superName):
@@ -89,7 +91,7 @@ namespace Hatchit {
                 components = []
 
                 for filename in files:
-                    with open("../../../HatchitGame/include/" + filename, 'r') as f:
+                    with open(path + filename, 'r') as f:
                         for line in f:
                             if "class" in line and " : " in line and not ("enum" in line):
                                 words = line.strip().split(" : ")
@@ -109,8 +111,8 @@ namespace Hatchit {
                 
             ]]]*/
             if (type == "Camera") return new Camera();
-            if (type == "MeshRenderer") return new MeshRenderer();
             if (type == "LightComponent") return new LightComponent();
+            if (type == "MeshRenderer") return new MeshRenderer();
             if (type == "TestComponent") return new TestComponent();
             if (type == "TweenComponent") return new TweenComponent();
             if (type == "TweenPosition") return new TweenPosition();

@@ -12,10 +12,17 @@
 **
 **/
 
+#ifdef VK_SUPPORT
 #include <ht_vkrenderer.h>
 #include <ht_vkmaterial.h>
 #include <ht_vkmesh.h>
+#endif
+
+#ifdef HT_SYS_WINDOWS
+#ifdef DX12_SUPPORT
 #include <ht_d3d12material.h>
+#endif
+#endif
 
 #include <ht_gameobject.h>
 #include <ht_light_component.h>

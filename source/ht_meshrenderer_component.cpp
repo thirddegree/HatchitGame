@@ -13,6 +13,7 @@
 **/
 
 #ifdef VK_SUPPORT
+#include <ht_vkrenderer.h>
 #include <ht_vkmaterial.h>
 #include <ht_vkmesh.h>
 #include <ht_vkmaterial.h>
@@ -61,14 +62,6 @@ namespace Hatchit {
             Graphics::IMeshHandle mesh;
             Graphics::IMaterialHandle mat;
 
-#ifdef HT_SYS_LINUX
-            if (Renderer::GetRendererType() == Graphics::OPENGL)
-                return false;
-#ifdef VK_SUPPORT
-            else if (Renderer::GetRendererType() == Graphics::VULKAN)
-                mat = Graphics::Vulkan::VKMaterial::GetHandle(materialFile, materialFile).StaticCastHandle<Graphics::IMaterial>();
-#endif
-#else
             if (Renderer::GetRendererType() == Graphics::DIRECTX11)
                 return false;
             else if (Renderer::GetRendererType() == Graphics::DIRECTX12)
@@ -78,15 +71,13 @@ namespace Hatchit {
             {
                 Resource::ModelHandle model = Resource::Model::GetHandleFromFileName(meshFile);
                 std::vector<Resource::Mesh*> meshes = model->GetMeshes();
-                mesh = Graphics::Vulkan::VKMesh::GetHandle(meshFile, meshes[0]).StaticCastHandle<Graphics::IMesh>();
 
-                mat = Graphics::Vulkan::VKMaterial::GetHandle(materialFile, materialFile).StaticCastHandle<Graphics::IMaterial>();
-
-                
+                Graphics::Vulkan::VKRenderer* renderer = dynamic_cast<Graphics::Vulkan::VKRenderer*>(Renderer::instance().GetRenderer());
+                mesh = Graphics::Vulkan::VKMesh::GetHandle(meshFile, meshes[0], renderer).StaticCastHandle<Graphics::IMesh>();
+                mat = Graphics::Vulkan::VKMaterial::GetHandle(materialFile, materialFile, renderer).StaticCastHandle<Graphics::IMaterial>();
             }
             else if (Renderer::GetRendererType() == Graphics::OPENGL)
                 return false;
-#endif
             SetRenderable(mesh, mat);
 
             return true;

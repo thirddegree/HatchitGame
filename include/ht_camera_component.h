@@ -74,6 +74,7 @@ namespace Hatchit {
             float m_near;
             float m_far;
             Graphics::Camera m_camera;
+            Graphics::Renderer* m_renderer;
         };
 
     }

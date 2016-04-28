@@ -23,6 +23,7 @@ namespace Hatchit {
         Camera::Camera()
         {
             m_camera = Graphics::Camera(Math::Matrix4(), Math::MMMatrixPerspProj(60, 1280, 720, 1, 100));
+            m_renderer = Renderer::instance().GetRenderer();
         }
 
         Core::JSON Camera::VSerialize(void)
@@ -45,7 +46,7 @@ namespace Hatchit {
             Transform t; //m_owner->GetTransform();
             m_camera.SetView(Math::MMMatrixLookAt(t.GetPosition(), t.GetPosition() + t.GetForward(), t.GetUp()));
             m_camera.SetProjection(Math::MMMatrixPerspProj(m_fov, m_width, m_height, m_near, m_far));
-            m_camera.RegisterCamera();
+            m_renderer->RegisterCamera(m_camera);
         }
 
         void Camera::VOnEnabled()

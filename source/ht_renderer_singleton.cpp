@@ -178,6 +178,11 @@ namespace Hatchit {
 
             return _instance.m_rendererType;
         }
+
+        Graphics::Renderer* Renderer::GetRenderer()
+        {
+            return m_renderer;
+        }
     }
 
 }

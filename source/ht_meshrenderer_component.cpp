@@ -28,6 +28,8 @@
 #include <ht_debug.h>
 #include <ht_gameobject.h>
 
+#include <ht_gpuresourcepool.h>
+
 namespace Hatchit {
 
     namespace Game {
@@ -48,6 +50,8 @@ namespace Hatchit {
 
         bool MeshRenderer::VDeserialize(const Core::JSON& jsonObject)
         {
+            using namespace Graphics;
+
             std::string materialFile;
             std::string meshFile;
             //attempt to read all data from json object, if it fails, return false
@@ -56,29 +60,40 @@ namespace Hatchit {
             {
                 return false;
             }
+
+            
+            MaterialHandle material = Material::GetHandle(materialFile, materialFile);
+
+
             //all data has been successfully parsed, attempt to set it all up...
 
             //get appropriate resource handles
-            Graphics::IMeshHandle mesh;
-            Graphics::IMaterialHandle mat;
+            //Graphics::IMeshHandle mesh;
+            //Graphics::IMaterialHandle mat;
 
-            if (Renderer::GetRendererType() == Graphics::DIRECTX11)
-                return false;
-            else if (Renderer::GetRendererType() == Graphics::DIRECTX12)
-                //mat = Graphics::DX::D3D12Material::GetHandle(material);
-                return false;
-            else if (Renderer::GetRendererType() == Graphics::VULKAN)
-            {
-                Resource::ModelHandle model = Resource::Model::GetHandleFromFileName(meshFile);
-                std::vector<Resource::Mesh*> meshes = model->GetMeshes();
+            //auto rendererType = Renderer::GetRendererType();
+            //switch (rendererType)
+            //{
+            //    case Graphics::DIRECTX12:
+            //    {
+            //        //mat = Graphics::DX::D3D12Material::GetHandle(material);
+            //    } return false;
 
-                Graphics::Vulkan::VKRenderer* renderer = dynamic_cast<Graphics::Vulkan::VKRenderer*>(Renderer::instance().GetRenderer());
-                mesh = Graphics::Vulkan::VKMesh::GetHandle(meshFile, meshes[0], renderer).StaticCastHandle<Graphics::IMesh>();
-                mat = Graphics::Vulkan::VKMaterial::GetHandle(materialFile, materialFile, renderer).StaticCastHandle<Graphics::IMaterial>();
-            }
-            else if (Renderer::GetRendererType() == Graphics::OPENGL)
-                return false;
-            SetRenderable(mesh, mat);
+            //    case Graphics::VULKAN:
+            //    {
+            //        Resource::ModelHandle model = Resource::Model::GetHandleFromFileName(meshFile);
+            //        std::vector<Resource::Mesh*> meshes = model->GetMeshes();
+
+            //        Graphics::Vulkan::VKRenderer* renderer = dynamic_cast<Graphics::Vulkan::VKRenderer*>(Renderer::instance().GetRenderer());
+            //        mesh = Graphics::Vulkan::VKMesh::GetHandle(meshFile, meshes[0], renderer).StaticCastHandle<Graphics::IMesh>();
+            //        mat = Graphics::Vulkan::VKMaterial::GetHandle(materialFile, materialFile, renderer).StaticCastHandle<Graphics::IMaterial>();
+            //    } break;
+
+            //    default:
+            //        return false;
+            //}
+            //
+            //SetRenderable(mesh, mat);
 
             return true;
         }
@@ -88,7 +103,7 @@ namespace Hatchit {
 
 
         void MeshRenderer::SetRenderable(Graphics::IMeshHandle mesh,
-            Graphics::IMaterialHandle material)
+            Graphics::MaterialHandle material)
         {
             m_meshRenderer->SetMesh(mesh);
             m_meshRenderer->SetMaterial(material);

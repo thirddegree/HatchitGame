@@ -182,7 +182,6 @@ namespace Hatchit {
             if (!Renderer::Initialize(rparams))
                 return false;
 
-
             Input::Initialize();
 
             if (!SceneManager::Initialize())

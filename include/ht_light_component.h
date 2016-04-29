@@ -61,7 +61,7 @@ namespace Hatchit {
             LightType m_lightType;
             Graphics::MeshRenderer* m_meshRenderer;
             Graphics::IMeshHandle m_mesh;
-            Graphics::IMaterialHandle m_material;
+            Graphics::MaterialHandle m_material;
 
             /* Point Light Data */
             float m_radius;

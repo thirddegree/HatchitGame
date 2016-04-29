@@ -30,7 +30,7 @@ namespace Hatchit {
             virtual bool VDeserialize(const Core::JSON& jsonObject) override;
 
             void SetRenderable(Graphics::IMeshHandle mesh, 
-                Graphics::IMaterialHandle material);
+                Graphics::MaterialHandle material);
 
             /**
             * \brief Called when the GameObject is created to initialize all values

@@ -32,6 +32,8 @@
 #include <ht_vkrenderer.h>
 #endif
 
+#include <ht_gpuresourcepool.h>
+
 #include <ht_time_singleton.h>
 
 namespace Hatchit {
@@ -107,6 +109,9 @@ namespace Hatchit {
             if (!_instance.m_renderer->VInitialize(params))
                 return false;
 
+            /*Initialize GPU Resource Pool*/
+            GPUResourcePool::Initialize(Graphics::Renderer::GetDevice());
+
             _instance.m_initialized = true;
 
             return true;
@@ -120,8 +125,10 @@ namespace Hatchit {
                 return;
 
             _instance.m_renderer->VDeInitialize();
-
             delete _instance.m_renderer;
+
+            /*Release GPUResourcePool*/
+            GPUResourcePool::DeInitialize();
 
             _instance.m_initialized = false;
         }

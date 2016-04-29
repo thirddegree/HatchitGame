@@ -163,22 +163,22 @@ namespace Hatchit {
         */
         bool LightComponent::SetMeshAndMaterial(std::string meshFile, std::string materialFile)
         {
-            if (Renderer::GetRendererType() == Graphics::DIRECTX11)
-                return false;
-            else if (Renderer::GetRendererType() == Graphics::DIRECTX12)
-                //mat = Graphics::DX::D3D12Material::GetHandle(material);
-                return false;
-            else if (Renderer::GetRendererType() == Graphics::VULKAN)
-            {
-                Resource::ModelHandle model = Resource::Model::GetHandleFromFileName(meshFile);
-                std::vector<Resource::Mesh*> meshes = model->GetMeshes();
+            //if (Renderer::GetRendererType() == Graphics::DIRECTX11)
+            //    return false;
+            //else if (Renderer::GetRendererType() == Graphics::DIRECTX12)
+            //    //mat = Graphics::DX::D3D12Material::GetHandle(material);
+            //    return false;
+            //else if (Renderer::GetRendererType() == Graphics::VULKAN)
+            //{
+            //    Resource::ModelHandle model = Resource::Model::GetHandleFromFileName(meshFile);
+            //    std::vector<Resource::Mesh*> meshes = model->GetMeshes();
 
-                Graphics::Vulkan::VKRenderer* renderer = dynamic_cast<Graphics::Vulkan::VKRenderer*>(Renderer::instance().GetRenderer());
-                m_mesh = Graphics::Vulkan::VKMesh::GetHandle(meshFile, meshes[0], renderer).StaticCastHandle<Graphics::IMesh>();
-                m_material = Graphics::Vulkan::VKMaterial::GetHandle(materialFile, materialFile, renderer).StaticCastHandle<Graphics::IMaterial>();
-            }
-            else if (Renderer::GetRendererType() == Graphics::OPENGL)
-                return false;
+            //    Graphics::Vulkan::VKRenderer* renderer = dynamic_cast<Graphics::Vulkan::VKRenderer*>(Renderer::instance().GetRenderer());
+            //    m_mesh = Graphics::Vulkan::VKMesh::GetHandle(meshFile, meshes[0], renderer).StaticCastHandle<Graphics::IMesh>();
+            //    m_material = Graphics::Vulkan::VKMaterial::GetHandle(materialFile, materialFile, renderer).StaticCastHandle<Graphics::IMaterial>();
+            //}
+            //else if (Renderer::GetRendererType() == Graphics::OPENGL)
+            //    return false;
             return true;
         }
     }

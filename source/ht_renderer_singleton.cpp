@@ -20,7 +20,6 @@
 #include <ht_d3d11renderer.h>
 #endif
 #ifdef DX12_SUPPORT
-#include <ht_d3d12renderer.h>
 #endif
 #endif
 
@@ -46,71 +45,15 @@ namespace Hatchit {
         {
             Renderer& _instance = Renderer::instance();
             _instance.m_rendererType = params.renderer;
-
-#ifdef HT_SYS_LINUX
-            if (params.renderer == RendererType::OPENGL)
-        {            
-#ifdef GL_SUPPORT
-            _instance.m_renderer = new OpenGL::GLRenderer;
-#endif
-        }
-        else if (params.renderer == RendererType::VULKAN)
-        {
-#ifdef VK_SUPPORT
-                _instance.m_renderer = new Vulkan::VKRenderer;
-#endif
-        }
-        else
-                _instance.m_renderer = nullptr;
-#else
-            if (params.renderer == RendererType::DIRECTX11)
-            {
-#ifdef DX11_SUPPORT
-                _instance.m_renderer = new DirectX::D3D11Renderer;
-#else
-                HT_ERROR_PRINTF("DirectX11 Renderer requested when engine not compiled with DirectX11 support!\n");
-                return false;
-#endif
-            }
-            else if (params.renderer == RendererType::DIRECTX12)
-            {
-
-#ifdef DX12_SUPPORT
-                _instance.m_renderer = new DX::D3D12Renderer;
-#else
-                HT_ERROR_PRINTF("DirectX12 Renderer requested when engine not compiled with DirectX12 support!\n");
-                return false;
-#endif
-            }
-            else if (params.renderer == RendererType::OPENGL)
-            {
-#ifdef GL_SUPPORT
-                _instance.m_renderer = new OpenGL::GLRenderer;
-#else
-                HT_ERROR_PRINTF("OpenGL Renderer requested when engine not compiled with OpenGL support!\n");
-                return false;
-#endif
-            }
-            else if (params.renderer == RendererType::VULKAN)
-            {
-#ifdef VK_SUPPORT
-                _instance.m_renderer = new Vulkan::VKRenderer;
-#else
-                HT_ERROR_PRINTF("Vulkan Renderer requested when engine not compiled with Vulkan support!\n");
-                return false;
-#endif
-            }
-            else
-                _instance.m_renderer = nullptr;
-#endif
-            if (!_instance.m_renderer)
-                return false;
-
-            if (!_instance.m_renderer->VInitialize(params))
+            _instance.m_renderer = new Graphics::Renderer;
+            if (!_instance.m_renderer->Initialize(params))
                 return false;
 
             /*Initialize GPU Resource Pool*/
             GPUResourcePool::Initialize(Graphics::Renderer::GetDevice());
+
+            TextureHandle def = Texture::GetHandle("raptor.png", "raptor.png");
+            TextureHandle test = Texture::GetHandleAsync(def, "raptor_normal.png", "raptor_normal.png");
 
             _instance.m_initialized = true;
 
@@ -124,31 +67,24 @@ namespace Hatchit {
             if (!_instance.m_initialized)
                 return;
 
-            _instance.m_renderer->VDeInitialize();
-            delete _instance.m_renderer;
 
             /*Release GPUResourcePool*/
             GPUResourcePool::DeInitialize();
 
+            delete _instance.m_renderer;
+
+            
             _instance.m_initialized = false;
         }
 
-        void Renderer::SetClearColor(const Color& color)
-        {
-            Renderer& _instance = Renderer::instance();
-            if (!_instance.m_initialized)
-                return;
-
-            _instance.m_renderer->VSetClearColor(color);
-        }
-
+       
         void Renderer::Render()
         {
             Renderer& _instance = Renderer::instance();
             if (!_instance.m_initialized)
                 return;
 
-            _instance.m_renderer->VRender(Time::DeltaTime());
+            _instance.m_renderer->Render();
         }
 
         void Renderer::Present()
@@ -157,16 +93,7 @@ namespace Hatchit {
             if (!_instance.m_initialized)
                 return;
 
-            _instance.m_renderer->VPresent();
-        }
-
-        void Renderer::ClearBuffer(ClearArgs args)
-        {
-            Renderer& _instance = Renderer::instance();
-            if (!_instance.m_initialized)
-                return;
-
-            _instance.m_renderer->VClearBuffer(args);
+            _instance.m_renderer->Present();
         }
 
         void Renderer::ResizeBuffers(uint32_t width, uint32_t height)
@@ -175,7 +102,7 @@ namespace Hatchit {
             if (!_instance.m_initialized)
                 return;
 
-            _instance.m_renderer->VResizeBuffers(width, height);
+            _instance.m_renderer->ResizeBuffers(width, height);
         }
         
 

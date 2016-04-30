@@ -30,10 +30,6 @@ namespace Hatchit {
 
             static void DeInitialize();
 
-            static void SetClearColor(const Graphics::Color& color);
-
-            static void ClearBuffer(Graphics::ClearArgs args);
-
             static void Render();
 
             static void Present();

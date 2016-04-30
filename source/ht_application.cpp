@@ -49,8 +49,6 @@ namespace Hatchit {
 
                 SceneManager::Update();
 
-                Renderer::ClearBuffer(ClearArgs::ColorDepthStencil);
-
                 Renderer::Render();
 
                 Renderer::Present();

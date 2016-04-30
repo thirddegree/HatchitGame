@@ -60,10 +60,8 @@ namespace Hatchit {
             {
                 return false;
             }
-
             
             MaterialHandle material = Material::GetHandle(materialFile, materialFile);
-
 
             //all data has been successfully parsed, attempt to set it all up...
 
@@ -97,10 +95,6 @@ namespace Hatchit {
 
             return true;
         }
-
-
-
-
 
         void MeshRenderer::SetRenderable(Graphics::IMeshHandle mesh,
             Graphics::MaterialHandle material)

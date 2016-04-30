@@ -175,7 +175,7 @@ namespace Hatchit {
 
             //    Graphics::Vulkan::VKRenderer* renderer = dynamic_cast<Graphics::Vulkan::VKRenderer*>(Renderer::instance().GetRenderer());
             //    m_mesh = Graphics::Vulkan::VKMesh::GetHandle(meshFile, meshes[0], renderer).StaticCastHandle<Graphics::IMesh>();
-            //    m_material = Graphics::Vulkan::VKMaterial::GetHandle(materialFile, materialFile, renderer).StaticCastHandle<Graphics::IMaterial>();
+            //    m_material = Graphics::Material::GetHandle(materialFile, materialFile, renderer);
             //}
             //else if (Renderer::GetRendererType() == Graphics::OPENGL)
             //    return false;

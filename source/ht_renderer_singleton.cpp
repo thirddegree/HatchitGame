@@ -15,21 +15,6 @@
 #include <ht_renderer_singleton.h>
 #include <ht_time_singleton.h>
 #include <ht_debug.h>
-#ifdef HT_SYS_WINDOWS
-#ifdef DX11_SUPPORT
-#include <ht_d3d11renderer.h>
-#endif
-#ifdef DX12_SUPPORT
-#endif
-#endif
-
-#ifdef GL_SUPPORT
-#include <ht_glrenderer.h>
-#endif
-
-#ifdef VK_SUPPORT
-#include <ht_vkrenderer.h>
-#endif
 
 #include <ht_gpuresourcepool.h>
 
@@ -53,7 +38,7 @@ namespace Hatchit {
             GPUResourcePool::Initialize(Graphics::Renderer::GetDevice());
 
             TextureHandle def = Texture::GetHandle("raptor.png", "raptor.png");
-            TextureHandle test = Texture::GetHandleAsync(def, "raptor_normal.png", "raptor_normal.png");
+            MaterialHandle m = Material::GetHandle("DeferredMaterial.json", "DeferredMaterial.json");
 
             _instance.m_initialized = true;
 

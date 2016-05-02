@@ -29,7 +29,7 @@ namespace Hatchit {
             virtual Core::JSON VSerialize(void) override;
             virtual bool VDeserialize(const Core::JSON& jsonObject) override;
 
-            void SetRenderable(Graphics::IMeshHandle mesh, 
+            void SetRenderable(Graphics::MeshHandle mesh, 
                 Graphics::MaterialHandle material);
 
             /**

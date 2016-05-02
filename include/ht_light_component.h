@@ -60,7 +60,7 @@ namespace Hatchit {
 
             LightType m_lightType;
             Graphics::MeshRenderer* m_meshRenderer;
-            Graphics::IMeshHandle m_mesh;
+            Graphics::MeshHandle m_mesh;
             Graphics::MaterialHandle m_material;
 
             /* Point Light Data */

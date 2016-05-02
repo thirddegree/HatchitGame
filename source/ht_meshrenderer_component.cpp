@@ -96,7 +96,7 @@ namespace Hatchit {
             return true;
         }
 
-        void MeshRenderer::SetRenderable(Graphics::IMeshHandle mesh,
+        void MeshRenderer::SetRenderable(Graphics::MeshHandle mesh,
             Graphics::MaterialHandle material)
         {
             m_meshRenderer->SetMesh(mesh);

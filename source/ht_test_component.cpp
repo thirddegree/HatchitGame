@@ -42,6 +42,16 @@ namespace Hatchit {
             return new TestComponent(*this);
         }
 
+        /**
+        * \brief Retrieves the id associated with this class of Component.
+        * \return The Core::Guid associated with this Component type.
+        * \sa Component(), GameObject()
+        */
+        Core::Guid TestComponent::VGetComponentId(void) const
+        {
+            return Component::GetComponentId<TestComponent>();
+        }
+
         void TestComponent::VOnEnabled()
         {
             HT_DEBUG_PRINTF("Enabled Test Component.\n");

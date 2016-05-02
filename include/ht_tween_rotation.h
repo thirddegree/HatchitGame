@@ -72,6 +72,8 @@ namespace Hatchit {
             * \brief Creates a copy of this Component.
             */
             Component* VClone(void) const override;
+
+            virtual Core::Guid VGetComponentId(void) const override;
         };
 
     }

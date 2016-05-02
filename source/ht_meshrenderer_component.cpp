@@ -120,6 +120,16 @@ namespace Hatchit {
             return new MeshRenderer(*this);
         }
 
+        /**
+        * \brief Retrieves the id associated with this class of Component.
+        * \return The Core::Guid associated with this Component type.
+        * \sa Component(), GameObject()
+        */
+        Core::Guid MeshRenderer::VGetComponentId(void) const
+        {
+            return Component::GetComponentId<MeshRenderer>();
+        }
+
         void MeshRenderer::VOnEnabled()
         {
             HT_DEBUG_PRINTF("Enabled MeshRenderer Component.\n");

@@ -30,6 +30,7 @@ namespace Hatchit {
             void VOnInit() override;
             void VOnUpdate() override;
             Component* VClone(void) const override;
+            virtual Core::Guid VGetComponentId(void) const override;
         protected:
             void VOnEnabled() override;
             void VOnDisabled() override;

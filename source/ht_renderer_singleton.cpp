@@ -39,7 +39,9 @@ namespace Hatchit {
 
             TextureHandle def = Texture::GetHandle("raptor.png", "raptor.png");
             MaterialHandle m = Material::GetHandle("DeferredMaterial.json", "DeferredMaterial.json");
+            PipelineHandle pipe = Pipeline::GetHandle("DeferredPipeline.json", "DeferredPipeline.json");
 
+            
             _instance.m_initialized = true;
 
             return true;

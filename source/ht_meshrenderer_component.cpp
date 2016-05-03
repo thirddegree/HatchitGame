@@ -13,7 +13,6 @@
 **/
 
 #ifdef VK_SUPPORT
-#include <ht_vkrenderer.h>
 #include <ht_vkmaterial.h>
 #include <ht_vkmesh.h>
 #include <ht_vkmaterial.h>

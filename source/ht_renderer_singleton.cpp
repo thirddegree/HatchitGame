@@ -34,9 +34,6 @@ namespace Hatchit {
             if (!_instance.m_renderer->Initialize(params))
                 return false;
 
-            /*Initialize GPU Resource Pool*/
-            GPUResourcePool::Initialize(Graphics::Renderer::GetDevice());
-
             TextureHandle def = Texture::GetHandle("raptor.png", "raptor.png");
             MaterialHandle m = Material::GetHandle("DeferredMaterial.json", "DeferredMaterial.json");
             PipelineHandle pipe = Pipeline::GetHandle("DeferredPipeline.json", "DeferredPipeline.json");

@@ -1,6 +1,6 @@
 /**
 **    Hatchit Engine
-**    Copyright(c) 2015 Third-Degree
+**    Copyright(c) 2015-2016 Third-Degree
 **
 **    GNU Lesser General Public License
 **    This file may be used under the terms of the GNU Lesser
@@ -33,11 +33,6 @@ namespace Hatchit {
             _instance.m_renderer = new Graphics::Renderer;
             if (!_instance.m_renderer->Initialize(params))
                 return false;
-
-            TextureHandle def = Texture::GetHandle("raptor.png", "raptor.png");
-            MaterialHandle m = Material::GetHandle("DeferredMaterial.json", "DeferredMaterial.json");
-            PipelineHandle pipe = Pipeline::GetHandle("DeferredPipeline.json", "DeferredPipeline.json");
-
             
             _instance.m_initialized = true;
 
@@ -51,12 +46,10 @@ namespace Hatchit {
             if (!_instance.m_initialized)
                 return;
 
-
             /*Release GPUResourcePool*/
             GPUResourcePool::DeInitialize();
 
             delete _instance.m_renderer;
-
             
             _instance.m_initialized = false;
         }
@@ -99,7 +92,9 @@ namespace Hatchit {
 
         Graphics::Renderer* Renderer::GetRenderer()
         {
-            return m_renderer;
+            Renderer& _instance = Renderer::instance();
+
+            return _instance.m_renderer;
         }
     }
 

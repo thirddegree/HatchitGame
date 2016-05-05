@@ -93,7 +93,7 @@ namespace Hatchit {
         */
         void LightComponent::VOnInit()
         {
-            m_meshRenderer = new Graphics::MeshRenderer();
+            m_meshRenderer = new Graphics::MeshRenderer(Renderer::GetRenderer());
 
             SetType(m_lightType);
             

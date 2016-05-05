@@ -33,7 +33,8 @@ namespace Hatchit {
 
         bool Camera::VDeserialize(const Core::JSON& jsonObject)
         {
-            return false;
+            m_camera.SetLayerFlags(0);
+            return true;
         }
 
         void Camera::VOnInit()

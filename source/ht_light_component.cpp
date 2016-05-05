@@ -55,14 +55,23 @@ namespace Hatchit {
             {
                 if (lightType == LightType::POINT_LIGHT)
                 {
-                    std::vector<float> attenuation;
-                    std::vector<float> color;
-                    if (!Core::JsonExtract<float>(jsonObject, "Radius", m_radius) 
-                        || !Core::JsonExtractContainer(jsonObject, "Attenuation", attenuation)
-                        || !Core::JsonExtractContainer(jsonObject, "Color", color))
+                    if (!Core::JsonExtract<float>(jsonObject, "Radius", m_radius))
                         return false;
-                    m_attenuation = { attenuation[0], attenuation[1], attenuation[2] };
-                    m_color = { color[0], color[1], color[2], color[3] };
+
+                    Core::JSON attenuationJSON = jsonObject["Attenuation"];
+                    if (attenuationJSON.size() <= 0)
+                        return false;
+
+                    for (size_t i = 0; i < attenuationJSON.size(); i++)
+                        m_attenuation[i] = attenuationJSON[i];
+                    
+                    Core::JSON colorJSON = jsonObject["Color"];
+                    if (colorJSON.size() <= 0)
+                        return false;
+
+                    for (size_t i = 0; i < colorJSON.size(); i++)
+                        m_color[i] = colorJSON[i];
+
                 }
                 m_lightType = LightType(lightType);
             }
@@ -162,22 +171,9 @@ namespace Hatchit {
         */
         bool LightComponent::SetMeshAndMaterial(std::string meshFile, std::string materialFile)
         {
-            //if (Renderer::GetRendererType() == Graphics::DIRECTX11)
-            //    return false;
-            //else if (Renderer::GetRendererType() == Graphics::DIRECTX12)
-            //    //mat = Graphics::DX::D3D12Material::GetHandle(material);
-            //    return false;
-            //else if (Renderer::GetRendererType() == Graphics::VULKAN)
-            //{
-            //    Resource::ModelHandle model = Resource::Model::GetHandleFromFileName(meshFile);
-            //    std::vector<Resource::Mesh*> meshes = model->GetMeshes();
+            m_mesh = Graphics::Mesh::GetHandle(meshFile, meshFile);
+            m_material = Graphics::Material::GetHandle(materialFile, materialFile);
 
-            //    Graphics::Vulkan::VKRenderer* renderer = dynamic_cast<Graphics::Vulkan::VKRenderer*>(Renderer::instance().GetRenderer());
-            //    m_mesh = Graphics::Vulkan::VKMesh::GetHandle(meshFile, meshes[0], renderer).StaticCastHandle<Graphics::IMesh>();
-            //    m_material = Graphics::Material::GetHandle(materialFile, materialFile, renderer);
-            //}
-            //else if (Renderer::GetRendererType() == Graphics::OPENGL)
-            //    return false;
             return true;
         }
     }

@@ -15,6 +15,7 @@
 #include <ht_camera_component.h>
 #include <ht_renderer_singleton.h>
 #include <ht_jsonhelper.h>
+#include <ht_gameobject.h>
 
 namespace Hatchit {
 
@@ -22,7 +23,13 @@ namespace Hatchit {
 
         Camera::Camera()
         {
-            m_camera = Graphics::Camera(Math::Matrix4(), Math::MMMatrixPerspProj(60, 1280, 720, 1, 100));
+            m_fov = 3.14f/4.0f;
+            m_width = 1280;
+            m_height = 720;
+            m_near = 0.1f;
+            m_far = 100.0f;
+            
+            m_camera = Graphics::Camera(Math::Matrix4(), Math::MMMatrixPerspProj(m_fov, m_width, m_height, m_near, m_far));
             m_renderer = Renderer::instance().GetRenderer();
         }
 
@@ -33,7 +40,7 @@ namespace Hatchit {
 
         bool Camera::VDeserialize(const Core::JSON& jsonObject)
         {
-            m_camera.SetLayerFlags(0);
+            m_camera.SetLayerFlags(1);
             return true;
         }
 
@@ -44,7 +51,7 @@ namespace Hatchit {
 
         void Camera::VOnUpdate()
         {
-            Transform t; //m_owner->GetTransform();
+            Transform t = m_owner->GetTransform();
             m_camera.SetView(Math::MMMatrixLookAt(t.GetPosition(), t.GetPosition() + t.GetForward(), t.GetUp()));
             m_camera.SetProjection(Math::MMMatrixPerspProj(m_fov, m_width, m_height, m_near, m_far));
             m_renderer->RegisterCamera(m_camera);

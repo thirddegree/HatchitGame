@@ -64,6 +64,7 @@ namespace Hatchit {
             Graphics::MaterialHandle m_material;
 
             /* Point Light Data */
+            std::vector<Resource::ShaderVariable*> m_data;
             float m_radius;
             Math::Vector4 m_color;
             Math::Vector3 m_attenuation;

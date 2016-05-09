@@ -116,9 +116,6 @@ namespace Hatchit {
             float yaw = rot.y + xOffset;
             float pitch = rot.x + yOffset;
 
-            HT_DEBUG_PRINTF(std::to_string(yaw) + '\n');
-            HT_DEBUG_PRINTF(std::to_string(pitch) + '\n');
-
             if (pitch > 89.9f)
                 pitch = 89.9f;
             if (pitch < -89.9f)

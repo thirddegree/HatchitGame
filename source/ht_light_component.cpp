@@ -75,6 +75,7 @@ namespace Hatchit {
                 }
                 m_lightType = LightType(lightType);
             }
+
             return true;
         }
 
@@ -115,13 +116,18 @@ namespace Hatchit {
         */
         void LightComponent::VOnUpdate()
         {
-            std::vector<Resource::ShaderVariable*> data;
-            data.push_back(new Resource::Matrix4Variable(Math::MMMatrixTranspose(*GetOwner()->GetTransform().GetWorldMatrix())));
-            data.push_back(new Resource::Float4Variable(m_color));
-            data.push_back(new Resource::FloatVariable(m_radius));
-            data.push_back(new Resource::Float3Variable(m_attenuation));
+            //Delete existing instance data
+            for (size_t i = 0; i < m_data.size(); i++)
+                delete m_data[i];
 
-            m_meshRenderer->SetInstanceData(data);
+            m_data.clear();
+
+            m_data.push_back(new Resource::Matrix4Variable(Math::MMMatrixTranspose(*GetOwner()->GetTransform().GetWorldMatrix())));
+            m_data.push_back(new Resource::Float4Variable(m_color));
+            m_data.push_back(new Resource::FloatVariable(m_radius));
+            m_data.push_back(new Resource::Float3Variable(m_attenuation));
+
+            m_meshRenderer->SetInstanceData(m_data);
             m_meshRenderer->Render();
         }
 

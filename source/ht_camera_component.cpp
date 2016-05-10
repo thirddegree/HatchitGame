@@ -106,8 +106,8 @@ namespace Hatchit {
 
             Math::Vector3 rot = t.GetRotation();
 
-            float xOffset = static_cast<float>(Input::DeltaX(1280.0f/2.0f));
-            float yOffset = static_cast<float>(Input::DeltaY(720.0f/2.0f));
+            float xOffset = static_cast<float>(Input::DeltaX(static_cast<int>(1280.0f / 2.0f)));
+            float yOffset = static_cast<float>(Input::DeltaY(static_cast<int>(720.0f/2.0f)));
             float sensitivity = 0.1f;
 
             xOffset *= sensitivity;

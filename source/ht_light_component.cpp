@@ -23,8 +23,10 @@
 #endif
 #endif
 
+#include <unordered_map>
 #include <ht_gameobject.h>
 #include <ht_light_component.h>
+#include <ht_shadervariablechunk.h>
 #include <ht_renderer_singleton.h>
 #include <ht_debug.h>
 
@@ -105,6 +107,21 @@ namespace Hatchit {
         {
             m_meshRenderer = new Graphics::MeshRenderer(Renderer::GetRenderer());
 
+            std::vector<Resource::ShaderVariable*> variables;
+            Resource::Matrix4Variable* transform = new Resource::Matrix4Variable(Math::Matrix4());
+            Resource::Float4Variable* color = new Resource::Float4Variable(m_color);
+            Resource::FloatVariable* radius = new Resource::FloatVariable(m_radius);
+            Resource::Float3Variable* atten = new Resource::Float3Variable(m_attenuation);
+
+            variables.push_back(transform);
+            variables.push_back(color);
+            variables.push_back(radius);
+            variables.push_back(atten);
+
+            m_data = new Graphics::ShaderVariableChunk(variables);
+
+            delete transform, color, radius, atten;
+
             SetType(m_lightType);
             
             HT_DEBUG_PRINTF("Initialized Light Component.\n");
@@ -116,17 +133,8 @@ namespace Hatchit {
         */
         void LightComponent::VOnUpdate()
         {
-            //Delete existing instance data
-            for (size_t i = 0; i < m_data.size(); i++)
-                delete m_data[i];
-
-            m_data.clear();
-
-            m_data.push_back(new Resource::Matrix4Variable(Math::MMMatrixTranspose(*GetOwner()->GetTransform().GetWorldMatrix())));
-            m_data.push_back(new Resource::Float4Variable(m_color));
-            m_data.push_back(new Resource::FloatVariable(m_radius));
-            m_data.push_back(new Resource::Float3Variable(m_attenuation));
-
+            //0 is the beginning of the instance data array
+            m_data->SetMatrix4(0, Hatchit::Math::MMMatrixTranspose(*m_owner->GetTransform().GetWorldMatrix()));
             m_meshRenderer->SetInstanceData(m_data);
             m_meshRenderer->Render();
         }

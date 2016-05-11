@@ -21,8 +21,8 @@
 //#include <ht_d3d12material.h>
 #endif
 
-
 #include <ht_meshrenderer_component.h>
+#include <ht_shadervariablechunk.h>
 #include <ht_renderer_singleton.h>
 #include <ht_debug.h>
 #include <ht_gameobject.h>
@@ -37,7 +37,6 @@ namespace Hatchit {
         MeshRenderer::MeshRenderer()
         {
             m_meshRenderer = new Graphics::MeshRenderer(Renderer::GetRenderer());
-            m_worldMatrix = new Resource::Matrix4Variable();
         }
 
         Core::JSON MeshRenderer::VSerialize(void)
@@ -89,6 +88,17 @@ namespace Hatchit {
             //
             SetRenderable(mesh, mat);
 
+
+
+            //setup instance data
+            Resource::Matrix4Variable* temp = new Resource::Matrix4Variable(Math::Matrix4());
+            std::vector<Resource::ShaderVariable*> variables;
+            variables.push_back(temp);
+            m_instanceData = new ShaderVariableChunk(variables);
+            delete temp;
+
+
+
             return true;
         }
 
@@ -110,12 +120,8 @@ namespace Hatchit {
         void MeshRenderer::VOnUpdate()
         {
             //TODO: send actual transform data
-            m_worldMatrix->SetData(Hatchit::Math::MMMatrixTranspose(*m_owner->GetTransform().GetWorldMatrix()));
-
-            std::vector<Resource::ShaderVariable*> data;
-            data.push_back(m_worldMatrix);
-
-            m_meshRenderer->SetInstanceData(data);
+            m_instanceData->SetMatrix4(0, Hatchit::Math::MMMatrixTranspose(*m_owner->GetTransform().GetWorldMatrix()));
+            m_meshRenderer->SetInstanceData(m_instanceData);
             m_meshRenderer->Render();
         }
 

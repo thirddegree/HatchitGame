@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <ht_shadervariablechunk.h>
 #include <ht_meshrenderer.h>
 #include <ht_component.h>
 #include <ht_model.h>
@@ -64,7 +65,7 @@ namespace Hatchit {
             Graphics::MaterialHandle m_material;
 
             /* Point Light Data */
-            std::vector<Resource::ShaderVariable*> m_data;
+            Graphics::ShaderVariableChunk* m_data;
             float m_radius;
             Math::Vector4 m_color;
             Math::Vector3 m_attenuation;

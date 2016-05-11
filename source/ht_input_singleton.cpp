@@ -21,11 +21,8 @@
         #include <ht_sdlmouse.h>
     #endif
 #else
-    #ifndef VK_SUPPORT
-        #define SDL_SUPPORT TRUE
         #include <ht_sdlkeyboard.h>
         #include <ht_sdlmouse.h>
-    #endif
 #endif
 
 namespace Hatchit
@@ -35,10 +32,9 @@ namespace Hatchit
         void Input::Initialize()
         {
             Input& _instance = Input::instance();
-#ifdef SDL_SUPPORT
+
             _instance.m_keyboard = new SDLKeyboard;
             _instance.m_mouse = new SDLMouse;
-#endif
         }
 
         void Input::DeInitialize()

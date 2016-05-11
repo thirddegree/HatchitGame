@@ -220,6 +220,7 @@ namespace Hatchit {
             */
             Component* VClone(void) const override;
 
+            virtual Core::Guid VGetComponentId(void) const override;
         protected:
             static std::vector<TweenFunction> s_tweenFunctions;
 

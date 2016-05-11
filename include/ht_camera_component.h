@@ -50,6 +50,7 @@ namespace Hatchit {
             */
             Component* VClone(void) const override;
 
+            virtual Core::Guid VGetComponentId(void) const override;
         protected:
 
             /**

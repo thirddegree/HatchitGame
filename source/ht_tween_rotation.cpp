@@ -105,6 +105,15 @@ namespace Hatchit {
             return new TweenRotation(*this);
         }
 
+        /**
+        * \brief Retrieves the id associated with this class of Component.
+        * \return The Core::Guid associated with this Component type.
+        * \sa Component(), GameObject()
+        */
+        Core::Guid TweenRotation::VGetComponentId(void) const
+        {
+            return Component::GetComponentId<TweenRotation>();
+        }
     }
 
 }

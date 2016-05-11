@@ -149,6 +149,16 @@ namespace Hatchit {
         }
 
         /**
+        * \brief Retrieves the id associated with this class of Component.
+        * \return The Core::Guid associated with this Component type.
+        * \sa Component(), GameObject()
+        */
+        Core::Guid LightComponent::VGetComponentId(void) const
+        {
+            return Component::GetComponentId<LightComponent>();
+        }
+
+        /**
         * \brief Called when the Component is enabled.
         * This happens when a scene has finished loading, or immediately after creation if the scene is already loaded.
         */

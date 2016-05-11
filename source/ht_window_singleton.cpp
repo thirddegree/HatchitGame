@@ -16,11 +16,7 @@
 #include <ht_debug.h>
 
 #ifdef HT_SYS_LINUX
-#ifdef VK_SUPPORT
-#include <ht_xcbwindow.h>
-#else
 #include <ht_sdlwindow.h>
-#endif
 #else
     #ifdef HT_WIN32_DESKTOP_APP
     #include <ht_sdlwindow.h>
@@ -38,11 +34,7 @@ namespace Hatchit {
             Window& _instance = Window::instance();
 
 #ifdef HT_SYS_LINUX
-#ifdef VK_SUPPORT           
-	    _instance.m_window = new XCBWindow(params);
-#else
 	    _instance.m_window = new SDLWindow(params);
-#endif
 #else
     #ifdef HT_WIN32_DESKTOP_APP
             _instance.m_window = new SDLWindow(params);

@@ -92,7 +92,7 @@ namespace Hatchit {
             {
                 case LightType::POINT_LIGHT:
                 {
-                    SetMeshAndMaterial("Icosphere.dae", "PointLightMaterial.json");
+                    SetMeshAndMaterial("IcoSphere.dae", "PointLightMaterial.json");
                     break;
                 }
                 

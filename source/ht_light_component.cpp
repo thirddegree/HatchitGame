@@ -65,7 +65,7 @@ namespace Hatchit {
                         return false;
 
                     for (size_t i = 0; i < attenuationJSON.size(); i++)
-                        m_attenuation[i] = attenuationJSON[i];
+                        m_attenuation[static_cast<int>(i)] = attenuationJSON[i];
                     
                     Core::JSON colorJSON = jsonObject["Color"];
                     if (colorJSON.size() <= 0)

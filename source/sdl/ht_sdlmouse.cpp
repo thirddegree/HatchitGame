@@ -23,8 +23,8 @@ namespace Hatchit
     namespace Game
     {
         SDLMouse::SDLMouse()
-            : m_x(0), m_y(0), m_wx(0), m_wy(0),
-              m_prevWX(0), m_prevWY(0), m_prevX(0), m_prevY(0)
+            : m_x(0), m_y(0), m_prevX(0), m_prevY(0), m_wx(0), m_wy(0),
+              m_prevWX(0), m_prevWY(0)
         {
             m_current[MOUSE_LMB].state = SDL_RELEASED;
             m_current[MOUSE_MMB].state = SDL_RELEASED;

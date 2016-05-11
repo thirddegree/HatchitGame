@@ -95,6 +95,10 @@ namespace Hatchit {
                     SetMeshAndMaterial("Icosphere.dae", "PointLightMaterial.json");
                     break;
                 }
+                
+                case LightType::DIRECTIONAL_LIGHT:
+                case LightType::SPOT_LIGHT:
+                    break;
             }
             m_meshRenderer->SetMesh(m_mesh);
             m_meshRenderer->SetMaterial(m_material);
@@ -120,7 +124,10 @@ namespace Hatchit {
 
             m_data = new Graphics::ShaderVariableChunk(variables);
 
-            delete transform, color, radius, atten;
+            delete transform;
+            delete color;
+            delete radius;
+            delete atten;
 
             SetType(m_lightType);
             

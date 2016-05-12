@@ -66,11 +66,15 @@ namespace Hatchit {
             Graphics::MaterialHandle m_material;
 
             /* Point Light Data */
-            Graphics::ShaderVariableChunk* m_data;
             float m_radius;
-            Math::Vector4 m_color;
             Math::Vector3 m_attenuation;
 
+            /* Directional & Spot Light Data*/
+            Math::Vector3 m_direction;            
+
+            /* All Light Data */
+            Graphics::ShaderVariableChunk* m_data;
+            Math::Vector4 m_color;
         };
     }
 }

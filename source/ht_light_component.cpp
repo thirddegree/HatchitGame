@@ -66,15 +66,32 @@ namespace Hatchit {
 
                     for (size_t i = 0; i < attenuationJSON.size(); i++)
                         m_attenuation[static_cast<int>(i)] = attenuationJSON[i];
-                    
-                    Core::JSON colorJSON = jsonObject["Color"];
-                    if (colorJSON.size() <= 0)
+                }
+
+                if (lightType == LightType::DIRECTIONAL_LIGHT || lightType == LightType::SPOT_LIGHT)
+                {
+                    Core::JSON directionJSON = jsonObject["Direction"];
+                    if (directionJSON.size() <= 0)
                         return false;
 
+                    for (size_t i = 0; i < directionJSON.size(); i++)
+                        m_direction[static_cast<int>(i)] = directionJSON[i];
+
+                    m_direction = Math::MMVector3Normalized(m_direction);
+                }
+
+                //Always parse color; Use white if not defined
+                Core::JSON colorJSON = jsonObject["Color"];
+                if (colorJSON.size() <= 0)
+                {
+                    m_color = { 1, 1, 1, 1 };
+                }
+                else
+                {
                     for (size_t i = 0; i < colorJSON.size(); i++)
                         m_color[i] = colorJSON[i];
-
                 }
+
                 m_lightType = LightType(lightType);
             }
 
@@ -95,8 +112,11 @@ namespace Hatchit {
                     SetMeshAndMaterial("IcoSphere.dae", "PointLightMaterial.json");
                     break;
                 }
-                
                 case LightType::DIRECTIONAL_LIGHT:
+                {
+                    SetMeshAndMaterial("Tri.obj", "DirectionalLightMaterial.json");
+                    break;
+                }
                 case LightType::SPOT_LIGHT:
                     break;
             }
@@ -112,22 +132,35 @@ namespace Hatchit {
             m_meshRenderer = new Graphics::MeshRenderer(Renderer::GetRenderer());
 
             std::vector<Resource::ShaderVariable*> variables;
+            
+            //First var of every light is the transform
             Resource::Matrix4Variable* transform = new Resource::Matrix4Variable(Math::Matrix4());
-            Resource::Float4Variable* color = new Resource::Float4Variable(m_color);
-            Resource::FloatVariable* radius = new Resource::FloatVariable(m_radius);
-            Resource::Float3Variable* atten = new Resource::Float3Variable(m_attenuation);
-
             variables.push_back(transform);
+
+            Resource::Float4Variable* color = new Resource::Float4Variable(m_color);
             variables.push_back(color);
-            variables.push_back(radius);
-            variables.push_back(atten);
+
+            if (m_lightType == LightType::POINT_LIGHT)
+            {
+                Resource::FloatVariable* radius = new Resource::FloatVariable(m_radius);
+                Resource::Float3Variable* atten = new Resource::Float3Variable(m_attenuation);
+
+                variables.push_back(radius);
+                variables.push_back(atten);
+            }
+
+            if (m_lightType == LightType::DIRECTIONAL_LIGHT || m_lightType == LightType::SPOT_LIGHT)
+            {
+                Resource::Float3Variable* direction = new Resource::Float3Variable(m_direction);
+
+                variables.push_back(direction);
+            }
 
             m_data = new Graphics::ShaderVariableChunk(variables);
 
-            delete transform;
-            delete color;
-            delete radius;
-            delete atten;
+            //Delete all allocated variables
+            for (size_t i = 0; i < variables.size(); i++)
+                delete variables[i];
 
             SetType(m_lightType);
             

@@ -134,8 +134,11 @@ namespace Hatchit {
             std::vector<Resource::ShaderVariable*> variables;
             
             //First var of every light is the transform
-            Resource::Matrix4Variable* transform = new Resource::Matrix4Variable(Math::Matrix4());
-            variables.push_back(transform);
+            if (m_lightType == LightType::POINT_LIGHT || m_lightType == LightType::SPOT_LIGHT)
+            {
+                Resource::Matrix4Variable* transform = new Resource::Matrix4Variable(Math::Matrix4());
+                variables.push_back(transform);
+            }
 
             Resource::Float4Variable* color = new Resource::Float4Variable(m_color);
             variables.push_back(color);
@@ -174,7 +177,8 @@ namespace Hatchit {
         void LightComponent::VOnUpdate()
         {
             //0 is the beginning of the instance data array
-            m_data->SetMatrix4(0, Hatchit::Math::MMMatrixTranspose(*m_owner->GetTransform().GetWorldMatrix()));
+            if (m_lightType == LightType::POINT_LIGHT || m_lightType == LightType::SPOT_LIGHT)
+                m_data->SetMatrix4(0, Hatchit::Math::MMMatrixTranspose(*m_owner->GetTransform().GetWorldMatrix()));
             m_meshRenderer->SetInstanceData(m_data);
             m_meshRenderer->Render();
         }

@@ -29,7 +29,7 @@ namespace Hatchit {
             m_fov = Math::MMDegreesToRadians(90.0f);
             m_width = 1280;
             m_height = 720;
-            m_near = 0.1f;
+            m_near = 1.0f;
             m_far = 100.0f;
             m_layer = 1;
 

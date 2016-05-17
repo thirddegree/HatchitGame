@@ -21,30 +21,49 @@ namespace Hatchit {
 
     namespace Game {
 
+        enum CameraControlType
+        {
+            Unity = 0
+        };
+
         class HT_API DebugCamera
         {
         public:
             DebugCamera();
             ~DebugCamera() = default;
 
-           void Update();
+            void Update();
 
-           const Math::Matrix4 GetView();
-           const Math::Matrix4 GetProjection();
+            const Math::Matrix4 GetView();
+            const Math::Matrix4 GetProjection();
 
         private:
-            void Rotate();
+            void LeftMousePress();
+            void RightMousePress();
+            void MiddleMousePress();
+            void MouseScroll();
+
             void Move();
+            void Zoom();
+            void Drag();
+            void Rotate();
+            void Orbit();
+            float ShiftPressed(float speed);
 
-            float            m_yaw;
-            float            m_pitch;
-            float            m_speed;
+            float             m_yaw;
+            float             m_pitch;
+            float             m_moveSpeed;
+            float             m_zoomSpeed;
+            float             m_dragSpeed;
+            float             m_scrollSpeed;
+            float             m_shiftSpeed;
 
-            Math::Vector3    m_position;
-            Math::Vector3    m_forward;
-            Math::Vector3    m_up;
-            Math::Vector3    m_right;
-            Graphics::Camera m_camera;
+            Math::Vector3     m_position;
+            Math::Vector3     m_forward;
+            Math::Vector3     m_up;
+            Math::Vector3     m_right;
+            Graphics::Camera  m_camera;
+            CameraControlType m_controlType;
         };
     }
 }

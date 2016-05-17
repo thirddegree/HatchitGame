@@ -79,7 +79,11 @@ namespace Hatchit
                 Num0,
                 Esc,
                 Enter,
-                Space   
+                Space,
+                LShift,
+                RShift,
+                LAlt,
+                RAlt
             };
 
             virtual ~IKeyboard() { };

@@ -65,6 +65,16 @@ namespace Hatchit
             return _instance.m_keyboard->VSingleKeyPress(key);
         }
 
+        Math::Vector2 Input::MousePos()
+        {
+            return Math::Vector2(MouseX(), MouseY());
+        }
+
+        Math::Vector2 Input::PreviousMousePos()
+        {
+            return Math::Vector2(PreviousMouseX(), PreviousMouseY());
+        }
+
         int Input::MouseX()
         {
             Input& _instance = Input::instance();
@@ -91,6 +101,20 @@ namespace Hatchit
             Input& _instance = Input::instance();
 
             return _instance.m_mouse->VPreviousMouseY();
+        }
+
+        int Input::MouseWheelX()
+        {
+            Input& _instance = Input::instance();
+
+            return _instance.m_mouse->VMouseWheelX();
+        }
+
+        int Input::MouseWheelY()
+        {
+            Input& _instance = Input::instance();
+
+            return _instance.m_mouse->VMouseWheelY();
         }
 
         int Input::DeltaX(int val)

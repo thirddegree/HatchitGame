@@ -172,6 +172,14 @@ namespace Hatchit
                 return SDL_SCANCODE_ESCAPE;
             case IKeyboard::Key::Enter:
                 return SDL_SCANCODE_RETURN;
+            case IKeyboard::Key::LShift:
+                return SDL_SCANCODE_LSHIFT;
+            case IKeyboard::Key::RShift:
+                return SDL_SCANCODE_RSHIFT;
+            case IKeyboard::Key::LAlt:
+                return SDL_SCANCODE_LALT;
+            case IKeyboard::Key::RAlt:
+                return SDL_SCANCODE_RALT;
             default:
                 return SDL_SCANCODE_0;
                 break;

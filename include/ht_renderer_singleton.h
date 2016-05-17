@@ -17,7 +17,6 @@
 #include <ht_platform.h>
 #include <ht_singleton.h>
 #include <ht_renderer.h>
-#include <ht_math.h>
 
 namespace Hatchit {
 

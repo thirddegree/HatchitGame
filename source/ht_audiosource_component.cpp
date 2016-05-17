@@ -87,6 +87,9 @@ namespace Hatchit
         void AudioSource::VOnInit()
         {
             HT_DEBUG_PRINTF("Initialized AudioSource Component.\n");
+
+            //For testing
+            PlayAudio(Resource::Audio::GetHandleFromFileName("Example2.ogg"));
         }
 
         void AudioSource::VOnUpdate()
@@ -134,14 +137,6 @@ namespace Hatchit
             m_currentAudioHandle = handle;
             //Initialize for playing
             stb_vorbis_close(m_audioStream);
-            int errorCode = STBVorbisError::VORBIS__no_error;
-            m_audioStream = stb_vorbis_open_filename(handle->GetFileName().c_str(), &errorCode, nullptr);
-            if (errorCode != STBVorbisError::VORBIS__no_error)
-            {
-                //Something went wrong
-                HT_ERROR_PRINTF("Error playing audio resource, STBVorbisErrorCode: %i", errorCode);
-                return;
-            }
 
             //Setup Stream
             if (!SetupAudioStream())
@@ -151,8 +146,10 @@ namespace Hatchit
             }
 
             //Start setting up buffers
-            SetupBuffer(m_bufferList[0]);
-            SetupBuffer(m_bufferList[1]);
+            for (auto& buffer : m_bufferList)
+            {
+                SetupBuffer(buffer);
+            }
 
             //Queue buffers to play
             if (!(m_bufferList[0].GetBufferSize() > 0))
@@ -163,13 +160,15 @@ namespace Hatchit
 
             m_source.QueueBuffer(m_bufferList[0]);
 
-            for (size_t i = 0; i < numBuffers; ++i)
+            for (size_t i = 1; i < numBuffers; ++i)
             {
                 if (!(m_bufferList[i].GetBufferSize() > 0))
                     break;
 
                 m_source.QueueBuffer(m_bufferList[i]);
             }
+
+            assert(m_source.GetNumBuffersQueued() == 16);
 
             //Finally, start playing buffers
             if (!m_source.Play())
@@ -203,10 +202,12 @@ namespace Hatchit
         {
             //First, read data in
             short dataBuffer[Audio::Buffer::BufferSize / sizeof(short)];
-            int dataSize = stb_vorbis_get_frame_short_interleaved(m_audioStream, m_currentAudioHandle->GetNumChannels(), &dataBuffer[0], Audio::Buffer::BufferSize / sizeof(short));
+            std::memset(&dataBuffer[0], 0, sizeof(dataBuffer));
+            auto numChannels = m_currentAudioHandle->GetNumChannels();
+            int numSamplesPerChannelReceived = stb_vorbis_get_samples_short_interleaved(m_audioStream, numChannels, &dataBuffer[0], Audio::Buffer::BufferSize / sizeof(short));
 
             //Then output to buffer
-            audioBuffer.SetData(Audio::Buffer::Format::Stereo16, &dataBuffer[0], dataSize, m_currentAudioHandle->GetSampleRate());
+            audioBuffer.SetData(Audio::Buffer::Format::Stereo16, &dataBuffer[0], numSamplesPerChannelReceived * numChannels, m_currentAudioHandle->GetSampleRate());
         }
 
         bool AudioSource::SetupAudioStream()

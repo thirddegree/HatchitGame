@@ -63,7 +63,7 @@ namespace Hatchit
             virtual void VOnDestroy() override;
 
         private:
-            static constexpr size_t numBuffers = 2;
+            static constexpr size_t numBuffers = 16;
 
             Resource::AudioResourceHandle m_currentAudioHandle;
             bool m_playing;

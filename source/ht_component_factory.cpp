@@ -46,6 +46,8 @@ for t in components:
     cog.outl("#include <%s>" % t.filename);
 
 ]]]*/
+#include <ht_audiolistener_component.h>
+#include <ht_audiosource_component.h>
 #include <ht_camera_component.h>
 #include <ht_light_component.h>
 #include <ht_meshrenderer_component.h>
@@ -110,6 +112,8 @@ namespace Hatchit {
                     cog.outl("""if (type == "%s") return new %s();""" % (t.className, t.className));
                 
             ]]]*/
+            if (type == "AudioListener") return new AudioListener();
+            if (type == "AudioSource") return new AudioSource();
             if (type == "Camera") return new Camera();
             if (type == "LightComponent") return new LightComponent();
             if (type == "MeshRenderer") return new MeshRenderer();

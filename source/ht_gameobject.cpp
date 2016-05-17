@@ -89,8 +89,8 @@ namespace Hatchit {
         {
             for (Component *component : m_components)
             {
-                    if(component->GetEnabled())
-                        component->VOnUpdate();
+                if(component->GetEnabled())
+                    component->VOnUpdate();
             }
 
             //exactly the same as in the scene

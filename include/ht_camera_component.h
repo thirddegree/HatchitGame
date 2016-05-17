@@ -74,6 +74,10 @@ namespace Hatchit {
             float m_fov;
             float m_near;
             float m_far;
+            uint32_t m_layer;
+
+            float m_speed;
+            
             Graphics::Camera m_camera;
             Graphics::Renderer* m_renderer;
         };

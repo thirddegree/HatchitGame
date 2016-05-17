@@ -30,10 +30,6 @@ namespace Hatchit {
 
             static void DeInitialize();
 
-            static void SetClearColor(const Graphics::Color& color);
-
-            static void ClearBuffer(Graphics::ClearArgs args);
-
             static void Render();
 
             static void Present();
@@ -42,10 +38,10 @@ namespace Hatchit {
 
             static Graphics::RendererType GetRendererType();
 
-            Graphics::Renderer* GetRenderer();
+            static Graphics::Renderer* GetRenderer();
 
         private:
-            Graphics::Renderer*    m_renderer;
+            Graphics::Renderer*     m_renderer;
             Graphics::RendererType  m_rendererType;
             bool                    m_initialized;
         };

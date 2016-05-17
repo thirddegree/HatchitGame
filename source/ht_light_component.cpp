@@ -13,7 +13,6 @@
 **/
 
 #ifdef VK_SUPPORT
-#include <ht_vkrenderer.h>
 #include <ht_vkmaterial.h>
 #include <ht_vkmesh.h>
 #endif
@@ -24,8 +23,10 @@
 #endif
 #endif
 
+#include <unordered_map>
 #include <ht_gameobject.h>
 #include <ht_light_component.h>
+#include <ht_shadervariablechunk.h>
 #include <ht_renderer_singleton.h>
 #include <ht_debug.h>
 
@@ -56,17 +57,44 @@ namespace Hatchit {
             {
                 if (lightType == LightType::POINT_LIGHT)
                 {
-                    std::vector<float> attenuation;
-                    std::vector<float> color;
-                    if (!Core::JsonExtract<float>(jsonObject, "Radius", m_radius) 
-                        || !Core::JsonExtractContainer(jsonObject, "Attenuation", attenuation)
-                        || !Core::JsonExtractContainer(jsonObject, "Color", color))
+                    if (!Core::JsonExtract<float>(jsonObject, "Radius", m_radius))
                         return false;
-                    m_attenuation = { attenuation[0], attenuation[1], attenuation[2] };
-                    m_color = { color[0], color[1], color[2], color[3] };
+
+                    Core::JSON attenuationJSON = jsonObject["Attenuation"];
+                    if (attenuationJSON.size() <= 0)
+                        return false;
+
+                    for (size_t i = 0; i < attenuationJSON.size(); i++)
+                        m_attenuation[static_cast<int>(i)] = attenuationJSON[i];
                 }
+
+                if (lightType == LightType::DIRECTIONAL_LIGHT || lightType == LightType::SPOT_LIGHT)
+                {
+                    Core::JSON directionJSON = jsonObject["Direction"];
+                    if (directionJSON.size() <= 0)
+                        return false;
+
+                    for (size_t i = 0; i < directionJSON.size(); i++)
+                        m_direction[static_cast<int>(i)] = directionJSON[i];
+
+                    m_direction = Math::MMVector3Normalized(m_direction);
+                }
+
+                //Always parse color; Use white if not defined
+                Core::JSON colorJSON = jsonObject["Color"];
+                if (colorJSON.size() <= 0)
+                {
+                    m_color = { 1, 1, 1, 1 };
+                }
+                else
+                {
+                    for (size_t i = 0; i < colorJSON.size(); i++)
+                        m_color[i] = colorJSON[i];
+                }
+
                 m_lightType = LightType(lightType);
             }
+
             return true;
         }
 
@@ -81,9 +109,16 @@ namespace Hatchit {
             {
                 case LightType::POINT_LIGHT:
                 {
-                    SetMeshAndMaterial("Icosphere.dae", "PointLightMaterial.json");
+                    SetMeshAndMaterial("IcoSphere.dae", "PointLightMaterial.json");
                     break;
                 }
+                case LightType::DIRECTIONAL_LIGHT:
+                {
+                    SetMeshAndMaterial("Tri.obj", "DirectionalLightMaterial.json");
+                    break;
+                }
+                case LightType::SPOT_LIGHT:
+                    break;
             }
             m_meshRenderer->SetMesh(m_mesh);
             m_meshRenderer->SetMaterial(m_material);
@@ -94,7 +129,41 @@ namespace Hatchit {
         */
         void LightComponent::VOnInit()
         {
-            m_meshRenderer = new Graphics::MeshRenderer();
+            m_meshRenderer = new Graphics::MeshRenderer(Renderer::GetRenderer());
+
+            std::vector<Resource::ShaderVariable*> variables;
+            
+            //First var of every light is the transform
+            if (m_lightType == LightType::POINT_LIGHT || m_lightType == LightType::SPOT_LIGHT)
+            {
+                Resource::Matrix4Variable* transform = new Resource::Matrix4Variable(Math::Matrix4());
+                variables.push_back(transform);
+            }
+
+            Resource::Float4Variable* color = new Resource::Float4Variable(m_color);
+            variables.push_back(color);
+
+            if (m_lightType == LightType::POINT_LIGHT)
+            {
+                Resource::FloatVariable* radius = new Resource::FloatVariable(m_radius);
+                Resource::Float3Variable* atten = new Resource::Float3Variable(m_attenuation);
+
+                variables.push_back(radius);
+                variables.push_back(atten);
+            }
+
+            if (m_lightType == LightType::DIRECTIONAL_LIGHT || m_lightType == LightType::SPOT_LIGHT)
+            {
+                Resource::Float3Variable* direction = new Resource::Float3Variable(m_direction);
+
+                variables.push_back(direction);
+            }
+
+            m_data = new Graphics::ShaderVariableChunk(variables);
+
+            //Delete all allocated variables
+            for (size_t i = 0; i < variables.size(); i++)
+                delete variables[i];
 
             SetType(m_lightType);
             
@@ -107,13 +176,10 @@ namespace Hatchit {
         */
         void LightComponent::VOnUpdate()
         {
-            std::vector<Resource::ShaderVariable*> data;
-            data.push_back(new Resource::Matrix4Variable(Math::MMMatrixTranspose(*GetOwner()->GetTransform().GetWorldMatrix())));
-            data.push_back(new Resource::Float4Variable(m_color));
-            data.push_back(new Resource::FloatVariable(m_radius));
-            data.push_back(new Resource::Float3Variable(m_attenuation));
-
-            m_meshRenderer->SetInstanceData(data);
+            //0 is the beginning of the instance data array
+            if (m_lightType == LightType::POINT_LIGHT || m_lightType == LightType::SPOT_LIGHT)
+                m_data->SetMatrix4(0, Hatchit::Math::MMMatrixTranspose(*m_owner->GetTransform().GetWorldMatrix()));
+            m_meshRenderer->SetInstanceData(m_data);
             m_meshRenderer->Render();
         }
 
@@ -173,22 +239,9 @@ namespace Hatchit {
         */
         bool LightComponent::SetMeshAndMaterial(std::string meshFile, std::string materialFile)
         {
-            if (Renderer::GetRendererType() == Graphics::DIRECTX11)
-                return false;
-            else if (Renderer::GetRendererType() == Graphics::DIRECTX12)
-                //mat = Graphics::DX::D3D12Material::GetHandle(material);
-                return false;
-            else if (Renderer::GetRendererType() == Graphics::VULKAN)
-            {
-                Resource::ModelHandle model = Resource::Model::GetHandleFromFileName(meshFile);
-                std::vector<Resource::Mesh*> meshes = model->GetMeshes();
+            m_mesh = Graphics::Mesh::GetHandle(meshFile, meshFile);
+            m_material = Graphics::Material::GetHandle(materialFile, materialFile);
 
-                Graphics::Vulkan::VKRenderer* renderer = dynamic_cast<Graphics::Vulkan::VKRenderer*>(Renderer::instance().GetRenderer());
-                m_mesh = Graphics::Vulkan::VKMesh::GetHandle(meshFile, meshes[0], renderer).StaticCastHandle<Graphics::IMesh>();
-                m_material = Graphics::Vulkan::VKMaterial::GetHandle(materialFile, materialFile, renderer).StaticCastHandle<Graphics::IMaterial>();
-            }
-            else if (Renderer::GetRendererType() == Graphics::OPENGL)
-                return false;
             return true;
         }
     }

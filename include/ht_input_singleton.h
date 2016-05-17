@@ -46,7 +46,6 @@ namespace Hatchit
             static bool MouseButtonSinglePress(MouseButton button);
             static bool MouseButtonRelease(MouseButton button);
 
-
             static void Update();
 
             static IKeyboard* const Keyboard();

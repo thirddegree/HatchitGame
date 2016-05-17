@@ -29,8 +29,8 @@ namespace Hatchit {
             virtual Core::JSON VSerialize(void) override;
             virtual bool VDeserialize(const Core::JSON& jsonObject) override;
 
-            void SetRenderable(Graphics::IMeshHandle mesh, 
-                Graphics::IMaterialHandle material);
+            void SetRenderable(Graphics::MeshHandle mesh, 
+                Graphics::MaterialHandle material);
 
             /**
             * \brief Called when the GameObject is created to initialize all values
@@ -74,7 +74,7 @@ namespace Hatchit {
 
         private:
             Graphics::MeshRenderer* m_meshRenderer;
-            Resource::Matrix4Variable* m_worldMatrix;
+            Graphics::ShaderVariableChunk* m_instanceData;
         };
 
     }

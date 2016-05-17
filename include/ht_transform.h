@@ -163,6 +163,12 @@ namespace Hatchit {
             void SetScale(Math::Vector3 val);
 
             /**
+            * \brief Sets the forward direction from a Vector3 
+            * \param val New forward vector which will be normalized
+            */
+            void SetForward(Math::Vector3 val);
+
+            /**
             * \brief Returns X value of position.
             * \return float X position.
             */

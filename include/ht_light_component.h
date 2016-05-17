@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <ht_shadervariablechunk.h>
 #include <ht_meshrenderer.h>
 #include <ht_component.h>
 #include <ht_model.h>
@@ -61,14 +62,19 @@ namespace Hatchit {
 
             LightType m_lightType;
             Graphics::MeshRenderer* m_meshRenderer;
-            Graphics::IMeshHandle m_mesh;
-            Graphics::IMaterialHandle m_material;
+            Graphics::MeshHandle m_mesh;
+            Graphics::MaterialHandle m_material;
 
             /* Point Light Data */
             float m_radius;
-            Math::Vector4 m_color;
             Math::Vector3 m_attenuation;
 
+            /* Directional & Spot Light Data*/
+            Math::Vector3 m_direction;            
+
+            /* All Light Data */
+            Graphics::ShaderVariableChunk* m_data;
+            Math::Vector4 m_color;
         };
     }
 }

@@ -13,7 +13,6 @@
 **/
 
 #ifdef VK_SUPPORT
-#include <ht_vkrenderer.h>
 #include <ht_vkmaterial.h>
 #include <ht_vkmesh.h>
 #include <ht_vkmaterial.h>
@@ -22,11 +21,13 @@
 //#include <ht_d3d12material.h>
 #endif
 
-
 #include <ht_meshrenderer_component.h>
+#include <ht_shadervariablechunk.h>
 #include <ht_renderer_singleton.h>
 #include <ht_debug.h>
 #include <ht_gameobject.h>
+
+#include <ht_gpuresourcepool.h>
 
 namespace Hatchit {
 
@@ -35,8 +36,7 @@ namespace Hatchit {
      
         MeshRenderer::MeshRenderer()
         {
-            m_meshRenderer = new Graphics::MeshRenderer();
-            m_worldMatrix = new Resource::Matrix4Variable();
+            m_meshRenderer = new Graphics::MeshRenderer(Renderer::GetRenderer());
         }
 
         Core::JSON MeshRenderer::VSerialize(void)
@@ -48,6 +48,8 @@ namespace Hatchit {
 
         bool MeshRenderer::VDeserialize(const Core::JSON& jsonObject)
         {
+            using namespace Graphics;
+
             std::string materialFile;
             std::string meshFile;
             //attempt to read all data from json object, if it fails, return false
@@ -56,39 +58,52 @@ namespace Hatchit {
             {
                 return false;
             }
+            
+            MaterialHandle material = Material::GetHandle(materialFile, materialFile);
+
             //all data has been successfully parsed, attempt to set it all up...
 
             //get appropriate resource handles
-            Graphics::IMeshHandle mesh;
-            Graphics::IMaterialHandle mat;
+            Graphics::MeshHandle mesh;
+            Graphics::MaterialHandle mat;
 
-            if (Renderer::GetRendererType() == Graphics::DIRECTX11)
-                return false;
-            else if (Renderer::GetRendererType() == Graphics::DIRECTX12)
-                //mat = Graphics::DX::D3D12Material::GetHandle(material);
-                return false;
-            else if (Renderer::GetRendererType() == Graphics::VULKAN)
-            {
-                Resource::ModelHandle model = Resource::Model::GetHandleFromFileName(meshFile);
-                std::vector<Resource::Mesh*> meshes = model->GetMeshes();
+            //auto rendererType = Renderer::GetRendererType();
+            //switch (rendererType)
+            //{
+            //    case Graphics::DIRECTX12:
+            //    {
+            //        //mat = Graphics::DX::D3D12Material::GetHandle(material);
+            //    } return false;
 
-                Graphics::Vulkan::VKRenderer* renderer = dynamic_cast<Graphics::Vulkan::VKRenderer*>(Renderer::instance().GetRenderer());
-                mesh = Graphics::Vulkan::VKMesh::GetHandle(meshFile, meshes[0], renderer).StaticCastHandle<Graphics::IMesh>();
-                mat = Graphics::Vulkan::VKMaterial::GetHandle(materialFile, materialFile, renderer).StaticCastHandle<Graphics::IMaterial>();
-            }
-            else if (Renderer::GetRendererType() == Graphics::OPENGL)
-                return false;
+            //    case Graphics::VULKAN:
+            //    {
+            //        Graphics::Vulkan::VKRenderer* renderer = dynamic_cast<Graphics::Vulkan::VKRenderer*>(Renderer::instance().GetRenderer());
+                    mesh = Graphics::Mesh::GetHandle(meshFile, meshFile);
+                    mat = Graphics::Material::GetHandle(materialFile, materialFile);
+            //    } break;
+
+            //    default:
+            //        return false;
+            //}
+            //
             SetRenderable(mesh, mat);
+
+
+
+            //setup instance data
+            Resource::Matrix4Variable* temp = new Resource::Matrix4Variable(Math::Matrix4());
+            std::vector<Resource::ShaderVariable*> variables;
+            variables.push_back(temp);
+            m_instanceData = new ShaderVariableChunk(variables);
+            delete temp;
+
+
 
             return true;
         }
 
-
-
-
-
-        void MeshRenderer::SetRenderable(Graphics::IMeshHandle mesh,
-            Graphics::IMaterialHandle material)
+        void MeshRenderer::SetRenderable(Graphics::MeshHandle mesh,
+            Graphics::MaterialHandle material)
         {
             m_meshRenderer->SetMesh(mesh);
             m_meshRenderer->SetMaterial(material);
@@ -105,12 +120,8 @@ namespace Hatchit {
         void MeshRenderer::VOnUpdate()
         {
             //TODO: send actual transform data
-            m_worldMatrix->SetData(Hatchit::Math::MMMatrixTranspose(*m_owner->GetTransform().GetWorldMatrix()));
-
-            std::vector<Resource::ShaderVariable*> data;
-            data.push_back(m_worldMatrix);
-
-            m_meshRenderer->SetInstanceData(data);
+            m_instanceData->SetMatrix4(0, Hatchit::Math::MMMatrixTranspose(*m_owner->GetTransform().GetWorldMatrix()));
+            m_meshRenderer->SetInstanceData(m_instanceData);
             m_meshRenderer->Render();
         }
 

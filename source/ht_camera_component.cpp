@@ -34,6 +34,8 @@ namespace Hatchit {
             m_layer = 1;
 
             m_speed = 0.01f;
+            m_yaw = 0.0f;
+            m_pitch = 0.0f;
             
             m_camera = Graphics::Camera(Math::Matrix4(), Math::MMMatrixPerspProj(m_fov, m_width, m_height, m_near, m_far));
             m_renderer = Renderer::instance().GetRenderer();
@@ -95,39 +97,8 @@ namespace Hatchit {
         {
             Transform& t = m_owner->GetTransform();
 
-            if (Input::KeyPressed(IKeyboard::Key::W) || Input::KeyPressed(IKeyboard::Key::Up))
-                t.SetPosition(t.GetPosition() + (t.GetForward() * m_speed));
-            if (Input::KeyPressed(IKeyboard::Key::A) || Input::KeyPressed(IKeyboard::Key::Left))
-                t.SetPosition(t.GetPosition() - (t.GetRight() * m_speed));
-            if (Input::KeyPressed(IKeyboard::Key::S) || Input::KeyPressed(IKeyboard::Key::Down))
-                t.SetPosition(t.GetPosition() - (t.GetForward() * m_speed));
-            if (Input::KeyPressed(IKeyboard::Key::D) || Input::KeyPressed(IKeyboard::Key::Right))
-                t.SetPosition(t.GetPosition() + (t.GetRight() * m_speed));
-
-            Math::Vector3 rot = t.GetRotation();
-
-            float xOffset = static_cast<float>(Input::DeltaX(static_cast<int>(1280.0f / 2.0f)));
-            float yOffset = static_cast<float>(Input::DeltaY(static_cast<int>(720.0f/2.0f)));
-            float sensitivity = 0.1f;
-
-            xOffset *= sensitivity;
-            yOffset *= sensitivity;
-
-            float yaw = rot.y + xOffset;
-            float pitch = rot.x + yOffset;
-
-            if (pitch > 89.9f)
-                pitch = 89.9f;
-            if (pitch < -89.9f)
-                pitch = -89.9f;
-
-            if (xOffset != 0 && yOffset != 0)
-            {
-                float yawRad = Math::MMDegreesToRadians(yaw);
-                float pitchRad = Math::MMDegreesToRadians(pitch);
-
-                t.SetRotation(Math::Vector3(pitchRad, yawRad, rot.z));
-            }
+            Move();
+            Rotate();
 
             //Send transform data to the GPU by registering the camera with the renderer
             m_camera.SetView(Math::MMMatrixLookAt(t.GetPosition(), t.GetPosition() + t.GetForward(), t.GetUp()));
@@ -164,6 +135,60 @@ namespace Hatchit {
         Core::Guid Camera::VGetComponentId(void) const
         {
             return Component::GetComponentId<Camera>();
+        }
+
+        void Camera::Move()
+        {
+            Transform& t = m_owner->GetTransform();
+
+            if (Input::KeyPressed(IKeyboard::Key::W) || Input::KeyPressed(IKeyboard::Key::Up))
+                t.SetPosition(t.GetPosition() + (t.GetForward() * m_speed));
+            if (Input::KeyPressed(IKeyboard::Key::A) || Input::KeyPressed(IKeyboard::Key::Left))
+                t.SetPosition(t.GetPosition() - (t.GetRight() * m_speed));
+            if (Input::KeyPressed(IKeyboard::Key::S) || Input::KeyPressed(IKeyboard::Key::Down))
+                t.SetPosition(t.GetPosition() - (t.GetForward() * m_speed));
+            if (Input::KeyPressed(IKeyboard::Key::D) || Input::KeyPressed(IKeyboard::Key::Right))
+                t.SetPosition(t.GetPosition() + (t.GetRight() * m_speed));
+            if (Input::KeyPressed(IKeyboard::Key::E))
+                t.SetPosition(t.GetPosition() + (Math::Vector3(0.0f, 1.0f, 0.0f) * m_speed));
+            if (Input::KeyPressed(IKeyboard::Key::Q))
+                t.SetPosition(t.GetPosition() + (Math::Vector3(0.0f, -1.0f, 0.0f) * m_speed));
+        }
+
+        void Camera::Rotate()
+        {
+            if (Input::MouseButtonPress(MouseButton::Left)) 
+            {
+                Transform& t = m_owner->GetTransform();
+
+                float xOffset = static_cast<float>(Input::PreviousMouseX() - Input::MouseX());
+                float yOffset = static_cast<float>(Input::PreviousMouseY() - Input::MouseY());
+                float sensitivity = 0.1f;
+
+                xOffset *= sensitivity;
+                yOffset *= sensitivity;
+
+                m_yaw += xOffset;
+                m_pitch += yOffset;
+
+                if (m_pitch > 89.9f)
+                    m_pitch = 89.9f;
+                if (m_pitch < -89.9f)
+                    m_pitch = -89.9f;
+
+                if (xOffset != 0 && yOffset != 0)
+                {
+                    float yawRad = Math::MMDegreesToRadians(m_yaw);
+                    float pitchRad = Math::MMDegreesToRadians(m_pitch);
+
+                    Math::Vector3 camFront = Math::Vector3();
+                    camFront.x = cosf(yawRad) * cosf(pitchRad);
+                    camFront.y = sinf(pitchRad);
+                    camFront.z = sinf(yawRad) * cosf(pitchRad);
+
+                    t.SetRotation(Math::Vector3(-pitchRad, -yawRad, 0.0f));
+                }
+            }
         }
     }
 

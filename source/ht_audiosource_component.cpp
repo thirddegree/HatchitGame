@@ -207,7 +207,7 @@ namespace Hatchit
             int numSamplesPerChannelReceived = stb_vorbis_get_samples_short_interleaved(m_audioStream, numChannels, &dataBuffer[0], Audio::Buffer::BufferSize / sizeof(short));
 
             //Then output to buffer
-            audioBuffer.SetData(Audio::Buffer::Format::Stereo16, &dataBuffer[0], numSamplesPerChannelReceived * numChannels, m_currentAudioHandle->GetSampleRate());
+            audioBuffer.SetData(Audio::Buffer::Format::Stereo16, &dataBuffer[0], numSamplesPerChannelReceived * numChannels * sizeof(short), m_currentAudioHandle->GetSampleRate());
         }
 
         bool AudioSource::SetupAudioStream()

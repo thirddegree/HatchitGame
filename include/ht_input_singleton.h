@@ -18,6 +18,7 @@
 #include <ht_singleton.h>
 #include <ht_keyboard.h>
 #include <ht_mouse.h>
+#include <ht_math.h>
 
 namespace Hatchit
 {
@@ -36,16 +37,19 @@ namespace Hatchit
             static bool KeyReleased(IKeyboard::Key key);
 
             /*Mouse*/
+            static Math::Vector2 MousePos();
+            static Math::Vector2 PreviousMousePos();
             static int  MouseX();
             static int  MouseY();
             static int  PreviousMouseX();
             static int  PreviousMouseY();
+            static int  MouseWheelX();
+            static int  MouseWheelY();
             static int  DeltaX(int val);
             static int  DeltaY(int val);
             static bool MouseButtonPress(MouseButton button);
             static bool MouseButtonSinglePress(MouseButton button);
             static bool MouseButtonRelease(MouseButton button);
-
 
             static void Update();
 

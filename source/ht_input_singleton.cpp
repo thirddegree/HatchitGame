@@ -21,11 +21,8 @@
         #include <ht_sdlmouse.h>
     #endif
 #else
-    #ifndef VK_SUPPORT
-        #define SDL_SUPPORT TRUE
         #include <ht_sdlkeyboard.h>
         #include <ht_sdlmouse.h>
-    #endif
 #endif
 
 namespace Hatchit
@@ -35,10 +32,9 @@ namespace Hatchit
         void Input::Initialize()
         {
             Input& _instance = Input::instance();
-#ifdef SDL_SUPPORT
+
             _instance.m_keyboard = new SDLKeyboard;
             _instance.m_mouse = new SDLMouse;
-#endif
         }
 
         void Input::DeInitialize()
@@ -69,6 +65,16 @@ namespace Hatchit
             return _instance.m_keyboard->VSingleKeyPress(key);
         }
 
+        Math::Vector2 Input::MousePos()
+        {
+            return Math::Vector2(MouseX(), MouseY());
+        }
+
+        Math::Vector2 Input::PreviousMousePos()
+        {
+            return Math::Vector2(PreviousMouseX(), PreviousMouseY());
+        }
+
         int Input::MouseX()
         {
             Input& _instance = Input::instance();
@@ -95,6 +101,20 @@ namespace Hatchit
             Input& _instance = Input::instance();
 
             return _instance.m_mouse->VPreviousMouseY();
+        }
+
+        int Input::MouseWheelX()
+        {
+            Input& _instance = Input::instance();
+
+            return _instance.m_mouse->VMouseWheelX();
+        }
+
+        int Input::MouseWheelY()
+        {
+            Input& _instance = Input::instance();
+
+            return _instance.m_mouse->VMouseWheelY();
         }
 
         int Input::DeltaX(int val)

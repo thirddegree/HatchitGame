@@ -50,6 +50,7 @@ namespace Hatchit {
             */
             Component* VClone(void) const override;
 
+            virtual Core::Guid VGetComponentId(void) const override;
         protected:
 
             /**
@@ -66,6 +67,9 @@ namespace Hatchit {
             void VOnDisabled() override;
 
         private:
+            void Move();
+            void Rotate();
+
             bool  m_useWindowScale;
             float m_height;
             float m_width;
@@ -73,7 +77,14 @@ namespace Hatchit {
             float m_fov;
             float m_near;
             float m_far;
+            uint32_t m_layer;
+
+            float m_speed;
+            float m_yaw;
+            float m_pitch;
+            
             Graphics::Camera m_camera;
+            Graphics::Renderer* m_renderer;
         };
 
     }

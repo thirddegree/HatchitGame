@@ -1,6 +1,6 @@
 /**
  **    Hatchit Engine
- **    Copyright(c) 2015 Third-Degree
+ **    Copyright(c) 2015-2016 Third-Degree
  **
  **    GNU Lesser General Public License
  **    This file may be used under the terms of the GNU Lesser
@@ -220,6 +220,7 @@ namespace Hatchit {
             */
             Component* VClone(void) const override;
 
+            virtual Core::Guid VGetComponentId(void) const override;
         protected:
             static std::vector<TweenFunction> s_tweenFunctions;
 

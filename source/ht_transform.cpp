@@ -1,6 +1,6 @@
 /**
 **    Hatchit Engine
-**    Copyright(c) 2015 Third-Degree
+**    Copyright(c) 2015-2016 Third-Degree
 **
 **    GNU Lesser General Public License
 **    This file may be used under the terms of the GNU Lesser
@@ -177,6 +177,12 @@ namespace Hatchit {
             m_scale = val;
         }
 
+        void Transform::SetForward(Math::Vector3 val)
+        {
+            SetDirty();
+            m_forward = Math::MMVector3Normalized(val);
+        }
+
         void Transform::RotateX(float val)
         {
             SetDirty();
@@ -252,7 +258,6 @@ namespace Hatchit {
 
         Math::Matrix4* Transform::GetWorldMatrix()
         {
-
             UpdateWorldMatrix();
 
             return &m_world;
@@ -280,7 +285,6 @@ namespace Hatchit {
                 else
                     m_world = *GetLocalMatrix();
 
-
                 m_worldPosition = m_world * Math::Vector4(0, 0, 0, 0);
 
                 //recalculate basis vectors (right, forward, up)
@@ -291,8 +295,6 @@ namespace Hatchit {
                 m_up = Math::MMVector3Normalized(m_up);
 
                 m_right = Math::MMVector3Cross(m_up, m_forward);
-
-
             }
         }
 

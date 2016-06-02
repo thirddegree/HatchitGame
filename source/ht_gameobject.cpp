@@ -1,6 +1,6 @@
 /**
 **    Hatchit Engine
-**    Copyright(c) 2015 Third-Degree
+**    Copyright(c) 2015-2016 Third-Degree
 **
 **    GNU Lesser General Public License
 **    This file may be used under the terms of the GNU Lesser
@@ -89,8 +89,8 @@ namespace Hatchit {
         {
             for (Component *component : m_components)
             {
-                    if(component->GetEnabled())
-                        component->VOnUpdate();
+                if(component->GetEnabled())
+                    component->VOnUpdate();
             }
 
             //exactly the same as in the scene

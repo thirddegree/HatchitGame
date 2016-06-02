@@ -17,35 +17,21 @@
 #include <ht_platform.h>
 #include <ht_singleton.h>
 #include <ht_renderer.h>
+#include <ht_audiodevice.h>
 
-namespace Hatchit {
-
-    namespace Game {
-
-        class HT_API Renderer : public Core::Singleton<Renderer>
+namespace Hatchit
+{
+    namespace Game
+    {
+        class HT_API AudioEmitter : public Core::Singleton<AudioEmitter>
         {
         public:
-
-            static bool Initialize(const Graphics::RendererParams& params);
-
+            static bool Initialize();
             static void DeInitialize();
 
-            static void Render();
-
-            static void Present();
-
-            static void ResizeBuffers(uint32_t width, uint32_t height);
-
-            static Graphics::RendererType GetRendererType();
-
-            static Graphics::Renderer* GetRenderer();
-
+            static void Update();
         private:
-            Graphics::Renderer*     m_renderer;
-            Graphics::RendererType  m_rendererType;
-            bool                    m_initialized;
+            Audio::Device m_device;
         };
-
     }
-
 }

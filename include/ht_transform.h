@@ -1,6 +1,6 @@
 /**
 **    Hatchit Engine
-**    Copyright(c) 2015 Third-Degree
+**    Copyright(c) 2015-2016 Third-Degree
 **
 **    GNU Lesser General Public License
 **    This file may be used under the terms of the GNU Lesser
@@ -161,6 +161,12 @@ namespace Hatchit {
             * \param val New scale vector.
             */
             void SetScale(Math::Vector3 val);
+
+            /**
+            * \brief Sets the forward direction from a Vector3 
+            * \param val New forward vector which will be normalized
+            */
+            void SetForward(Math::Vector3 val);
 
             /**
             * \brief Returns X value of position.

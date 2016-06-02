@@ -1,6 +1,6 @@
 /**
 **    Hatchit Engine
-**    Copyright(c) 2015 Third-Degree
+**    Copyright(c) 2015-2016 Third-Degree
 **
 **    GNU Lesser General Public License
 **    This file may be used under the terms of the GNU Lesser
@@ -370,10 +370,31 @@ namespace Hatchit {
             return true;
         }
 
+        template <>
+        inline bool GameObject::AddComponent<Component>(Component *component)
+        {
+            Core::Guid component_id = component->VGetComponentId();
+            std::unordered_map<Core::Guid, std::vector<Component*>::size_type>::const_iterator iter = m_componentMap.find(component_id);
+            if (iter != m_componentMap.cend())
+                return false;
+
+            m_componentMap.insert(std::make_pair(component_id, m_components.size()));
+            m_components.push_back(component);
+
+            component->SetOwner(this);
+
+            component->VOnInit();
+
+            if (m_enabled)
+                component->SetEnabled(true);
+
+            return true;
+        }
+
         template <typename T, typename... Args>
         bool GameObject::AddComponent(Args&&... args)
         {
-            static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
+            static_assert(std::is_base_of<Component, T>::value && !std::is_same<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
 
             Core::Guid component_id = Game::Component:: template GetComponentId<T>();
             std::unordered_map<Core::Guid, std::vector<Component*>::size_type>::const_iterator iter = m_componentMap.find(component_id);
@@ -397,7 +418,7 @@ namespace Hatchit {
         template <typename T>
         bool GameObject::RemoveComponent(void)
         {
-            static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
+            static_assert(std::is_base_of<Component, T>::value && !std::is_same<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
 
             Core::Guid component_id = Game::Component:: template GetComponentId<T>();
             std::unordered_map<Core::Guid, std::vector<Component*>::size_type>::const_iterator iter = m_componentMap.find(component_id);
@@ -420,7 +441,7 @@ namespace Hatchit {
         template <typename T>
         bool GameObject::HasComponent(void) const
         {
-            static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
+            static_assert(std::is_base_of<Component, T>::value && !std::is_same<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
             Core::Guid component_id = Component:: template GetComponentId<T>();
             return (m_componentMap.find(component_id) != m_componentMap.cend());
         }
@@ -428,14 +449,14 @@ namespace Hatchit {
         template <typename T1, typename T2, typename... Args>
         bool GameObject::HasComponent(void) const
         {
-            static_assert(std::is_base_of<Component, T1>::value, "Must be a sub-class of Hatchit::Game::Component!");
+            static_assert(std::is_base_of<Component, T1>::value && !std::is_same<Component, T1>::value, "Must be a sub-class of Hatchit::Game::Component!");
             return HasComponent<T1>() && HasComponent<T2, Args...>();
         }
 
         template <typename T>
         T* GameObject::GetComponent(void)
         {
-            static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
+            static_assert(std::is_base_of<Component, T>::value && !std::is_same<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
 
             Core::Guid component_id = Component::GetComponentId<T>();
             std::unordered_map<Core::Guid, std::vector<Component*>::size_type>::const_iterator iter = m_componentMap.find(component_id);
@@ -455,7 +476,7 @@ namespace Hatchit {
         template <typename T>
         bool GameObject::EnableComponent(void)
         {
-            static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
+            static_assert(std::is_base_of<Component, T>::value && !std::is_same<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
 
             if (!HasComponent<T>())
                 return false;
@@ -474,7 +495,7 @@ namespace Hatchit {
         template <typename T>
         bool GameObject::DisableComponent(void)
         {
-            static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
+            static_assert(std::is_base_of<Component, T>::value && !std::is_same<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
 
             if (!HasComponent<T>())
                 return false;
@@ -508,10 +529,26 @@ namespace Hatchit {
             return true;
         }
 
+        template<>
+        inline bool GameObject::AddUninitializedComponent<Component>(Component* component)
+        {
+            Core::Guid component_id = component->VGetComponentId();
+            std::unordered_map<Core::Guid, std::vector<Component*>::size_type>::const_iterator iter = m_componentMap.find(component_id);
+            if (iter != m_componentMap.cend())
+                return false;
+
+            m_componentMap.insert(std::make_pair(component_id, m_components.size()));
+            m_components.push_back(component);
+
+            component->SetOwner(this);
+
+            return true;
+        }
+
         template<typename T, typename ...Args>
         inline bool GameObject::AddUninitializedComponent(Args && ...args)
         {
-            static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
+            static_assert(std::is_base_of<Component, T>::value && !std::is_same<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
 
             Core::Guid component_id = Game::Component:: template GetComponentId<T>();
             std::unordered_map<Core::Guid, std::vector<Component*>::size_type>::const_iterator iter = m_componentMap.find(component_id);

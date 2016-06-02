@@ -1,6 +1,6 @@
 /**
 **    Hatchit Engine
-**    Copyright(c) 2015 Third-Degree
+**    Copyright(c) 2015-2016 Third-Degree
 **
 **    GNU Lesser General Public License
 **    This file may be used under the terms of the GNU Lesser
@@ -105,6 +105,8 @@ namespace Hatchit {
             */
             virtual Component* VClone(void) const = 0;
 
+            virtual Core::Guid VGetComponentId(void) const = 0;
+
             /**
             * \brief Setter that sets which GameObject this Component is attached to.
             * \param owner  The GameObject to which this Component is attached.
@@ -132,7 +134,7 @@ namespace Hatchit {
         template <typename T>
         Core::Guid Component::GetComponentId(void)
         {
-            static_assert(std::is_base_of<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
+            static_assert(std::is_base_of<Component, T>::value && !std::is_same<Component, T>::value, "Must be a sub-class of Hatchit::Game::Component!");
             static Core::Guid id = Core::Guid(); /**< This value is set once when the template is instantiated. */
             return id;
         }

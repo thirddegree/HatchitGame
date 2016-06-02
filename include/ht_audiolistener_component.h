@@ -14,30 +14,35 @@
 
 #pragma once
 
-#include <ht_component.h>
+#include <ht_component.h> //Component
 
-namespace Hatchit {
-    namespace Game {
-
-        class TestComponent : public Component
+namespace Hatchit
+{
+    namespace Game
+    {
+        class AudioListener : public Component
         {
         public:
-            TestComponent(void) = default;
+            AudioListener();
 
-            virtual Core::JSON VSerialize(void) override;
+            virtual Core::JSON VSerialize() override;
             virtual bool VDeserialize(const Core::JSON& jsonObject) override;
+            virtual void VOnInit() override;
 
-            void VOnInit() override;
-            void VOnUpdate() override;
-            Component* VClone(void) const override;
-            virtual Core::Guid VGetComponentId(void) const override;
+            virtual void VOnUpdate() override;
+
+            virtual void VOnDestroy() override;
+
+            virtual Component* VClone() const override;
+
+            virtual Core::Guid VGetComponentId() const override;
         protected:
-            void VOnEnabled() override;
-            void VOnDisabled() override;
-            void VOnDestroy() override;
+            virtual void VOnEnabled() override;
+
+            virtual void VOnDisabled() override;
 
         private:
-            GameObject* testObject;
+
 
         };
     }

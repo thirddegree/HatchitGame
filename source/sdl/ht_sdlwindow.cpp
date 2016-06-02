@@ -1,6 +1,6 @@
 /**
 **    Hatchit Engine
-**    Copyright(c) 2015 Third-Degree
+**    Copyright(c) 2015-2016 Third-Degree
 **
 **    GNU Lesser General Public License
 **    This file may be used under the terms of the GNU Lesser
@@ -147,22 +147,16 @@ namespace Hatchit {
                         break;
                     case SDL_WINDOWEVENT_MOVED:
                         if (m_params.debugWindowEvents)
-                            HT_DEBUG_PRINTF("Window %d moved to %d,%d",
-                                event.window.windowID, event.window.data1,
-                                event.window.data2);
+                            HT_DEBUG_PRINTF("Window %d moved to %d,%d", event.window.windowID, event.window.data1, event.window.data2);
                         break;
                     case SDL_WINDOWEVENT_RESIZED:
                         if (m_params.debugWindowEvents)
-                            HT_DEBUG_PRINTF("Window %d resized to %dx%d",
-                                event.window.windowID, event.window.data1,
-                                event.window.data2);
+                            HT_DEBUG_PRINTF("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
                         Renderer::ResizeBuffers(event.window.data1, event.window.data2);
                         break;
                     case SDL_WINDOWEVENT_SIZE_CHANGED:
                         if (m_params.debugWindowEvents)
-                            HT_DEBUG_PRINTF("Window %d size changed to %dx%d",
-                                event.window.windowID, event.window.data1,
-                                event.window.data2);
+                            HT_DEBUG_PRINTF("Window %d size changed to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
                         break;
                     case SDL_WINDOWEVENT_MINIMIZED:
                         if (m_params.debugWindowEvents)
@@ -178,8 +172,7 @@ namespace Hatchit {
                         break;
                     case SDL_WINDOWEVENT_ENTER:
                         if (m_params.debugWindowEvents)
-                            HT_DEBUG_PRINTF("Mouse entered window %d",
-                                event.window.windowID);
+                            HT_DEBUG_PRINTF("Mouse entered window %d", event.window.windowID);
                         break;
                     case SDL_WINDOWEVENT_LEAVE:
                         if (m_params.debugWindowEvents)
@@ -187,13 +180,11 @@ namespace Hatchit {
                         break;
                     case SDL_WINDOWEVENT_FOCUS_GAINED:
                         if (m_params.debugWindowEvents)
-                            HT_DEBUG_PRINTF("Window %d gained keyboard focus",
-                                event.window.windowID);
+                            HT_DEBUG_PRINTF("Window %d gained keyboard focus", event.window.windowID);
                         break;
                     case SDL_WINDOWEVENT_FOCUS_LOST:
                         if (m_params.debugWindowEvents)
-                            HT_DEBUG_PRINTF("Window %d lost keyboard focus",
-                                event.window.windowID);
+                            HT_DEBUG_PRINTF("Window %d lost keyboard focus", event.window.windowID);
                         break;
                     case SDL_WINDOWEVENT_CLOSE:
                         if (m_params.debugWindowEvents)
@@ -201,17 +192,12 @@ namespace Hatchit {
                         break;
                     default:
                         if (m_params.debugWindowEvents)
-                            HT_DEBUG_PRINTF("Window %d got unknown event %d",
-                                event.window.windowID, event.window.event);
+                            HT_DEBUG_PRINTF("Window %d got unknown event %d", event.window.windowID, event.window.event);
                     }
                 } break;
 
-                default:
-                    break;
                 }
             }
-
-            
         
             std::string title = m_params.title + (m_params.displayFPS ? (" FPS: " + std::to_string((int)Time::FramesPerSecond())) : "")
                                                 + (m_params.displayMouse ? (" [" + std::to_string(Input::MouseX()) + "," +

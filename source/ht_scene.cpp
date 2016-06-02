@@ -1,6 +1,6 @@
 /**
 **    Hatchit Engine
-**    Copyright(c) 2015 Third-Degree
+**    Copyright(c) 2015-2016 Third-Degree
 **
 **    GNU Lesser General Public License
 **    This file may be used under the terms of the GNU Lesser
@@ -445,7 +445,7 @@ namespace Hatchit {
         {
             GameObject* gameObject = CreateGameObject();
             gameObject->m_transform = prefab.GetTransform();
-            auto components = prefab.GetComponents();
+            
             for (const Game::Component* const component : prefab.m_components)
             {
                 gameObject->AddUninitializedComponent(component->VClone());

@@ -95,7 +95,7 @@ namespace Hatchit {
             });
 
             glfwSetScrollCallback(m_handle, [](GLFWwindow* window, double xoffset, double yoffset) {
-                static_cast<GLFWMouse*>(Input::Mouse())->RegisterMouseWheelEvent(xoffset, yoffset);
+                static_cast<GLFWMouse*>(Input::Mouse())->RegisterMouseWheelEvent(static_cast<int>(xoffset), static_cast<int>(yoffset));
             });
             
             m_running = true;

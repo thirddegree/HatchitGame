@@ -69,8 +69,8 @@ namespace Hatchit {
         DefineTweenFunction(CubicEaseOut)
         {
             //return (end - start) * ((time = time / duration - 1.0f) * time * time + 1.0f) + start;
-            float delta = time / duration;
-            return (end - start) * ((delta - 1.0f) * delta * delta + 1.0f) + start;
+            float delta = time / duration - 1.0f;
+            return (end - start) * (delta * delta * delta + 1.0f) + start;
         }
         
         DefineTweenFunction(CubicEaseIn)
@@ -83,22 +83,22 @@ namespace Hatchit {
         DefineTweenFunction(QuarticEaseOut)
         {
             //return (start - end) * ((time = time / duration - 1.0f) * time * time * time - 1.0f) + start;
-            float delta = time / duration;
-            return (start - end) * ((delta - 1.0f) * delta * delta * delta - 1.0f) + start;
+            float delta = time / duration - 1.0f;
+            return (start - end) * (delta * delta * delta * delta - 1.0f) + start;
         }
         
         DefineTweenFunction(QuarticEaseIn)
         {
             //return (end - start) * (time /= duration) * time * time * time + start;
             float delta = time / duration;
-            return (end - start) * (delta) * delta * delta * delta + start;
+            return (end - start) * delta * delta * delta * delta + start;
         }
         
         DefineTweenFunction(QuinticEaseOut)
         {
             //return (end - start) * ((time = time / duration - 1.0f) * time * time * time * time + 1.0f) + start;
-            float delta = time / duration;
-            return (end - start) * ((delta - 1.0f) * delta * delta * delta * delta + 1.0f) + start;
+            float delta = time / duration - 1.0f;
+            return (end - start) * (delta * delta * delta * delta * delta + 1.0f) + start;
         }
         
         DefineTweenFunction(QuinticEaseIn)
@@ -111,8 +111,8 @@ namespace Hatchit {
         DefineTweenFunction(CircularEaseOut)
         {
             //return (end - start) * sqrtf(1.0f - (time = time / duration - 1.0f) * time) + start;
-            float delta = time / duration;
-            return (end - start) * sqrtf(1.0f - (delta - 1.0f) * delta) + start;
+            float delta = time / duration - 1.0f;
+            return (end - start) * sqrtf(1.0f - delta * delta) + start;
         }
         
         DefineTweenFunction(CircularEaseIn)
@@ -166,8 +166,8 @@ namespace Hatchit {
         DefineTweenFunction(BackEaseOut)
         {
             //return (end - start) * ((time = time / duration - 1.0f) * time * (2.70158f * time + 1.70158f) + 1.0f) + start;
-            float delta = time / duration;
-            return (end - start) * ((delta - 1.0f) * delta * (2.70158f * delta + 1.70158f) + 1.0f) + start;
+            float delta = time / duration - 1.0f;
+            return (end - start) * (delta * delta * (2.70158f * delta + 1.70158f) + 1.0f) + start;
         }
         
         DefineTweenFunction(BackEaseIn)

@@ -16,13 +16,13 @@
 
 #ifdef HT_SYS_WINDOWS
     #ifdef HT_WIN32_DESKTOP_APP
-        #define SDL_SUPPORT TRUE
-        #include <ht_sdlkeyboard.h>
-        #include <ht_sdlmouse.h>
+        #define GLFW_SUPPORT TRUE
+        #include <ht_glfwkeyboard.h>
+        #include <ht_glfwmouse.h>
     #endif
 #else
-        #include <ht_sdlkeyboard.h>
-        #include <ht_sdlmouse.h>
+        #include <ht_glfwkeyboard.h>
+        #include <ht_glfwmouse.h>
 #endif
 
 namespace Hatchit
@@ -33,8 +33,8 @@ namespace Hatchit
         {
             Input& _instance = Input::instance();
 
-            _instance.m_keyboard = new SDLKeyboard;
-            _instance.m_mouse = new SDLMouse;
+            _instance.m_keyboard = new GLFWKeyboard;
+            _instance.m_mouse = new GLFWMouse;
         }
 
         void Input::DeInitialize()

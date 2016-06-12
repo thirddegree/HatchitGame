@@ -75,7 +75,7 @@ namespace Hatchit {
                 return false;
             }
 
-            glfwMakeContextCurrent(m_handle);
+//            glfwMakeContextCurrent(m_handle);
 
             glfwSetKeyCallback(m_handle, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
                 if ( action == GLFW_PRESS )
@@ -131,7 +131,7 @@ namespace Hatchit {
 
         void GLFWWindow::VSwapBuffers()
         {
-            glfwSwapBuffers(m_handle);
+  //          glfwSwapBuffers(m_handle);
         }
     }
 

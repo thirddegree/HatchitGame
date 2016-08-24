@@ -18,8 +18,6 @@
 #include <ht_input_singleton.h>
 #include <ht_glfwkeyboard.h>
 #include <ht_glfwmouse.h>
-#include <ht_renderer_singleton.h>
-#include <ht_os.h>
 
 #ifdef HT_SYS_LINUX
 #define GLFW_EXPOSE_NATIVE_X11

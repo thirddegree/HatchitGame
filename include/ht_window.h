@@ -17,7 +17,6 @@
 #include <ht_platform.h>
 #include <ht_noncopy.h>
 #include <ht_string.h>
-#include <ht_renderer.h>
 
 namespace Hatchit {
 
@@ -30,7 +29,6 @@ namespace Hatchit {
             int y;
             int width;
             int height;
-            Graphics::RendererType renderer;
             bool displayFPS;
             bool displayMouse;
             bool debugWindowEvents;

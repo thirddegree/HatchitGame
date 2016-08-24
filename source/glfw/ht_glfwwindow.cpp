@@ -73,7 +73,7 @@ namespace Hatchit {
                 return false;
             }
 
-            glfwMakeContextCurrent(m_handle);
+//            glfwMakeContextCurrent(m_handle);
 
             glfwSetKeyCallback(m_handle, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
                 if ( action == GLFW_PRESS )
@@ -93,7 +93,7 @@ namespace Hatchit {
             });
 
             glfwSetScrollCallback(m_handle, [](GLFWwindow* window, double xoffset, double yoffset) {
-                static_cast<GLFWMouse*>(Input::Mouse())->RegisterMouseWheelEvent(xoffset, yoffset);
+                static_cast<GLFWMouse*>(Input::Mouse())->RegisterMouseWheelEvent(static_cast<int>(xoffset), static_cast<int>(yoffset));
             });
             
             m_running = true;
@@ -129,7 +129,7 @@ namespace Hatchit {
 
         void GLFWWindow::VSwapBuffers()
         {
-            glfwSwapBuffers(m_handle);
+  //          glfwSwapBuffers(m_handle);
         }
     }
 

@@ -53,7 +53,7 @@ namespace Hatchit
 
             void RegisterMouseMove(int x, int y);
             void RegisterMouseButtonEvent(int e, int action);
-            void RegisterMouseWheelEvent(double xoffset, double yoffset);
+            void RegisterMouseWheelEvent(int xoffset, int yoffset);
 
         private:
             int             m_x;

@@ -167,10 +167,10 @@ namespace Hatchit
             }
         }
 
-        void GLFWMouse::RegisterMouseWheelEvent(double xoffset, double yoffset)
+        void GLFWMouse::RegisterMouseWheelEvent(int xoffset, int yoffset)
         {
-            m_wx = (int)xoffset;
-            m_wy = (int)yoffset;
+            m_wx = xoffset;
+            m_wy = yoffset;
         }
     }
 }

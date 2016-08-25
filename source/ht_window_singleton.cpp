@@ -16,7 +16,7 @@
 #include <ht_debug.h>
 
 #ifdef HT_SYS_LINUX
-#include <ht_glfwwindow.h>
+#include <ht_sdlwindow.h>
 #else
     #ifdef HT_WIN32_DESKTOP_APP
     #include <ht_glfwwindow.h>
@@ -34,7 +34,7 @@ namespace Hatchit {
             Window& _instance = Window::instance();
 
 #ifdef HT_SYS_LINUX
-	    _instance.m_window = new GLFWWindow(params);
+	    _instance.m_window = new SDLWindow(params);
 #else
     #ifdef HT_WIN32_DESKTOP_APP
             _instance.m_window = new GLFWWindow(params);

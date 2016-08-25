@@ -22,7 +22,10 @@ namespace Hatchit {
 
     namespace Game {
 
-        struct HT_API WindowParams
+        /**
+         * @brief struct defining various window parameters
+         */
+        struct WindowParams
         {
             std::string title;
             int x;

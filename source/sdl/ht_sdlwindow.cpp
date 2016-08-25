@@ -18,7 +18,6 @@
 #include <ht_input_singleton.h>
 #include <ht_sdlkeyboard.h>
 #include <ht_sdlmouse.h>
-#include <ht_renderer_singleton.h>
 #include <ht_os.h>
 
 namespace Hatchit {
@@ -75,16 +74,6 @@ namespace Hatchit {
                 m_nativeDisplayHandle = info.info.x11.display;
             }
 #endif
-            if (m_params.renderer == Graphics::RendererType::OPENGL)
-            {
-                m_glcontext = SDL_GL_CreateContext(m_handle);
-                if (!m_glcontext)
-                {
-                    HT_DEBUG_PRINTF("Failed to create SDL_GL_Context handle. Exiting.\n");
-                    SDL_Quit();
-                    return false;
-                }
-            }
            
 
             m_running = true;
@@ -152,7 +141,6 @@ namespace Hatchit {
                     case SDL_WINDOWEVENT_RESIZED:
                         if (m_params.debugWindowEvents)
                             HT_DEBUG_PRINTF("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
-                        Renderer::ResizeBuffers(event.window.data1, event.window.data2);
                         break;
                     case SDL_WINDOWEVENT_SIZE_CHANGED:
                         if (m_params.debugWindowEvents)
@@ -223,14 +211,12 @@ namespace Hatchit {
         void SDLWindow::VClose()
         {
             m_running = false;
-            SDL_GL_DeleteContext(m_glcontext);
             SDL_Quit();
         }
 
         void SDLWindow::VSwapBuffers()
         {
-            if (m_params.renderer == Graphics::RendererType::OPENGL)
-                SDL_GL_SwapWindow(m_handle);
+
         }
     }
 

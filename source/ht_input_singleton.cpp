@@ -21,8 +21,8 @@
         #include <ht_glfwmouse.h>
     #endif
 #else
-        #include <ht_glfwkeyboard.h>
-        #include <ht_glfwmouse.h>
+        #include <ht_sdlkeyboard.h>
+        #include <ht_sdlmouse.h>
 #endif
 
 namespace Hatchit
@@ -33,8 +33,8 @@ namespace Hatchit
         {
             Input& _instance = Input::instance();
 
-            _instance.m_keyboard = new GLFWKeyboard;
-            _instance.m_mouse = new GLFWMouse;
+            _instance.m_keyboard = new SDLKeyboard;
+            _instance.m_mouse = new SDLMouse;
         }
 
         void Input::DeInitialize()

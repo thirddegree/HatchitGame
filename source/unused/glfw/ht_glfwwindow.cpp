@@ -73,8 +73,6 @@ namespace Hatchit {
                 return false;
             }
 
-//            glfwMakeContextCurrent(m_handle);
-
             glfwSetKeyCallback(m_handle, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
                 if ( action == GLFW_PRESS )
                     static_cast<GLFWKeyboard*>(Input::Keyboard())->RegisterKeyDown(key);

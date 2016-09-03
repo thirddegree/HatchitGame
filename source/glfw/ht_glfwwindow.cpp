@@ -21,6 +21,7 @@
 
 #ifdef HT_SYS_LINUX
 #define GLFW_EXPOSE_NATIVE_X11
+#define GLFW_EXPOSE_NATIVE_GLX
 #elif defined(HT_SYS_WINDOWS)
 #define GLFW_EXPOSE_NATIVE_WIN32
 #endif

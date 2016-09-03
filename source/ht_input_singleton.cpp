@@ -15,11 +15,9 @@
 #include <ht_input_singleton.h>
 
 #ifdef HT_SYS_WINDOWS
-    #ifdef HT_WIN32_DESKTOP_APP
         #define GLFW_SUPPORT TRUE
         #include <ht_glfwkeyboard.h>
         #include <ht_glfwmouse.h>
-    #endif
 #else
         #include <ht_glfwkeyboard.h>
         #include <ht_glfwmouse.h>

@@ -25,7 +25,6 @@
 #define GLFW_EXPOSE_NATIVE_WIN32
 #endif
 
-#define GLFW_EXPOSE_NATIVE_GLX
 #include <GLFW/glfw3native.h>
 
 namespace Hatchit {

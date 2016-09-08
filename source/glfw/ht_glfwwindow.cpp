@@ -14,7 +14,6 @@
 
 #include <ht_glfwwindow.h>
 #include <ht_debug.h>
-#include <ht_time_singleton.h>
 #include <ht_input_singleton.h>
 #include <ht_glfwkeyboard.h>
 #include <ht_glfwmouse.h>
@@ -36,6 +35,7 @@ namespace Hatchit {
         {
             m_params = params;
             m_handle = nullptr;
+            m_surface = nullptr;
             m_nativeWindowHandle = nullptr;
             m_nativeDisplayHandle = nullptr;
         }
@@ -45,7 +45,7 @@ namespace Hatchit {
             glfwTerminate();
         }
 
-        bool GLFWWindow::VInitialize()
+        bool GLFWWindow::Initialize(VkInstance instance)
         {
             if (!glfwInit()) {
                 HT_DEBUG_PRINTF("GLFW Failed to Initialize. Exiting\n");
@@ -70,6 +70,13 @@ namespace Hatchit {
             if ( !m_handle ) {
                 HT_DEBUG_PRINTF("Failed to create GLFWwindow handle. Exiting.\n");
                 glfwTerminate();
+                return false;
+            }
+
+            glfwCreateWindowSurface(instance, m_handle, nullptr, &m_surface);
+            if (m_surface == VK_NULL_HANDLE)
+            {
+                HT_ERROR_PRINTF("GLFWWindow::Initialize(): Failed to create Vulkan surface.\n");
                 return false;
             }
 
@@ -98,34 +105,39 @@ namespace Hatchit {
             return true;
         }
 
-        void GLFWWindow::VPollEvents()
+        void GLFWWindow::PollEvents()
         {
             glfwPollEvents();
         }
 
-        void* GLFWWindow::VNativeWindowHandle()
+        void* GLFWWindow::NativeWindowHandle()
         {
             return m_nativeWindowHandle;
         }
 
-        void* GLFWWindow::VNativeDisplayHandle()
+        void* GLFWWindow::NativeDisplayHandle()
         {
             return m_nativeDisplayHandle;
         }
 
-        bool GLFWWindow::VIsRunning()
+        bool GLFWWindow::IsRunning()
         {
             return glfwWindowShouldClose(m_handle) == 0;
         }
 
-        void GLFWWindow::VClose()
+        void GLFWWindow::Close()
         {
             glfwTerminate();
         }
 
-        void GLFWWindow::VSwapBuffers()
+        void GLFWWindow::SwapBuffers()
         {
-  //          glfwSwapBuffers(m_handle);
+
+        }
+
+        VkSurfaceKHR GLFWWindow::Surface()
+        {
+            return m_surface;
         }
     }
 

@@ -15,38 +15,58 @@
 #pragma once
 
 #include <ht_platform.h>
-#include <ht_window.h>
+#include <ht_vulkan.h>
 #include <GLFW/glfw3.h>
 
 namespace Hatchit {
 
     namespace Game {
 
-        class HT_API GLFWWindow : public IWindow
+        /**
+        * @brief struct defining various window parameters
+        */
+        struct WindowParams
+        {
+            std::string title;
+            int x;
+            int y;
+            int width;
+            int height;
+            bool displayFPS;
+            bool displayMouse;
+            bool debugWindowEvents;
+        };
+
+        class HT_API GLFWWindow
         {
         public:
             GLFWWindow(const WindowParams& params);
 
             ~GLFWWindow();
 
-            bool    VInitialize()             override;
+            bool    Initialize(VkInstance instance);
 
-            void*   VNativeWindowHandle()     override;
+            void*   NativeWindowHandle();
 
-    	    void*   VNativeDisplayHandle()    override;            
+    	    void*   NativeDisplayHandle();            
 
-            bool    VIsRunning()              override;
+            bool    IsRunning();
 
-            void    VPollEvents()             override;
+            void    PollEvents();
 
-            void    VClose()                  override;
+            void    Close();
 
-            void    VSwapBuffers()            override;
+            void    SwapBuffers();
+
+            VkSurfaceKHR Surface();
 
         private:
             GLFWwindow*         m_handle;
             void*               m_nativeWindowHandle;
             void*               m_nativeDisplayHandle;
+            
+
+            VkSurfaceKHR        m_surface;
             WindowParams        m_params;
         };
 

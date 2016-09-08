@@ -50,11 +50,7 @@ namespace Hatchit {
             virtual void    VClose() = 0;
             virtual void    VSwapBuffers() = 0;
 
-        protected:
-            void*           m_nativeWindowHandle;
-            void*           m_nativeDisplayHandle;    
-            bool            m_running;
-            WindowParams    m_params;
+        
         };
 
 

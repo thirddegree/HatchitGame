@@ -94,7 +94,6 @@ namespace Hatchit {
                 static_cast<GLFWMouse*>(Input::Mouse())->RegisterMouseWheelEvent(static_cast<int>(xoffset), static_cast<int>(yoffset));
             });
             
-            m_running = true;
 
             return true;
         }
@@ -116,13 +115,12 @@ namespace Hatchit {
 
         bool GLFWWindow::VIsRunning()
         {
-            return m_running;
+            return glfwWindowShouldClose(m_handle) == 0;
         }
 
         void GLFWWindow::VClose()
         {
             glfwTerminate();
-            m_running = false;
         }
 
         void GLFWWindow::VSwapBuffers()

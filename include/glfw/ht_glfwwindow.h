@@ -45,6 +45,9 @@ namespace Hatchit {
 
         private:
             GLFWwindow*         m_handle;
+            void*               m_nativeWindowHandle;
+            void*               m_nativeDisplayHandle;
+            WindowParams        m_params;
         };
 
     }

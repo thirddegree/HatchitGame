@@ -45,7 +45,7 @@ namespace Hatchit {
             glfwTerminate();
         }
 
-        bool GLFWWindow::Initialize(VkInstance instance)
+        bool GLFWWindow::Initialize()
         {
             if (!glfwInit()) {
                 HT_DEBUG_PRINTF("GLFW Failed to Initialize. Exiting\n");
@@ -73,12 +73,12 @@ namespace Hatchit {
                 return false;
             }
 
-            glfwCreateWindowSurface(instance, m_handle, nullptr, &m_surface);
+            /*glfwCreateWindowSurface(instance, m_handle, nullptr, &m_surface);
             if (m_surface == VK_NULL_HANDLE)
             {
                 HT_ERROR_PRINTF("GLFWWindow::Initialize(): Failed to create Vulkan surface.\n");
                 return false;
-            }
+            }*/
 
             glfwSetKeyCallback(m_handle, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
                 if ( action == GLFW_PRESS )

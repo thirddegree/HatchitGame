@@ -44,7 +44,7 @@ namespace Hatchit {
 
             ~GLFWWindow();
 
-            bool    Initialize(VkInstance instance);
+            bool    Initialize();
 
             void*   NativeWindowHandle();
 

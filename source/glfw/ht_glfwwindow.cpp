@@ -52,6 +52,7 @@ namespace Hatchit {
                 return false;
             }
 
+            glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
             m_handle = glfwCreateWindow(m_params.width, m_params.height, m_params.title.c_str(),
             nullptr, nullptr);
 
